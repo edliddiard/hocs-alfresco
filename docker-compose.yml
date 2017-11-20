@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+
+  database:
+    image: postgres:9.2
+
+    ports:
+      - 5432:5432
+
+    networks:
+      - alf-network
+
+    environment:
+      POSTGRES_USER: alfresco
+      POSTGRES_PASSWORD: alfresco
+
+    volumes:
+      - dbdata:/var/lib/postgresql
+
+  alfresco:
+    build:
+      context: .
+
+    depends_on:
+      - database
+
+    ports:
+      - 8080:8080
+
+    networks:
+      - alf-network
+
+
+networks:
+  alf-network:
+
+volumes:
+  dbdata: {}
