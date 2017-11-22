@@ -1,11 +1,11 @@
 pipeline:
   build:
     privileged: true
-    image: quay.io/ukhomeofficedigital/openjdk8:v1.1.0
+    image: quay.io/ukhomeofficedigital/java8-mvn:v3.3.9.3
     environment:
       - DOCKER_HOST=tcp://127.0.0.1:2375
     commands:
-      - echo "done"
+      - mvn clean package -DskipTests=true -DPROJECT_VERSION=1 -DBUILD_NUMBER=${DRONE_BUILD_NUMBER}
     when:
      event: [push, pull_request, tag]
 
