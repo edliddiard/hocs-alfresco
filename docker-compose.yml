@@ -3,20 +3,24 @@ version: '3.1'
 services:
 
   database:
-    image: postgres:9.2
+    image: mysql
 
     ports:
-      - 5432:5432
+      - 3306:3306
 
     networks:
       - alf-network
 
     environment:
-      POSTGRES_USER: alfresco
-      POSTGRES_PASSWORD: alfresco
+      MYSQL_ROOT_PASSWORD: alfresco
+      MYSQL_DATABASE: alfresco
+      MYSQL_USER: alfresco
+      MYSQL_PASSWORD: alfresco
+
+    restart: always
 
     volumes:
-      - dbdata:/var/lib/postgresql
+      - dbdata:/var/lib/mysql
 
   alfresco:
     build:
@@ -26,11 +30,10 @@ services:
       - database
 
     ports:
-      - 8080:8080
+      - 9001:8080
 
     networks:
       - alf-network
-
 
 networks:
   alf-network:
