@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Export a todo list of cases to CSV</shortname>
+    <description>Returns the todo list of cases by user name in CSV format</description>
+    <url>/api/v2/homeoffice/cts/todolist/export?userNames={userNames}&amp;offset={offset?}&amp;limit={limit?}&amp;includeAllowableActions={includeAllowableActions?}&amp;sortingOrder={sortingOrder?}&amp;caseStatus={caseStatus?}&amp;assignedTeams={assignedTeams?}&amp;caseTasks={caseTasks?}&amp;caseTypes={caseTypes?}&amp;assignedUnits={assignedUnits?}&amp;priorityOnly={priorityOnly?}</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+    <transaction>none</transaction>
+</webscript>

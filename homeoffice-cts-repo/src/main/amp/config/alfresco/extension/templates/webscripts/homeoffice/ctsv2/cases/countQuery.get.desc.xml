@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get Count from a CMIS Query</shortname>
+    <description>Getting minutes from a case</description>
+    <url>/homeoffice/ctsv2/countquery?q={q}</url>
+    <format default="json">argument</format>
+    <authentication>user</authentication>
+</webscript>

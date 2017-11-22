@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Definition of new Model -->
+<model name="ctsMinute:ctsMinuteModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+    <!-- Optional meta-data about the model -->
+    <description>CTS Minutes Model</description>
+    <author>Dawud Rahman</author>
+    <version>1.0</version>
+    <!-- Imports are required to allow references to definitions in other models -->
+    <imports>
+        <!-- Import Alfresco Dictionary Definitions -->
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d" />
+        <!-- Import Alfresco Content Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm" />
+        <import uri="http://www.alfresco.org/model/system/1.0" prefix="sys"/>
+        <import uri="http://cts-beta.homeoffice.gov.uk/model/content/1.0" prefix="cts" />
+    </imports>
+    <!-- Introduction of new namespaces defined by this model -->
+    <namespaces>
+        <namespace uri="http://cts-beta.homeoffice.gov.uk/model/minute/1.0" prefix="ctsMinute"/>
+    </namespaces>
+    <!-- Type definitions -->
+    <aspects>
+        <aspect name="ctsMinute:minutes">
+            <title>Case Minutes</title>
+            <properties>
+                <property name="ctsMinute:minutesCollated">
+                    <title>All Minutes</title>
+                    <type>d:content</type>
+                    <mandatory>false</mandatory>
+                    <index enabled="false">
+                        <atomic>false</atomic>       <!-- index in the background -->
+                        <stored>false</stored>       <!-- store the property value in the index -->
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+            </properties>
+        </aspect>
+    </aspects>
+</model>

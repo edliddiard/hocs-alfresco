@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Import users form</shortname>
+    <description>Form to allow the upload of users.</description>
+    <url>/homeoffice/cts/util/bulkUserImport</url>
+    <format default="html">argument</format>
+    <authentication>admin</authentication>
+    <transaction>none</transaction>
+</webscript>

@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>CTS Ungroup Cases</shortname>
+    <description>Unassociate cases to a master by UIN.</description>
+    <url>/homeoffice/cts/ungroupCases</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+    <transaction>requiresnew</transaction>
+</webscript>

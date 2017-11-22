@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Definition of new Model -->
+<model name="ctsdl:ctsdatalists" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+    <!-- Optional meta-data about the model -->
+    <description>CTS Data Lists</description>
+    <author>Dave Thompson</author>
+    <version>1.0</version>
+    <!-- Imports are required to allow references to definitions in other models -->
+    <imports>
+        <!-- Import Alfresco Dictionary Definitions -->
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d" />
+        <!-- Import Alfresco Content Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm" />
+        <import uri="http://www.alfresco.org/model/system/1.0" prefix="sys"/>
+        <import uri="http://www.alfresco.org/model/datalist/1.0" prefix="dl"/>
+
+    </imports>
+    <!-- Introduction of new namespaces defined by this model -->
+    <namespaces>
+        <namespace uri="http://cts-beta.homeoffice.gov.uk/model/content/datalists/1.0" prefix="ctsdl" />
+    </namespaces>
+    <types>
+        <type name="ctsdl:childTopic">
+            <title>CTS topic list child item</title>
+            <parent>dl:dataListItem</parent>
+            <properties>
+                <property name="ctsdl:topicName">
+                    <title>Topic name</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+            </properties>
+            <associations>
+                <association name="ctsdl:topicTeam">
+                    <title>Topic team</title>
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>cm:authority</class>
+                        <mandatory>false</mandatory>
+                        <many>false</many>
+                    </target>
+                </association>
+                <association name="ctsdl:topicUnit">
+                    <title>Topic unit</title>
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>cm:authority</class>
+                        <mandatory>false</mandatory>
+                        <many>false</many>
+                    </target>
+                </association>
+            </associations>
+        </type>
+        <type name="ctsdl:parentTopic">
+            <title>CTS topic list parent item</title>
+            <parent>dl:dataListItem</parent>
+            <properties>
+                <property name="ctsdl:topicListName">
+                    <title>Topic list parent name</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="ctsdl:caseType">
+                    <title>holds case type info</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+            </properties>
+            <associations>
+                <association name="ctsdl:childTopic">
+                    <title>topic list</title>
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>ctsdl:childTopic</class>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </target>
+                </association>
+            </associations>
+        </type>
+        <type name="ctsdl:userGroupNoEmailList">
+            <title>User No Email list</title>
+            <parent>dl:dataListItem</parent>
+            <associations>
+                <association name="ctsdl:user">
+                    <title>Users</title>
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>cm:person</class>
+                        <mandatory>false</mandatory>
+                        <many>false</many>
+                    </target>
+                </association>
+                <association name="ctsdl:usersGroups">
+                    <title>Users Groups</title>
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>cm:authority</class>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </target>
+                </association>
+            </associations>
+        </type>
+    </types>
+</model>

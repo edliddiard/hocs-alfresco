@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get Email Job list</shortname>
+    <description>Returns the Scheduled Email Job list</description>
+    <url>/homeoffice/cts/emailjobs</url>
+    <format default="html">extension</format>
+    <authentication>user</authentication>
+</webscript>

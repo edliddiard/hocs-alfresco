@@ -1,0 +1,1447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Definition of new Model -->
+<model name="cts:ctsmodel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+    <!-- Optional meta-data about the model -->
+    <description>CTS Model</description>
+    <author>Dave Thompson</author>
+    <version>1.0</version>
+    <!-- Imports are required to allow references to definitions in other models -->
+    <imports>
+        <!-- Import Alfresco Dictionary Definitions -->
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d" />
+        <!-- Import Alfresco Content Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm" />
+        <import uri="http://www.alfresco.org/model/system/1.0" prefix="sys"/>
+    </imports>
+    <!-- Introduction of new namespaces defined by this model -->
+    <namespaces>
+        <namespace uri="http://cts-beta.homeoffice.gov.uk/model/content/1.0" prefix="cts" />
+    </namespaces>
+    <constraints>
+        <constraint name="cts:correspondenceTypeList" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <!-- DCU -->
+                    <!-- Ministerial -->
+                    <value>MIN</value>
+                    <!-- Treat Official -->
+                    <value>TRO</value>
+                    <!-- DCU No. 10 -->
+                    <value>DTEN</value>
+                    <!-- UKVI No. 10 -->
+                    <value>UTEN</value>
+                    <!-- FOI -->
+                    <value>FOI</value>
+                    <!-- FOI Internal Review: Time-->
+                    <value>FTC</value>
+                    <!-- FOI ICO Time Complaint-->
+                    <value>FTCI</value>
+                    <!-- FOI Internal Review: Substantive-->
+                    <value>FSC</value>
+                    <!-- FOI ICO Substantive Complaint-->
+                    <value>FSCI</value>
+                    <!-- FOI Lower Tribunal-->
+                    <value>FLT</value>
+                    <!-- FOI Upper Tribunal-->
+                    <value>FUT</value>
+                    <!-- PQ -->
+                    <!-- Named Day -->
+                    <value>NPQ</value>
+                    <!-- Lords Written -->
+                    <value>LPQ</value>
+                    <!-- Ordinary Written -->
+                    <value>OPQ</value>
+                    <!-- UKVI B Ref-->
+                    <value>IMCB</value>
+                    <!-- UKVI M Ref-->
+                    <value>IMCM</value>
+                    <!-- HMPO Complaint -->
+                    <value>COM</value>
+                    <!-- HMPO General -->
+                    <value>GEN</value>
+                    <!-- HMPO Collectives -->
+                    <value>COL</value>
+                    <!-- OPQN General -->
+                    <value>OPQN</value>
+                    <value>NPQN</value>
+                    <value>LPQN</value>
+                    <value>COM1</value>
+                    <value>COM2</value>
+                    <value>DGEN</value>
+                    <value>GNR</value>
+                </list>
+            </parameter>
+        </constraint>
+
+        <constraint name="cts:correspondenceStatusList" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value>New</value>
+                    <value>Ready</value>
+                    <value>Draft</value>
+                    <value>OGD</value>
+                    <value>NFA</value>
+                    <value>Hold</value>
+                    <value>Approvals</value>
+                    <value>Obtain sign-off</value>
+                    <value>Dispatch</value>
+                    <value>Allocated</value>
+                    <value>Completed</value>
+                    <value>Deleted</value>
+                </list>
+            </parameter>
+        </constraint>
+    </constraints>
+    <types>
+        <type name="cts:case">
+            <title>CTS Case</title>
+            <parent>cm:folder</parent>
+            <archive>true</archive>
+            <properties>
+                <property name="cts:correspondenceType">
+                    <title>Case type</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <constraints>
+                        <constraint ref="cts:correspondenceTypeList" />
+                    </constraints>
+                </property>
+                <property name="cts:caseStatus">
+                    <title>Status</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <constraints>
+                        <constraint ref="cts:correspondenceStatusList" />
+                    </constraints>
+                </property>
+                <property name="cts:caseTask">
+                    <title>Task</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:urnSuffix">
+                    <title>HRN suffix</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:markupDecision">
+                    <title>Markup decision</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:markupUnit">
+                    <title>Markup unit</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:markupTopic">
+                    <title>Markup topic</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:markupMinister">
+                    <title>Markup minister</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:markupTeam">
+                    <title>Markup team</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryTopic">
+                    <title>Secondary topic</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:assignedUser">
+                    <title>Assigned user</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:assignedTeam">
+                    <title>Assigned team</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:assignedUnit">
+                    <title>Assigned unit</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:originalDrafterUser">
+                    <title>Original drafter user</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:originalDrafterTeam">
+                    <title>Original drafter team</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:originalDrafterUnit">
+                    <title>Original drafter unit</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <!--Field to hold system entry about creating document-->
+                <property name="cts:documentAdded">
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <!--Field to hold system entry about creating slave-->
+                <property name="cts:slaveAdded">
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <!--Field to hold system entry about creating master-->
+                <property name="cts:masterAdded">
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <!--Field to hold system entry about removing slave-->
+                <property name="cts:slaveRemoved">
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <!--Field to hold system entry about removing master-->
+                <property name="cts:masterRemoved">
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <!--Field to hold system entry about linking case-->
+                <property name="cts:linkCaseAdded">
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:dateReceived">
+                    <title>Date received</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:dateOfLetter">
+                    <title>Date of letter</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:channel">
+                    <title>Channel</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:priority">
+                    <title>Priority</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:advice">
+                    <title>Advice</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:caseResponseDeadline">
+                    <title>Case response deadline</title>
+                    <type>d:datetime</type>
+                    <mandatory>true</mandatory>
+                    <index enabled="true">
+                        <tokenised>both</tokenised>
+                    </index>
+                </property>
+                <property name="cts:poTarget">
+                    <title>Private Office target</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:dispatchTarget">
+                    <title>Dispatch target</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:homeSecretaryReply">
+                    <title>Home Secretary reply</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:mpRef">
+                    <title>MP reference</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToName">
+                    <title>Reply to name</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToPostcode">
+                    <title>Reply to postcode</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToAddressLine1">
+                    <title>Reply to address line 1</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToAddressLine2">
+                    <title>Reply to address line 2</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToAddressLine3">
+                    <title>Reply to address line 3</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToCountry">
+                    <title>Reply to country</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToTelephone">
+                    <title>Reply to telephone</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToEmail">
+                    <title>Reply to email</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToNumberTenCopy">
+                    <title>Send a copy to No.10</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:correspondentTitle">
+                    <title>correspondent title</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentForename">
+                    <title>Correspondent forename</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentSurname">
+                    <title>Correspondent surname</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentPostcode">
+                    <title>Correspondent postcode</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentAddressLine1">
+                    <title>Correspondent address line 1</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentAddressLine2">
+                    <title>Correspondent address line 2</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentAddressLine3">
+                    <title>Correspondent address line 3</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentCountry">
+                    <title>Correspondent country</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentTelephone">
+                    <title>Correspondent telephone</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondentEmail">
+                    <title>Correspondent email</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:uin">
+                    <title>UIN reference</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:politicianDeadline">
+                    <title>Politician deadline</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:opDate">
+                    <title>OP date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:woDate">
+                    <title>WO date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:questionNumber">
+                    <title>Question number</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:questionText">
+                    <title>Question text</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:answerText">
+                    <title>Answer text</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:receivedType">
+                    <title>Received type</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:draftDate">
+                    <title>Draft date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:member">
+                    <title>Member</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:constituency">
+                    <title>Constituency</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:party">
+                    <title>Party</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:signedByHomeSec">
+                    <title>Signed by Home Secretary</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:signedByLordsMinister">
+                    <title>Signed by Lords Minister</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:lordsMinister">
+                    <title>Lords Minister Signatory</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:reviewedByPermSec">
+                    <title>Reviewed by Perm Secretary</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:parlyDispatch">
+                    <title>Parly Dispatch</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:reviewedBySpads">
+                    <title>Reviewed by SpAds</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>true</default>
+                </property>
+                <property name="cts:roundRobin">
+                    <title>Round robin</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:cabinetOfficeGuidance">
+                    <title>Cabinet office guidance</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:transferDepartmentName">
+                    <title>Transfer department name</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:caseRef">
+                    <title>Case ref</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentTitle">
+                    <title>Third party correspondent title</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentForename">
+                    <title>Third party correspondent forename</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentSurname">
+                    <title>Third party correspondent surname</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentOrganisation">
+                    <title>Third party correspondent organisation</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentTelephone">
+                    <title>Third party correspondent telephone</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentEmail">
+                    <title>Third party correspondent email</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentPostcode">
+                    <title>Third party correspondent postcode</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentAddressLine1">
+                    <title>Third party correspondent address line 1</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentAddressLine2">
+                    <title>Third party correspondent address line 2</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentAddressLine3">
+                    <title>Third party correspondent address line 3</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentCountry">
+                    <title>Third party correspondent country</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:allocateTarget">
+                    <title>Allocate target</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:draftResponseTarget">
+                    <title>Draft response target</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:scsApprovalTarget">
+                    <title>SCS approval target</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:finalApprovalTarget">
+                    <title>Final approval target</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:responderHubTarget">
+                    <title>Allocate to responder hub</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:allocateToResponderTarget">
+                    <title>Accept, triage and allocate to responder target</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:foiMinisterSignOff">
+                    <title>Minister sign-off</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:foiIsEir">
+                    <title>Is EIR?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:exemptions">
+                    <title>Exemptions</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:pitExtension">
+                    <title>PIT extension?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:pitLetterSentDate">
+                    <title>PIT letter sent date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:pitQualifiedExemptions">
+                    <title>PIT qualified exemptions</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:foiDisclosure">
+                    <title>disclosure?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:acpoConsultation">
+                    <title>ACPO consultation?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:cabinetOfficeConsultation">
+                    <title>Cabinet office consultation?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:nslgConsultation">
+                    <title>NSLG consultation?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:royalsConsultation">
+                    <title>Royals consultation?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:roundRobinAdviceConsultation">
+                    <title>Round robin advice consultation?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <!--Field to contain the state of the workflow for the front end to display buttons and headers-->
+                <property name="cts:caseWorkflowStatus">
+                    <title>Workflow Status</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:caseMandatoryFields">
+                    <title>Mandatory Fields</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:caseMandatoryFieldDependencies">
+                    <title>Mandatory Field Validation Dependencies</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:caseMandatoryFieldStatus">
+                    <title>Mandatory Field Validation Statuses</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:caseMandatoryFieldTask">
+                    <title>Mandatory Field Validation Tasks</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:ogdName">
+                    <title>OGD name</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hmpoResponse">
+                    <title>POC response</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hmpoStage">
+                    <title>HMPO stage</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToCorrespondent">
+                    <title>Reply to correspondent?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:typeOfCorrespondent">
+                    <title>Type of correspondent</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:typeOfComplainant">
+                    <title>Type of complainant</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:typeOfRepresentative">
+                    <title>Type of representative</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:typeOfThirdParty">
+                    <title>Type of third party</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:consentAttached">
+                    <title>Consent attached?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToApplicant">
+                    <title>Reply to applicant?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantTitle">
+                    <title>Applicant title</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantForename">
+                    <title>Applicant forename</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantSurname">
+                    <title>Applicant surname</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantPostcode">
+                    <title>Applicant postcode</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantAddressLine1">
+                    <title>Applicant address line 1</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantAddressLine2">
+                    <title>Applicant address line 2</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantAddressLine3">
+                    <title>Applicant address line 3</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantCountry">
+                    <title>Applicant country</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantEmail">
+                    <title>Applicant email</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:applicantTelephone">
+                    <title>Applicant telephone</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:replyToComplainant">
+                    <title>Reply to complainant?</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantTitle">
+                    <title>Complainant title</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantForename">
+                    <title>Complainant forename</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantSurname">
+                    <title>Complainant surname</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantPostcode">
+                    <title>Complainant postcode</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantAddressLine1">
+                    <title>Complainant address line 1</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantAddressLine2">
+                    <title>Complainant address line 2</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantAddressLine3">
+                    <title>Complainant address line 3</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantCountry">
+                    <title>Complainant country</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantEmail">
+                    <title>Complainant email</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complainantTelephone">
+                    <title>Complainant telephone</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hmpoRefundDecision">
+                    <title>Refund decision</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hmpoRefundAmount">
+                    <title>Refund amount</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hmpoComplaintOutcome">
+                    <title>Complaint outcome</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hmpoPassportNumber">
+                    <title>Passport number</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hmpoApplicationNumber">
+                    <title>Application number</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hoCaseOfficer">
+                    <title>HO case officer</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:responseDate">
+                    <title>Response date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:complex">
+                    <title>Complex</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:newInformationReleased">
+                    <title>New information released</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:icoReference">
+                    <title>ICO reference</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:icoOutcome">
+                    <title>ICO outcome</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:icoComplaintOfficer">
+                    <title>ICO complaint officer</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:icoOutcomeDate">
+                    <title>ICO outcome date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:tsolRep">
+                    <title>TSOL rep</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:appellant">
+                    <title>Appellant</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:hoJoined">
+                    <title>HO joined</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:tribunalOutcome">
+                    <title>Tribunal outcome</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:tribunalOutcomeDate">
+                    <title>Tribunal outcome date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:enforcementNoticeNeeded">
+                    <title>Enforcement notice needed</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:enforcementNoticeDeadline">
+                    <title>Enforcement notice deadline</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:organisation">
+                    <title>Organisation</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:answeringMinister">
+                    <title>Answering minister</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:answeringMinisterId">
+                    <title>Answering minister Id</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:statusUpdatedDatetime">
+                    <title>Status updated date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:taskUpdatedDatetime">
+                    <title>Task updated date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:ownerUpdatedDatetime">
+                    <title>Owner updated date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:autoCreatedCase">
+                    <title>Auto created case</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                    <default>false</default>
+                </property>
+                <!-- Field to hold how many times the case has been returned -->
+                <property name="cts:returnedCount">
+                    <title>Returned Count</title>
+                    <type>d:int</type>
+                    <mandatory>false</mandatory>
+                    <default>0</default>
+                </property>
+                <property name="cts:pqApiCreatedCase">
+                    <title>PQ API created case</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:returnCaseAt">
+                    <title>Hold case return stage</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <default>false</default>
+                </property>
+                <!--HMPO Collectives fields-->
+                <property name="cts:hardCopyReceived">
+                    <title>Hard Copy Received</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:correspondingName">
+                    <title>corresponding Name</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:countryOfDestination">
+                    <title>country Of Destination</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:otherCountriesToBeVisited">
+                    <title>other Countries To Be Visited</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:countriesToBeTravelledThrough">
+                    <title>countries To Be Travelled Through</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:departureDateFromUK">
+                    <title>departure Date From UK</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:arrivingDateInUK">
+                    <title>arriving Date In UK</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:individualHousehold">
+                    <title>stay in individual Household</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:numberOfChildren">
+                    <title>number of children</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:leadersAddressAboard">
+                    <title>leaders Address Aboard</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderLastName">
+                    <title>Party Leader Last Name</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderOtherNames">
+                    <title>Party Leader Other Names</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderPassportNumber">
+                    <title>Party Leader Passport Number</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderPassportIssuedAt">
+                    <title>Party Leader Passport Issued At</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderPassportIssuedOn">
+                    <title>Party Leader Passport Issued On</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderDeputyLastName">
+                    <title>Party Leader Deputy Last Name</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderDeputyOtherNames">
+                    <title>Party Leader Deputy Other Names</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderDeputyPassportNumber">
+                    <title>Party Leader Deputy Passport Number</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderDeputyPassportIssuedAt">
+                    <title>Party LeaderDeputy Passport Issued At</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:partyLeaderDeputyPassportIssuedOn">
+                    <title>Party Leader Deputy Passport Issued On</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:feeIncluded">
+                    <title>Fee Included</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:deliveryType">
+                    <title>Delivery Type</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:examinerSecurityCheck">
+                    <title>Examiner Security Check</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:passportStatus">
+                    <title>Passport Status</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:bringUpDate">
+                    <title>Bring Up Date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:deferDispatch">
+                    <title>Defer Dispatch</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:dispatchedDate">
+                    <title>dispatched Date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:deliveryNumber">
+                    <title>Delivery Number</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryTypeOfCorrespondent">
+                    <title>Secondary Type Of Correspondent</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentReplyTo">
+                    <title>Secondary Correspondent Reply To</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:secondaryCorrespondentTitle">
+                    <title>Secondary correspondent title</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentForename">
+                    <title>Secondary Correspondent forename</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentSurname">
+                    <title>Secondary Correspondent surname</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentPostcode">
+                    <title>Secondary Correspondent postcode</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentAddressLine1">
+                    <title>Secondary Correspondent address line 1</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentAddressLine2">
+                    <title>Secondary Correspondent address line 2</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentAddressLine3">
+                    <title>Secondary Correspondent address line 3</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentCountry">
+                    <title>Secondary Correspondent country</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentTelephone">
+                    <title>Secondary Correspondent telephone</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secondaryCorrespondentEmail">
+                    <title>Secondary Correspondent email</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:secCorrespondentTypeOfRepresentative">
+                    <title>Secondary Correspondent type of rep</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+
+                <property name="cts:secCorrespondentConsentAttached">
+                    <title>Secondary Correspondent consent attached</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+
+                <property name="cts:thirdPartyTypeOfCorrespondent">
+                    <title>Third Type Of Correspondent</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyCorrespondentReplyTo">
+                    <title>Third Correspondent Reply To</title>
+                    <type>d:boolean</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:thirdPartyTypeOfRepresentative">
+                    <title>Third party type of rep</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:thirdPartyConsentAttached">
+                    <title>Third Type Of Correspondent</title>
+                    <type>d:boolean</type>
+                    <mandatory>false</mandatory>
+                </property>
+
+                <property name="cts:hmpoRefundType">
+                    <title>HMPO refund type</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:deferDueTo">
+                    <title>defer due to</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:officeOfOrigin">
+                    <title>office of origin</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+            </properties>
+            <associations>
+                <association name="cts:groupedPqCases">
+                    <title>Grouped PQ cases</title>
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>cts:case</class>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </target>
+                </association>
+                <association name="cts:linkedCases">
+                    <title>Linked cases</title>
+                    <source>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </source>
+                    <target>
+                        <class>cts:case</class>
+                        <mandatory>false</mandatory>
+                        <many>true</many>
+                    </target>
+                </association>
+            </associations>
+            <mandatory-aspects>
+                <aspect>cts:groupedMaster</aspect>
+                <aspect>cts:groupedSlave</aspect>
+                <aspect>cts:linkedCase</aspect>
+            </mandatory-aspects>
+        </type>
+        <type name="cts:caseDocument">
+            <title>Case document</title>
+            <parent>cm:content</parent>
+            <archive>true</archive>
+            <properties>
+                <property name="cts:documentType">
+                    <title>Document type</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:documentDescription">
+                    <title>Document description</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <!-- These properties are to hold these values until the case is created and can use them-->
+                <property name="cts:documentUnit">
+                    <title>Document Unit</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:documentTeam">
+                    <title>Document Team</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:documentUser">
+                    <title>Document User</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+            </properties>
+        </type>
+        <type name="cts:caseDocumentTemplate">
+            <title>Case document template</title>
+            <parent>cm:content</parent>
+            <archive>true</archive>
+            <properties>
+                <property name="cts:appliesToCorrespondenceType">
+                    <title>Applies to correspondence Type</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:templateName">
+                    <title>Template name</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:validFromDate">
+                    <title>Valid from date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:validToDate">
+                    <title>Valid to date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+            </properties>
+        </type>
+        <type name="cts:standardLine">
+            <title>Standard line</title>
+            <parent>cm:content</parent>
+            <archive>true</archive>
+            <properties>
+                <property name="cts:associatedUnit">
+                    <title>Associated unit</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:associatedTopic">
+                    <title>Associated topic</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:reviewDate">
+                    <title>Review date</title>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+            </properties>
+        </type>
+    </types>
+    <aspects>
+        <aspect name="cts:unitGroup">
+            <title>Unit</title>
+        </aspect>
+        <aspect name="cts:teamGroup">
+            <title>Team</title>
+        </aspect>
+        <aspect name="cts:managerGroup">
+            <title>Manager</title>
+        </aspect>
+        <aspect name="cts:groupedMaster">
+            <title>Grouped master</title>
+            <properties>
+                <property name="cts:isGroupedMaster">
+                    <title>Is grouped master</title>
+                    <!-- has to be text so it can be queried transactionally -->
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+            </properties>
+        </aspect>
+        <aspect name="cts:groupedSlave">
+            <title>Grouped slave</title>
+            <properties>
+                <property name="cts:isGroupedSlave">
+                    <title>Is dependant grouped case</title>
+                    <!-- has to be text so it can be queried transactionally -->
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+                <property name="cts:masterNodeRef">
+                    <title>Master node ref</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+            </properties>
+        </aspect>
+        <aspect name="cts:linkedCase">
+            <title>Grouped master</title>
+            <properties>
+                <property name="cts:isLinkedCase">
+                    <title>Is linked case</title>
+                    <!-- has to be text so it can be queried transactionally -->
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <default>false</default>
+                </property>
+            </properties>
+        </aspect>
+        <aspect name="cts:workflowProperties">
+            <title>Workflow Properties</title>
+            <properties>
+                <property name="cts:sendForDraft">
+                    <title>Send For Draft</title>
+                    <type>d:text</type>
+                    <default>SendForDraft</default>
+                    <constraints>
+                        <constraint name="cts:sendForDraftOutcomeOptions" type="LIST">
+                            <parameter name="allowedValues">
+                                <list>
+                                    <value>AllocateForDraft</value>
+                                </list>
+                            </parameter>
+                        </constraint>
+                    </constraints>
+                </property>
+                <property name="cts:draftResponse">
+                    <title>Send For Draft</title>
+                    <type>d:text</type>
+                    <default>SendForDraft</default>
+                    <constraints>
+                        <constraint name="cts:draftResponseOutcomeOptions" type="LIST">
+                            <parameter name="allowedValues">
+                                <list>
+                                    <value>ReturnDraft</value>
+                                    <value>SendForQA</value>
+                                </list>
+                            </parameter>
+                        </constraint>
+                    </constraints>
+                </property>
+            </properties>
+        </aspect>
+        <aspect name="cts:autoCreateFailure">
+            <title>Auto create failure</title>
+            <properties>
+                <property name="cts:autoCreateFailureMessage">
+                    <title>Auto create failure message</title>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="cts:autoCreateFailureDateTime">
+                    <title>Auto create failure date</title>
+                    <type>d:datetime</type>
+                    <mandatory>true</mandatory>
+                </property>
+            </properties>
+        </aspect>
+        <aspect name="cts:qualityReview">
+            <title>Auto create failure</title>
+            <properties>
+                <property name="cts:minuteQaReviewOutcomes">
+                    <title>QA Review Outcomes</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="cts:minuteQaReviewTask">
+                    <title>QA Review Task</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+            </properties>
+        </aspect>
+    </aspects>
+</model>

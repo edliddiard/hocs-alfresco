@@ -1,0 +1,24 @@
+<webscript>
+<shortname>Manage groups</shortname>
+<description>Manage groups</description>
+<url>/homeoffice/ctsv2/manageGroups</url>
+<format default="json">any</format>
+<authentication>user</authentication>
+</webscript>
+
+<!--
+Sample request::
+{
+  "manageGroups":[
+    {
+      "Action": "AddUnit",
+      "UnitName": "Appeals, Litigation and SAR"
+    },
+    {
+      "Action": "AddUnit",
+      "UnitName": "Border Force"
+    }
+
+  ]
+}
+-->

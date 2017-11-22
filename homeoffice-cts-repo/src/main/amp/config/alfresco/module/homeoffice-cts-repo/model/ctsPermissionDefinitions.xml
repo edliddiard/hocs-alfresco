@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE permissions >
+<!--PUBLIC '-//ALFRECSO//DTD PERMISSIONS//EN' 'permissionSchema.dtd' -->
+<!-- Note: the above is commented out as spring does not seem to find the dtd -->
+
+<!-- ============================================ -->
+<!-- The custom permission model for the repository -->
+<!-- ============================================ -->
+
+<permissions>
+    <!-- Namespaces used in type references -->
+    <namespaces>
+        <namespace uri="http://www.alfresco.org/model/system/1.0" prefix="sys"/>
+        <namespace uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+        <namespace uri="http://www.alfresco.org/model/wcmmodel/1.0" prefix="wcm"/>
+        <namespace uri="http://www.alfresco.org/model/wcmappmodel/1.0" prefix="wca"/>
+        <namespace uri="http://cts-beta.homeoffice.gov.uk/model/content/1.0" prefix="cts"/>
+    </namespaces>
+
+    <!-- These are the custom roles, assigned to folder so they can be inherited from folders -->
+    <permissionSet type="cm:folder" expose="selected">
+
+        <!-- Drafter Role -->
+        <permissionGroup name="Drafter" expose="true" allowFullControl="false">
+            <includePermissionGroup type="sys:base"  permissionGroup="Read"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="Editor"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="Contributor"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="canAssignUser"/>
+        </permissionGroup>
+
+        <!-- PQDrafter Role -->
+        <permissionGroup name="PQDrafter" expose="true" allowFullControl="false">
+            <includePermissionGroup type="sys:base"  permissionGroup="Read"/>
+            <includePermissionGroup type="sys:base"  permissionGroup="ReadPermissions"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="Editor"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="correspondenceType"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseStatus"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseTask"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="urnSuffix"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="assignedUser"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="assignedTeam"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="assignedUnit"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="originalDrafterUser"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="originalDrafterTeam"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="originalDrafterUnit"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="documentAdded"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="linkCaseAdded"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="dateReceived"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="dateOfLetter"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="channel"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="priority"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="advice"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseResponseDeadline"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="poTarget"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="dispatchTarget"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="homeSecretaryReply"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="mpRef"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="uin"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="politicianDeadline"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="woDate"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="questionNumber"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="answerText"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="receivedType"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="draftDate"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="signedByLordsMinister"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="lordsMinister"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="roundRobin"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="cabinetOfficeGuidance"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="transferDepartmentName"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseRef"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="allocateTarget"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="draftResponseTarget"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="scsApprovalTarget"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="finalApprovalTarget"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="roundRobinAdviceConsultation"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseWorkflowStatus"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseMandatoryFields"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseMandatoryFieldDependencies"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseMandatoryFieldStatus"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="caseMandatoryFieldTask"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="responseDate"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="statusUpdatedDatetime"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="taskUpdatedDatetime"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="ownerUpdatedDatetime"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="autoCreatedCase"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="pqApiCreatedCase"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="linkedCases"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="returnedCount"/>
+        </permissionGroup>
+
+        <!-- CaseViewer Role -->
+        <permissionGroup name="CaseViewer" expose="true" allowFullControl="false">
+            <includePermissionGroup type="sys:base"  permissionGroup="ReadPermissions"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="Consumer"/>
+        </permissionGroup>
+
+        <!-- ActualCaseViewer Role, assigned to a user with the CaseViewer role in AllocateBehaviour -->
+        <permissionGroup name="ActualCaseViewer" expose="false" allowFullControl="false">
+            <includePermissionGroup type="sys:base" permissionGroup="ReadPermissions"/>
+            <includePermissionGroup type="sys:base" permissionGroup="AddChildren"/>
+            <includePermissionGroup type="sys:base" permissionGroup="WriteContent"/>
+            <includePermissionGroup type="cm:folder" permissionGroup="Consumer"/>
+        </permissionGroup>
+
+        <!-- permissionsGroups must be defined, when referenced in an includePermissionGroup element -->
+        <permissionGroup name="Coordinator" extends="true" expose="false"/>
+        <permissionGroup name="Collaborator" extends="true" expose="false"/>
+        <permissionGroup name="Contributor" extends="true" expose="false"/>
+        <permissionGroup name="Editor" extends="true" expose="false"/>
+        <permissionGroup name="Consumer" extends="true" expose="false"/>
+        <permissionGroup name="RecordAdministrator" extends="true" expose="false"/>
+
+        <permissionGroup name="canAssignUser" expose="true" allowFullControl="false" />
+        <permissionGroup name="correspondenceType" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseStatus" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseTask" expose="true" allowFullControl="false"/>
+        <permissionGroup name="urnSuffix" expose="true" allowFullControl="false"/>
+        <permissionGroup name="assignedUser" expose="true" allowFullControl="false"/>
+        <permissionGroup name="assignedTeam" expose="true" allowFullControl="false"/>
+        <permissionGroup name="assignedUnit" expose="true" allowFullControl="false"/>
+        <permissionGroup name="originalDrafterUser" expose="true" allowFullControl="false"/>
+        <permissionGroup name="originalDrafterTeam" expose="true" allowFullControl="false"/>
+        <permissionGroup name="originalDrafterUnit" expose="true" allowFullControl="false"/>
+        <permissionGroup name="documentAdded" expose="true" allowFullControl="false"/>
+        <permissionGroup name="linkCaseAdded" expose="true" allowFullControl="false"/>
+        <permissionGroup name="dateReceived" expose="true" allowFullControl="false"/>
+        <permissionGroup name="dateOfLetter" expose="true" allowFullControl="false"/>
+        <permissionGroup name="channel" expose="true" allowFullControl="false"/>
+        <permissionGroup name="priority" expose="true" allowFullControl="false"/>
+        <permissionGroup name="advice" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseResponseDeadline" expose="true" allowFullControl="false"/>
+        <permissionGroup name="poTarget" expose="true" allowFullControl="false"/>
+        <permissionGroup name="dispatchTarget" expose="true" allowFullControl="false"/>
+        <permissionGroup name="homeSecretaryReply" expose="true" allowFullControl="false"/>
+        <permissionGroup name="mpRef" expose="true" allowFullControl="false"/>
+        <permissionGroup name="uin" expose="true" allowFullControl="false"/>
+        <permissionGroup name="politicianDeadline" expose="true" allowFullControl="false"/>
+        <permissionGroup name="woDate" expose="true" allowFullControl="false"/>
+        <permissionGroup name="questionNumber" expose="true" allowFullControl="false"/>
+        <permissionGroup name="answerText" expose="true" allowFullControl="false"/>
+        <permissionGroup name="receivedType" expose="true" allowFullControl="false"/>
+        <permissionGroup name="draftDate" expose="true" allowFullControl="false"/>
+        <permissionGroup name="signedByLordsMinister" expose="true" allowFullControl="false"/>
+        <permissionGroup name="lordsMinister" expose="true" allowFullControl="false"/>
+        <permissionGroup name="roundRobin" expose="true" allowFullControl="false"/>
+        <permissionGroup name="cabinetOfficeGuidance" expose="true" allowFullControl="false"/>
+        <permissionGroup name="transferDepartmentName" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseRef" expose="true" allowFullControl="false"/>
+        <permissionGroup name="allocateTarget" expose="true" allowFullControl="false"/>
+        <permissionGroup name="draftResponseTarget" expose="true" allowFullControl="false"/>
+        <permissionGroup name="scsApprovalTarget" expose="true" allowFullControl="false"/>
+        <permissionGroup name="finalApprovalTarget" expose="true" allowFullControl="false"/>
+        <permissionGroup name="roundRobinAdviceConsultation" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseWorkflowStatus" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseMandatoryFields" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseMandatoryFieldDependencies" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseMandatoryFieldStatus" expose="true" allowFullControl="false"/>
+        <permissionGroup name="caseMandatoryFieldTask" expose="true" allowFullControl="false"/>
+        <permissionGroup name="responseDate" expose="true" allowFullControl="false"/>
+        <permissionGroup name="statusUpdatedDatetime" expose="true" allowFullControl="false"/>
+        <permissionGroup name="taskUpdatedDatetime" expose="true" allowFullControl="false"/>
+        <permissionGroup name="ownerUpdatedDatetime" expose="true" allowFullControl="false"/>
+        <permissionGroup name="autoCreatedCase" expose="true" allowFullControl="false"/>
+        <permissionGroup name="pqApiCreatedCase" expose="true" allowFullControl="false"/>
+        <permissionGroup name="linkedCases" expose="true" allowFullControl="false"/>
+        <permissionGroup name="returnedCount" expose="true" allowFullControl="false"/>
+        <permissionGroup name="returnCaseAt" expose="true" allowFullControl="false"/>
+    </permissionSet>
+
+    <permissionSet type="cts:case" expose="selected">
+        <permissionGroup name="AddChildrenCTS" expose="true" allowFullControl="false">
+            <includePermissionGroup type="sys:base" permissionGroup="CreateChildren"/>
+            <includePermissionGroup type="sys:base" permissionGroup="LinkChildren"/>
+        </permissionGroup>
+    </permissionSet>
+
+</permissions>

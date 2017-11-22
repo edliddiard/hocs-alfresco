@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.homeoffice</groupId>
+    <artifactId>homeoffice-hocs-alfresco-root</artifactId>
+    <version>${PROJECT_VERSION}.${BUILD_NUMBER}</version>
+    <description>Builds the CTS Root package</description>
+    <packaging>pom</packaging>
+    <name>homeoffice-hocs-alfresco POM project</name>
+    <modules>
+        <module>homeoffice-cts-repo</module>
+        <module>homeoffice-cts-war</module>
+    </modules>
+</project>

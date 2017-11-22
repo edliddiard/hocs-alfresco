@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get all users that are in the authenticated users teams</shortname>
+    <description>Get all users that are in the authenticated users teams</description>
+    <url>/homeoffice/cts/peopleInUsersTeams</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+</webscript>

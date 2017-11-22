@@ -1,0 +1,15 @@
+<webscript>
+    <shortname>Export Users and Groups</shortname>
+    <description><![CDATA[<p>Export Users and Groups.</p>
+
+  <p>@method GET</p>
+
+  <p>URL: /exportUsersAndGroups</p>
+
+  <p>Returns a list of messages written to log for inspection</p>
+  ]]>
+    </description>
+    <url>/exportUsersAndGroups</url>
+    <format default="json">any</format>
+    <authentication>user</authentication>
+</webscript>

@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>CTS Group Cases</shortname>
+    <description>Associate cases to a master by UIN.</description>
+    <url>/homeoffice/cts/groupCases</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+    <transaction>requiresnew</transaction>
+</webscript>

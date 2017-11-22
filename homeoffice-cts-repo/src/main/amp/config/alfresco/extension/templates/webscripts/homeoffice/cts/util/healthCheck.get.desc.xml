@@ -1,0 +1,17 @@
+<webscript>
+    <shortname>Get Health Check</shortname>
+    <description>Returns the health status of Hercule</description>
+    <url>/healthcheck</url>
+    <url>/healthcheck/{service}</url>
+    <url>/healthcheck?verbose={verbose?}&amp;readwrite={readwrite?}</url>
+    <url>/healthcheck/{service}?verbose={verbose?}&amp;readwrite={readwrite?}</url>
+    <format default="">argument</format>
+    <!-- Use runas="admin" attribute -->
+    <authentication runas="admin">none</authentication>
+    <transaction>none</transaction>
+    <cache>
+        <never>false</never>
+        <public>false</public>
+        <mustrevalidate>true</mustrevalidate>
+    </cache>
+</webscript>

@@ -1,0 +1,17 @@
+<webscript>
+    <shortname>Quick search for PQ cases</shortname>
+    <description>Returns search results from parameters passed in. Format for the body is
+        {
+            [
+                "correspondenceType": "{pqType}",
+                "uin": "{uin}",
+                "skip": "{skip}",
+                "pageSize": "{pageSize}"
+            ]
+        }
+    </description>
+    <url>/homeoffice/cts/pqSearch</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+    <transaction>requiresnew</transaction>
+</webscript>

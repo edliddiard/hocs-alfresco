@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get User Count</shortname>
+    <description>Returns the number of users</description>
+    <url>/userCount</url>
+    <format default="json">any</format>
+    <authentication>user</authentication>
+    <transaction>none</transaction>
+</webscript>

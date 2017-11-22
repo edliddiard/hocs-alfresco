@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get Minutes</shortname>
+    <description>Getting minutes from a case</description>
+    <url>/homeoffice/ctsv2/minutes?nodeRef={nodeRef}</url>
+    <format default="json">argument</format>
+    <authentication>user</authentication>
+</webscript>

@@ -1,0 +1,15 @@
+<webscript>
+    <shortname>Initialise Users and Groups</shortname>
+    <description><![CDATA[<p>Initialise Users and Groups by creating/replacing users and groups that are expected by the BDD tests.</p>
+
+  <p>@method GET</p>
+
+  <p>URL: /initUsersAndGroups/</p>
+
+  <p>Returns a list of messages written to log for inspection</p>
+  ]]>
+    </description>
+    <url>/initUsersAndGroups/</url>
+    <format default="json">any</format>
+    <authentication>user</authentication>
+</webscript>

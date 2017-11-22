@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Eport search results</shortname>
+    <description>Runs the search query and exports the results into a CSV file</description>
+    <url>/homeoffice/cts/exportSearchResults?q={query}</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+</webscript>

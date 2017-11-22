@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get all units and their teams</shortname>
+    <description>Getting the units and the teams under them</description>
+    <url>/homeoffice/cts/allTeams</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+</webscript>

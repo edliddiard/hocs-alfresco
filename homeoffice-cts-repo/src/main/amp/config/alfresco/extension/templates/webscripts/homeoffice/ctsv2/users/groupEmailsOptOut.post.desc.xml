@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Allows a user to opt out from group emails</shortname>
+    <description>Set the groups from which the user wants to opt out of receiving emails from</description>
+    <url>/homeoffice/ctsv2/user/groupEmailsOptOut</url>
+    <format default="json">argument</format>
+    <authentication>user</authentication>
+    <transaction>none</transaction>
+</webscript>

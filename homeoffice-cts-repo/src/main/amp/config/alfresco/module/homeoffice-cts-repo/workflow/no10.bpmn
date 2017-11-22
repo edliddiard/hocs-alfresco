@@ -1,0 +1,1056 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <collaboration id="DCU_Number_Ten">
+        <participant id="DCU" name="DCU No.10 Worflow" processRef="no10_process"/>
+    </collaboration>
+    <process id="no10_process" processType="None" isClosed="false" isExecutable="true">
+        <laneSet>
+            <lane id="Lane_1mlyayg" name="DCU Transfers and No.10 Team">
+                <flowNodeRef>startevent1</flowNodeRef>
+                <flowNodeRef>CreateCaseTask</flowNodeRef>
+                <flowNodeRef>QACaseTask</flowNodeRef>
+                <flowNodeRef>QACaseGateway</flowNodeRef>
+                <flowNodeRef>MarkupTask</flowNodeRef>
+                <flowNodeRef>MarkupGateway</flowNodeRef>
+                <flowNodeRef>Dispatch</flowNodeRef>
+                <flowNodeRef>NRR</flowNodeRef>
+                <flowNodeRef>NRRGateway</flowNodeRef>
+                <flowNodeRef>DispatchGateway</flowNodeRef>
+                <flowNodeRef>endevent1</flowNodeRef>
+            </lane>
+            <lane id="Lane_0h6ahhf" name="One of many business units">
+                <flowNodeRef>InitialDraftTask</flowNodeRef>
+                <flowNodeRef>InitialDraftGateway</flowNodeRef>
+                <flowNodeRef>QAReview</flowNodeRef>
+                <flowNodeRef>QAReviewGateway</flowNodeRef>
+            </lane>
+            <lane id="Lane_1bdhh87" name="Private Office">
+                <flowNodeRef>HSPrivateOfficeApproval</flowNodeRef>
+                <flowNodeRef>PrivateOfficeApprovalTask</flowNodeRef>
+                <flowNodeRef>HSPrivateOfficeApprovalGateway</flowNodeRef>
+                <flowNodeRef>PrivateOfficeApprovalGateway</flowNodeRef>
+            </lane>
+            <lane id="Lane_1lstliu" name="DCU Performance and Process Team">
+                <flowNodeRef>OGD</flowNodeRef>
+                <flowNodeRef>OGDGateway</flowNodeRef>
+            </lane>
+        </laneSet>
+        <startEvent id="startevent1" name="Start" activiti:formKey="wf:submitGroupReviewTask"/>
+        <sequenceFlow id="start" sourceRef="startevent1" targetRef="CreateCaseTask"/>
+        <userTask id="CreateCaseTask" name="Create Case" activiti:formKey="wf:adhocTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[for (var i = 0; i < bpm_package.children.length; i++) {
+                                execution.setVariable('bpm_case_id', bpm_package.children[i].nodeRef);
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Initial Case");
+                                bpm_package.children[i].properties['cts:caseStatus'] = 'New';
+                                bpm_package.children[i].properties['cts:caseTask'] = 'Create case';
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Send to QA","value": "Next","manualAllocate": true,"allocateHeader": "Allocate for QA case","colour": "green"}],"mandatoryFields":[{"name":"member","message":"Member in the Reply to section must be populated","expression":"notBlank(case.member) or form.correspondentIsMemberOfParliament !== 1"},{"name":"correspondentSurname","message":"Correspondent in the Reply to section must be populated", "expression":"notBlank(case.correspondentSurname) or form.correspondentIsMemberOfParliament !== 0"},{"name":"dateOfLetter", "message":"Date of letter must be populated"}]}';
+                                bpm_package.children[i].save();
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[for (var i = 0; i < bpm_package.children.length; i++) {
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: Initial Case");
+                                execution.setVariable('bpm_outcome', 'SendCreateCaseForQACase');
+                            }
+                            ]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="CreateCaseToQACase" sourceRef="CreateCaseTask" targetRef="QACaseTask"/>
+        <userTask id="QACaseTask" name="QA Case" activiti:formKey="wf:activitiReviewTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: QA Case");
+                            task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                bpm_package.children[i].properties['cts:caseStatus'] = 'New';
+                                bpm_package.children[i].properties['cts:caseTask'] = 'QA case';
+                                //set owner to admin so that users don't keep edit permissions
+                                bpm_package.children[i].setOwner('admin');
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "SendQACaseToMarkup","manualAllocate": true,"allocateHeader": "Allocate for Markup","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": true,"allocateHeader": "Reallocate for amendments","colour": "red"}],"mandatoryFields":[{"name":"member","message":"Member in the Reply to section must be populated","expression":"notBlank(case.member) or form.correspondentIsMemberOfParliament !== 1"},{"name":"correspondentSurname","message":"Correspondent in the Reply to section must be populated", "expression":"notBlank(case.correspondentSurname) or form.correspondentIsMemberOfParliament !== 0"},{"name":"dateOfLetter", "message":"Date of letter must be populated"}]}';
+                                bpm_package.children[i].save();
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[var approved = (task.getVariableLocal('cts_draftResponse') == 'SendQACaseToMarkup');
+                            logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: QA Case");
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                if(approved){
+                                    execution.setVariable('bpm_outcome', 'SendQACaseToMarkup');
+                                    logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Markup");
+                                } else {
+                                    execution.setVariable('bpm_outcome', 'Return');
+                                    logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Initial Case");
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'New';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Create case';
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Send to QA","value": "Next","manualAllocate": true,"allocateHeader": "Allocate for QA case","colour": "green"}],"mandatoryFields":[{"name":"member","message":"Member in the Reply to section must be populated","expression":"notBlank(case.member) or form.correspondentIsMemberOfParliament !== 1"},{"name":"correspondentSurname","message":"Correspondent in the Reply to section must be populated", "expression":"notBlank(case.correspondentSurname) or form.correspondentIsMemberOfParliament !== 0"},{"name":"dateOfLetter", "message":"Date of letter must be populated"}]}';
+                                    bpm_package.children[i].save();
+                                }
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="SendToQACaseGateway" sourceRef="QACaseTask" targetRef="QACaseGateway"/>
+        <exclusiveGateway id="QACaseGateway"/>
+        <sequenceFlow id="QACaseToMarkup" sourceRef="QACaseGateway" targetRef="MarkupTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'SendQACaseToMarkup')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="RejectToCreateCase" name="Reject" sourceRef="QACaseGateway" targetRef="CreateCaseTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'Return')}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="MarkupTask" name="Mark Up" activiti:formKey="wf:activitiReviewTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Mark Up");
+                                task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                                execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'New';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Mark up';
+                                    //set owner to admin so that users don't keep edit permissions
+                                    bpm_package.children[i].setOwner('admin');
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "SendMarkupCaseToDraft","manualAllocate": true,"allocateHeader": "Allocate for draft response","colour": "green"}],"mandatoryFields":[{"name":"markupUnit", "message": "Answering unit must be populated", "expression":"notBlank(case.markupUnit) or case.markupDecision === \'No reply needed\' or case.markupDecision ===\'Refer to OGD\'"},{"name":"markupTopic", "message": "Markup topic must be populated", "expression":"notBlank(case.markupTopic) or case.markupDecision === \'No reply needed\' or case.markupDecision ===\'Refer to OGD\'"},{"name":"markupMinister", "message": "Sign off minister must be populated", "expression":"notBlank(case.markupMinister) or case.markupDecision === \'No reply needed\' or case.markupDecision ===\'Refer to OGD\'"}]}';
+                                    execution.setVariable('bpm_reject_markup_unit', bpm_package.children[i].properties['cts:assignedUnit']);
+                                    execution.setVariable('bpm_reject_markup_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                    execution.setVariable('bpm_reject_markup_team', bpm_package.children[i].properties['cts:assignedTeam']);
+                                    bpm_package.children[i].save();
+                                }
+                            ]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[var approved = (task.getVariableLocal('cts_draftResponse') == 'SendMarkupCaseToDraft');
+                            logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: Mark Up");
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                if(approved){
+                                    logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Initial Draft");
+                                    execution.setVariable('bpm_outcome', 'SendMarkupCaseToDraft');
+                                } else if (bpm_package.children[i].properties['cts:markupDecision'] == 'Refer to OGD') {
+                                    logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Other Government Department");
+                                    execution.setVariable('bpm_outcome', 'MarkupToOGD');
+                                    execution.setVariable('cts_ogd_original_status', 'Markup');
+                                    execution.setVariable('cts_ogd_original_create_case_unit', bpm_package.children[i].properties['cts:assignedUnit']);
+                                    execution.setVariable('cts_ogd_original_create_case_team', bpm_package.children[i].properties['cts:assignedTeam']);
+                                    execution.setVariable('cts_ogd_original_create_case_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                } else if (bpm_package.children[i].properties['cts:markupDecision'] == 'No reply needed') {
+                                    logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: No Response Required");
+                                    execution.setVariable('bpm_outcome', 'MarkupToNRR');
+                                    execution.setVariable('cts_nrr_original_status', 'Markup');
+                                    execution.setVariable('cts_nrr_original_create_case_unit', bpm_package.children[i].properties['cts:assignedUnit']);
+                                    execution.setVariable('cts_nrr_original_create_case_team', bpm_package.children[i].properties['cts:assignedTeam']);
+                                    execution.setVariable('cts_nrr_original_create_case_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                }
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="SendtoMarkupGateway" sourceRef="MarkupTask" targetRef="MarkupGateway"/>
+        <exclusiveGateway id="MarkupGateway"/>
+        <sequenceFlow id="AllocateForDraft" sourceRef="MarkupGateway" targetRef="InitialDraftTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'SendMarkupCaseToDraft')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="MarkupToNRR" sourceRef="MarkupGateway" targetRef="NRR">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'MarkupToNRR')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="MarkupToOGD" sourceRef="MarkupGateway" targetRef="OGD">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'MarkupToOGD')}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="InitialDraftTask" name="Initial Draft" activiti:formKey="wf:activitiReviewTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Initial Draft");
+                            task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                bpm_package.children[i].properties['cts:caseStatus'] = 'Draft';
+                                if (bpm_package.children[i].properties['cts:caseTask'] != 'Amend response') {
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Draft response';
+                                }
+                                //set owner to admin so that users don't keep edit permissions
+                                bpm_package.children[i].setOwner('admin');
+                                execution.setVariable('bpm_reject_initial_draft_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                execution.setVariable('bpm_reject_initial_draft_team', bpm_package.children[i].properties['cts:assignedTeam']);
+                                execution.setVariable('bpm_reject_initial_draft_unit', bpm_package.children[i].properties['cts:assignedUnit']);
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Submit for approval","value": "SendForQAReview","manualAllocate": true,"allocateHeader": "Allocate for QA review","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": true,"allocateHeader": "Reallocate for amendments","colour": "red"}]}';
+                                bpm_package.children[i].save();
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: Initial Draft");
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                if (task.getVariableLocal('cts_draftResponse') == 'SendForQAReview') {
+                                    logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: QA Response");
+                                    execution.setVariable('bpm_outcome', 'SendForQAReview');
+                                } else {
+                                    logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Mark Up");
+                                    execution.setVariable('bpm_outcome', 'Return');
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'New';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Mark Up';
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Send to QA","value": "Next","manualAllocate": true,"allocateHeader": "Allocate for QA case","colour": "green"}],"mandatoryFields":[{"name":"member","message":"Member in the Reply to section must be populated","expression":"notBlank(case.member) or form.correspondentIsMemberOfParliament !== 1"},{"name":"correspondentSurname","message":"Correspondent in the Reply to section must be populated", "expression":"notBlank(case.correspondentSurname) or form.correspondentIsMemberOfParliament !== 0"},{"name":"dateOfLetter", "message":"Date of letter must be populated"}]}';
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_reject_markup_unit');
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_reject_markup_team');
+                                    bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_reject_markup_user');
+                                    bpm_package.children[i].save();
+                                }
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="SendToInitialDraftGateway" sourceRef="InitialDraftTask" targetRef="InitialDraftGateway"/>
+        <exclusiveGateway id="InitialDraftGateway"/>
+        <sequenceFlow id="ReturnToMarkup" sourceRef="InitialDraftGateway" targetRef="MarkupTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'Return')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="SendDraftToQAReview" sourceRef="InitialDraftGateway" targetRef="QAReview">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'SendForQAReview')}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="QAReview" name="QA Response" activiti:formKey="wf:adhocTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: QA Response");
+                            task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                bpm_package.children[i].properties['cts:caseStatus'] = 'Draft';
+                                bpm_package.children[i].properties['cts:caseTask'] = 'QA Review';
+                                //set owner to admin so that users don't keep edit permissions
+                                bpm_package.children[i].setOwner('admin');
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "SendQAReviewForHSPrivateOfficeApproval","manualAllocate": false,"allocateHeader": "Marked for dispatch","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Reallocate for drafter","colour": "red"}]}';
+                                bpm_package.children[i].save();
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[var approved = (task.getVariableLocal('cts_draftResponse') == 'SendQAReviewForHSPrivateOfficeApproval');
+                            logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: QA Response");
+                            if(approved){
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    if (bpm_package.children[i].properties['cts:homeSecretaryReply']) {
+                                        logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Home Secretary's Private Office Approval");
+                                        execution.setVariable('bpm_outcome', 'SendQAReviewForHSPrivateOfficeApproval');
+                                    } else {
+                                        logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Private Office Approval");
+                                        execution.setVariable('bpm_outcome', 'SendQAReviewForPrivateOfficeApproval');
+                                    }
+                                }
+                            }else{
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Initial Draft");
+                                execution.setVariable('bpm_outcome', 'ReturnDraft');
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'Draft';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Amend response';
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_reject_initial_draft_unit');
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_reject_initial_draft_team');
+                                    bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_reject_initial_draft_user');
+                                    bpm_package.children[i].save();
+                                }
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="SendToQAReviewGateway" sourceRef="QAReview" targetRef="QAReviewGateway"/>
+        <exclusiveGateway id="QAReviewGateway"/>
+        <sequenceFlow id="ReturnQAReviewToDraft" name="Reject" sourceRef="QAReviewGateway" targetRef="InitialDraftTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'ReturnDraft')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="SendQAReviewForPrivateOfficeApproval" sourceRef="QAReviewGateway"
+                      targetRef="PrivateOfficeApprovalTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'SendQAReviewForPrivateOfficeApproval')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="SendQAReviewForHSPrivateOfficeApproval" sourceRef="QAReviewGateway"
+                      targetRef="HSPrivateOfficeApproval">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'SendQAReviewForHSPrivateOfficeApproval')}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="HSPrivateOfficeApproval" name="Home Sec Private Office Sign Off" activiti:formKey="wf:adhocTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Home Secretary's Private Office Approval");
+                            task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                //set owner to admin so that users don't keep edit permissions
+                                bpm_package.children[i].setOwner('admin');
+                                bpm_package.children[i].properties['cts:caseStatus'] = 'Approvals';
+                                bpm_package.children[i].properties['cts:caseTask'] = 'HS Private Office approval';
+                                bpm_package.children[i].properties['cts:assignedUnit'] = 'GROUP_PRIVATE_OFFICE';
+                                bpm_package.children[i].properties['cts:assignedTeam'] = 'GROUP_PRIVATE_OFFICE_HOME_SECRETARY';
+                                bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "SendHSPrivateOfficeApprovalForHSSignOff","manualAllocate": false,"allocateHeader": "Allocate","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
+                                bpm_package.children[i].save();
+                                execution.setVariable('bpm_reject_private_office_unit', bpm_package.children[i].properties['cts:assignedUnit']);
+                                execution.setVariable('bpm_reject_private_office_team', bpm_package.children[i].properties['cts:assignedTeam']);
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[var approved = (task.getVariableLocal('cts_draftResponse') == 'SendHSPrivateOfficeApprovalForHSSignOff');
+                            logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: Home Secretary's Private Office Approval");
+                            if(approved){
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Dispatch");
+                                execution.setVariable('bpm_outcome', 'SendForDispatch');
+                                execution.setVariable('bpm_reject_private_office_user', bpm_package.children[i].properties['cts:assignedUser']);
+                            }else{
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Initial Draft");
+                                execution.setVariable('bpm_outcome', 'ReturnDraft');
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'Draft';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Amend response';
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_reject_initial_draft_unit');
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_reject_initial_draft_team');
+                                    bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_reject_initial_draft_user');
+                                    bpm_package.children[i].save();
+                                }
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="SendToHSPrivateOfficeApprovalGateway" sourceRef="HSPrivateOfficeApproval"
+                      targetRef="HSPrivateOfficeApprovalGateway"/>
+        <exclusiveGateway id="HSPrivateOfficeApprovalGateway"/>
+        <sequenceFlow id="SendHSPrivateOfficeApprovalForDispatch" sourceRef="HSPrivateOfficeApprovalGateway"
+                      targetRef="Dispatch">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'SendForDispatch')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="ReturnHSPrivateOfficeApprovalToDraft" name="Reject" sourceRef="HSPrivateOfficeApprovalGateway"
+                      targetRef="InitialDraftTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'ReturnDraft')}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="PrivateOfficeApprovalTask" name="Private Office Sign Off" activiti:formKey="wf:adhocTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Private Office Approval");
+                                task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                                execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    var assignedTeam = bpm_package.children[i].properties['cts:markupMinister'];
+                                    //set owner to admin so that users don't keep edit permissions
+                                    bpm_package.children[i].setOwner('admin');
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'Approvals';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Private Office approval';
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = 'GROUP_PRIVATE_OFFICE';
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = assignedTeam;
+                                    bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "SendPrivateOfficeApprovalForMinistersSignOff","manualAllocate": false,"allocateHeader": "Allocate","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
+                                    bpm_package.children[i].save();
+                                    execution.setVariable('bpm_reject_private_office_unit', bpm_package.children[i].properties['cts:assignedUnit']);
+                                    execution.setVariable('bpm_reject_private_office_team', bpm_package.children[i].properties['cts:assignedTeam']);
+                                }
+                            ]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[var approved = (task.getVariableLocal('cts_draftResponse') == 'SendPrivateOfficeApprovalForMinistersSignOff');
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: Private Office Approval");
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    if(approved){
+                                        logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Dispatch");
+                                        execution.setVariable('bpm_outcome', 'SendForDispatch');
+                                        execution.setVariable('bpm_reject_private_office_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                    }else{
+                                        logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Initial Draft");
+                                        execution.setVariable('bpm_outcome', 'ReturnDraft');
+                                        bpm_package.children[i].properties['cts:caseStatus'] = 'Draft';
+                                        bpm_package.children[i].properties['cts:caseTask'] = 'Amend response';
+                                        bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_reject_initial_draft_unit');
+                                        bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_reject_initial_draft_team');
+                                        bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_reject_initial_draft_user');
+                                        bpm_package.children[i].save();
+                                    }
+                                }
+                            ]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="SendToPrivateOfficeApprovalGateway" sourceRef="PrivateOfficeApprovalTask"
+                      targetRef="PrivateOfficeApprovalGateway"/>
+        <exclusiveGateway id="PrivateOfficeApprovalGateway"/>
+        <sequenceFlow id="SendPrivateOfficeApprovalForDispatch" sourceRef="PrivateOfficeApprovalGateway"
+                      targetRef="Dispatch">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'SendForDispatch')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="ReturnPrivateOfficeApprovalToDraft" name="Reject" sourceRef="PrivateOfficeApprovalGateway"
+                      targetRef="InitialDraftTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'ReturnDraft')}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="OGD" name="Other Government Department" activiti:formKey="wf:adhocTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string>
+                            <![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Other Government Department");
+                            task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                //set owner to admin so that users don't keep edit permissions
+                                bpm_package.children[i].setOwner('admin');
+                                bpm_package.children[i].properties['cts:caseStatus'] = 'OGD';
+                                bpm_package.children[i].properties['cts:caseTask'] = 'Transfer';
+                                bpm_package.children[i].properties['cts:assignedUnit'] = 'GROUP_DCU';
+                                bpm_package.children[i].properties['cts:assignedTeam'] = 'GROUP_DCU_TRANSFERS_NO10_TEAM';
+                                bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Transferred","value": "ApproveNRR","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Return case","colour": "red"}]}';
+                                bpm_package.children[i].save();
+                            }]]>
+                        </activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string>
+                            <![CDATA[var approved = (task.getVariableLocal('cts_draftResponse') == 'ApproveNRR');
+                            logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: Other Government Department");
+                            if(approved){
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Completion");
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    execution.setVariable('bpm_outcome', 'Completed');
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'Completed';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'None';
+                                    bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = null;
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = null;
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = null;
+                                    bpm_package.children[i].save();
+                                }
+                            }else{
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Mark Up");
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    execution.setVariable('bpm_outcome', 'Return');
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'New';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Markup';
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('cts_ogd_original_create_case_unit');
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('cts_ogd_original_create_case_team');
+                                    bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('cts_ogd_original_create_case_user');
+                                    bpm_package.children[i].properties['cts:markupDecision'] = null;
+                                }
+                            }]]>
+                        </activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="OGDComplete" sourceRef="OGD" targetRef="OGDGateway"/>
+        <exclusiveGateway id="OGDGateway"/>
+        <sequenceFlow id="OGDToComplete" sourceRef="OGDGateway" targetRef="endevent1">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'Completed')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="ReturnOGDToMarkup" name="Reject" sourceRef="OGDGateway" targetRef="MarkupTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'Return')}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="NRR" name="No Response Required">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string>
+                            <![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: No Response Required");
+                            task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                            for (var i = 0; i < bpm_package.children.length; i++) {
+                                //set owner to admin so that users don't keep edit permissions
+                                bpm_package.children[i].setOwner('admin');
+                                bpm_package.children[i].properties['cts:caseStatus'] = 'NFA';
+                                bpm_package.children[i].properties['cts:caseTask'] = 'QA';
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "ApproveNRR","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Return case","colour": "red"}]}';
+                                bpm_package.children[i].properties['cts:assignedUnit'] = 'GROUP_DCU';
+                                bpm_package.children[i].properties['cts:assignedTeam'] = 'GROUP_DCU_PERFORMANCE_AND_PROCESS_TEAM';
+                                bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                bpm_package.children[i].save();
+                            }]]>
+                        </activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="script">
+                        <activiti:string>
+                            <![CDATA[var approved = (task.getVariableLocal('cts_draftResponse') == 'ApproveNRR');
+                            logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: No Response Required");
+                            if(approved){
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Completion");
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    execution.setVariable('bpm_outcome', 'Completed');
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'Completed';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'None';
+                                    bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = null;
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = null;
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = null;
+                                    bpm_package.children[i].save();
+                                }
+                            }else{
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Mark Up");
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    execution.setVariable('bpm_outcome', 'Return');
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'New';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Markup';
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('cts_nrr_original_create_case_unit');
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('cts_nrr_original_create_case_team');
+                                    bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('cts_nrr_original_create_case_user');
+                                    bpm_package.children[i].properties['cts:markupDecision'] = null;
+                                }
+                            }]]>
+                        </activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="NRRComplete" sourceRef="NRR" targetRef="NRRGateway"/>
+        <exclusiveGateway id="NRRGateway"/>
+        <sequenceFlow id="NRRToComplete" sourceRef="NRRGateway" targetRef="endevent1">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'Completed')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="ReturnNRRToMarkup" name="Reject" sourceRef="NRRGateway"
+                      targetRef="MarkupTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'Return')}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="Dispatch" name="Dispatch" activiti:formKey="wf:adhocTask">
+            <extensionElements>
+                <activiti:taskListener event="create"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Dispatch");
+                                task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                                execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    //set owner to admin so that users don't keep edit permissions
+                                    bpm_package.children[i].setOwner('admin');
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'Dispatch';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Dispatch response';
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = 'GROUP_DCU';
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = 'GROUP_DCU_TRANSFERS_NO10_TEAM';
+                                    bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                    if(bpm_package.children[i].properties['cts:hmpoResponse'] == "Email"){
+                                        bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Reply by email","value": "Next","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
+                                    } else {
+                                        bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Next","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
+                                    }
+                                    bpm_package.children[i].save();
+                                }
+                            ]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+                <activiti:taskListener event="complete"
+                                       class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                    <activiti:field name="runAs">
+                        <activiti:string><![CDATA[admin]]></activiti:string>
+                    </activiti:field>
+                    <activiti:field name="script">
+                        <activiti:string><![CDATA[for (var i = 0; i < bpm_package.children.length; i++) {
+                                logger.log("ID: "+execution.getVariable('bpm_case_id')+" Exiting stage: Dispatch");
+                                if (task.getVariableLocal('cts_draftResponse') == 'Reject') {
+                                    if (bpm_package.children[i].properties['cts:homeSecretaryReply']) {
+                                      logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Home Secretary's Private Office Approval");
+                                      execution.setVariable('bpm_outcome', 'ReturnForHSPrivateOfficeApproval');
+                                    } else {
+                                      logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Private Office Approval");
+                                      execution.setVariable('bpm_outcome', 'ReturnForPrivateOfficeApproval');
+                                    }
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_reject_private_office_unit');
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_reject_private_office_team');
+                                    bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_reject_private_office_user');
+                                } else {
+                                     logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Completion");
+                                     execution.setVariable('bpm_outcome', 'Completed');
+                                     bpm_package.children[i].properties['cts:caseStatus'] = 'Completed';
+                                     bpm_package.children[i].properties['cts:caseTask'] = 'None';
+                                     bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                     bpm_package.children[i].properties['cts:assignedTeam'] = null;
+                                     bpm_package.children[i].properties['cts:assignedUnit'] = null;
+                                     bpm_package.children[i].properties['cts:caseWorkflowStatus'] = null;
+                                     bpm_package.children[i].save();
+                                     if(bpm_package.children[i].properties['cts:hmpoResponse'] == "Email"){
+                                        ctsJS.sendResponseEmail(bpm_package.children[i].nodeRef, "From the Home Office", "wf-dcu-response.html.ftl", ctsJS.getDcuEmail());
+                                     }
+                                }
+                            }]]></activiti:string>
+                    </activiti:field>
+                </activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="DispatchComplete" sourceRef="Dispatch" targetRef="DispatchGateway"/>
+        <exclusiveGateway id="DispatchGateway"/>
+        <sequenceFlow id="DispatchToComplete" sourceRef="DispatchGateway" targetRef="endevent1">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'Completed')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="ReturnDispatchToHSPrivateOffice" name="Reject" sourceRef="DispatchGateway"
+                      targetRef="HSPrivateOfficeApproval">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'ReturnForHSPrivateOfficeApproval')}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="ReturnDispatchToPrivateOffice" name="Reject" sourceRef="DispatchGateway"
+                      targetRef="PrivateOfficeApprovalTask">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${(bpm_outcome == 'ReturnForPrivateOfficeApproval')}]]></conditionExpression>
+        </sequenceFlow>
+        <endEvent id="endevent1"/>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DCU_Number_Ten">
+            <bpmndi:BPMNShape id="DCU_di" bpmnElement="DCU">
+                <omgdc:Bounds x="95" y="-170" width="2094" height="1232"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="startevent1">
+                <omgdc:Bounds x="173" y="102" width="36" height="36"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="146" y="138" width="90" height="20"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="CreateCaseTask_di" bpmnElement="CreateCaseTask">
+                <omgdc:Bounds x="337" y="80" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="QACaseTask_di" bpmnElement="QACaseTask">
+                <omgdc:Bounds x="520" y="80" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="QACaseGateway_di" bpmnElement="QACaseGateway" isMarkerVisible="true">
+                <omgdc:Bounds x="693" y="95" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="718" y="148" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="MarkupTask_di" bpmnElement="MarkupTask">
+                <omgdc:Bounds x="823" y="80" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="MarkupGateway_di" bpmnElement="MarkupGateway" isMarkerVisible="true">
+                <omgdc:Bounds x="982" y="95" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1007" y="148" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="InitialDraftTask_di" bpmnElement="InitialDraftTask">
+                <omgdc:Bounds x="957" y="250" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="QAReview_di" bpmnElement="QAReview">
+                <omgdc:Bounds x="1088" y="397" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="QAReviewGateway_di" bpmnElement="QAReviewGateway" isMarkerVisible="true">
+                <omgdc:Bounds x="1241" y="412" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1221" y="465" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="InitialDraftGateway_di" bpmnElement="InitialDraftGateway" isMarkerVisible="true">
+                <omgdc:Bounds x="982" y="412" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1007" y="465" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PrivateOfficeApprovalTask_di" bpmnElement="PrivateOfficeApprovalTask">
+                <omgdc:Bounds x="1358" y="540" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="PrivateOfficeApprovalGateway_di" bpmnElement="PrivateOfficeApprovalGateway"
+                              isMarkerVisible="true">
+                <omgdc:Bounds x="1383" y="807" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1363" y="860" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="HSPrivateOfficeApproval_di" bpmnElement="HSPrivateOfficeApproval">
+                <omgdc:Bounds x="1545" y="628" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="HSPrivateOfficeApprovalGateway_di" bpmnElement="HSPrivateOfficeApprovalGateway"
+                              isMarkerVisible="true">
+                <omgdc:Bounds x="1570" y="739" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1550" y="792" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="NRR_di" bpmnElement="NRR">
+                <omgdc:Bounds x="1755" y="904" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Dispatch_di" bpmnElement="Dispatch">
+                <omgdc:Bounds x="1884" y="80" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="DispatchGateway_di" bpmnElement="DispatchGateway" isMarkerVisible="true">
+                <omgdc:Bounds x="2039" y="95" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="2019" y="148" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="endevent1_di" bpmnElement="endevent1">
+                <omgdc:Bounds x="2123" y="102" width="36" height="36"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="2096" y="141" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="NRRGateway_di" bpmnElement="NRRGateway" isMarkerVisible="true">
+                <omgdc:Bounds x="1892" y="992" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1872" y="1045" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="start_di" bpmnElement="start">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="209" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="337" y="120"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="273" y="98" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="RejectToCreateCase_di" bpmnElement="RejectToCreateCase">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="718" y="95"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="718" y="-14"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="387" y="-14"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="387" y="80"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="537" y="-35" width="32" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="CreateCaseToQACase_di" bpmnElement="CreateCaseToQACase">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="437" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="520" y="120"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="478.5" y="98" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendToQACaseGateway_di" bpmnElement="SendToQACaseGateway">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="620" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="693" y="120"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="656.5" y="98" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="QACaseToMarkup_di" bpmnElement="QACaseToMarkup">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="743" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="823" y="120"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="783" y="98" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="ReturnDispatchToPrivateOffice_di" bpmnElement="ReturnDispatchToPrivateOffice">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2064" y="145"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2064" y="580"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1458" y="580"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1710.9097320040942" y="557" width="32" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="ReturnNRRToMarkup_di" bpmnElement="ReturnNRRToMarkup">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1892" y="1017"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="873" y="1017"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="873" y="160"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1379.2449247613602" y="990" width="32" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="ReturnToMarkup_di" bpmnElement="ReturnToMarkup">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="982" y="437"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="873" y="437"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="873" y="160"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="927.5" y="415.5" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendtoMarkupGateway_di" bpmnElement="SendtoMarkupGateway">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="923" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="982" y="120"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="952.5" y="98" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="AllocateForDraft_di" bpmnElement="AllocateForDraft">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1007" y="145"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1007" y="250"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1022" y="190.5" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="MarkupToOGD_di" bpmnElement="MarkupToOGD">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1032" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1805" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1805" y="904"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1373.5" y="98.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="ReturnQAReviewToDraft_di" bpmnElement="ReturnQAReviewToDraft">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1266" y="462"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1266" y="580"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="914" y="580"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="914" y="290"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="957" y="290"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1072.3157894736842" y="554" width="32" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="ReturnPrivateOfficeApprovalToDraft_di"
+                             bpmnElement="ReturnPrivateOfficeApprovalToDraft">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1383" y="832"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="914" y="832"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="914" y="290"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="957" y="290"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1122.4643060836502" y="800.5" width="32" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="ReturnHSPrivateOfficeApprovalToDraft_di"
+                             bpmnElement="ReturnHSPrivateOfficeApprovalToDraft">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1570" y="764"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="914" y="764"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="914" y="290"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="957" y="290"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1122.246284133761" y="738" width="32" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendToInitialDraftGateway_di" bpmnElement="SendToInitialDraftGateway">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1007" y="330"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1007" y="412"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1022" y="364.5" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendDraftToQAReview_di" bpmnElement="SendDraftToQAReview">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1032" y="437"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1088" y="437"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1015" y="415.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendToQAReviewGateway_di" bpmnElement="SendToQAReviewGateway">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1188" y="437"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1241" y="437"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1169.5" y="415.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendQAReviewForPrivateOfficeApproval_di"
+                             bpmnElement="SendQAReviewForPrivateOfficeApproval">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1291" y="437"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1408" y="437"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1408" y="540"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1304.5" y="415.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendQAReviewForHSPrivateOfficeApproval_di"
+                             bpmnElement="SendQAReviewForHSPrivateOfficeApproval">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1291" y="437"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1595" y="437"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1595" y="628"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1398" y="415.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendToPrivateOfficeApprovalGateway_di"
+                             bpmnElement="SendToPrivateOfficeApprovalGateway">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1408" y="620"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1408" y="807"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1378" y="707" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendPrivateOfficeApprovalForDispatch_di"
+                             bpmnElement="SendPrivateOfficeApprovalForDispatch">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1433" y="832"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1934" y="832"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1934" y="160"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1638.5" y="810.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendToHSPrivateOfficeApprovalGateway_di"
+                             bpmnElement="SendToHSPrivateOfficeApprovalGateway">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1595" y="708"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1595" y="739"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1565" y="717" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SendHSPrivateOfficeApprovalForDispatch_di"
+                             bpmnElement="SendHSPrivateOfficeApprovalForDispatch">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1620" y="764"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1934" y="764"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1934" y="160"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1732" y="742.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="NRRComplete_di" bpmnElement="NRRComplete">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1855" y="944"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1917" y="944"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1917" y="992"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1841" y="922.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="DispatchComplete_di" bpmnElement="DispatchComplete">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1984" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2039" y="120"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1966.5" y="98.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="DispatchToComplete_di" bpmnElement="DispatchToComplete">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2089" y="120"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2123" y="120"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="2061" y="98.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="NRRToComplete_di" bpmnElement="NRRToComplete">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1942" y="1017"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2141" y="1017"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2141" y="138"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1996.5" y="995.5" width="90" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="Lane_1mlyayg_di" bpmnElement="Lane_1mlyayg">
+                <omgdc:Bounds x="125" y="-170" width="2064" height="380"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Lane_0h6ahhf_di" bpmnElement="Lane_0h6ahhf">
+                <omgdc:Bounds x="125" y="210" width="2064" height="303"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Lane_1bdhh87_di" bpmnElement="Lane_1bdhh87">
+                <omgdc:Bounds x="125" y="513" width="2064" height="365"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Lane_1lstliu_di" bpmnElement="Lane_1lstliu">
+                <omgdc:Bounds x="125" y="878" width="2064" height="184"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="ReturnDispatchToHSPrivateOffice_di" bpmnElement="ReturnDispatchToHSPrivateOffice">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2064" y="145"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2064" y="668"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1645" y="668"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1711" y="645" width="32" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="OGD_di" bpmnElement="OGD">
+                <omgdc:Bounds x="1884" y="-105.85991379310349" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="MarkupToNRR_di" bpmnElement="MarkupToNRR">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1007" y="95"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1007" y="-66"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1884" y="-66"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1022" y="8" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="OGDGateway_di" bpmnElement="OGDGateway"
+                              isMarkerVisible="true">
+                <omgdc:Bounds x="2039" y="-91" width="50" height="50"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="2064" y="-38" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="OGDComplete_di" bpmnElement="OGDComplete">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="1984" y="-66"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2039" y="-66"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="2011.5" y="-87.5" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="OGDToComplete_di" bpmnElement="OGDToComplete">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2089" y="-66"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2141" y="-66"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2141" y="102"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="2115" y="-87.5" width="0" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="ReturnOGDToMarkup_di" bpmnElement="ReturnOGDToMarkup">
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2064" y="-91"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="2064" y="-140"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="873" y="-140"/>
+                <omgdi:waypoint xsi:type="omgdc:Point" x="873" y="80"/>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds x="1452.5" y="-161" width="32" height="13"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

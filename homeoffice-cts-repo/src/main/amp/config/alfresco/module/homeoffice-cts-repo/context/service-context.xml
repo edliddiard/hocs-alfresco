@@ -1,0 +1,1108 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<beans>
+
+    <!-- Registration of new models -->
+    <bean id="${project.artifactId}_dictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="dictionaryBootstrap">
+        <property name="models">
+            <list>
+                <value>alfresco/module/${project.artifactId}/model/ctsModel.xml</value>
+                <value>alfresco/module/${project.artifactId}/model/ctsDataLists.xml</value>
+                <value>alfresco/module/${project.artifactId}/model/ctsUserModel.xml</value>
+                <value>alfresco/module/${project.artifactId}/model/ctsMinuteModel.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- CTS Classes -->
+
+    <bean id="propertyProvider" class="uk.gov.homeoffice.cts.helpers.ContentPropertyProvider" >
+        <property name="nodeService" ref="NodeService"/>
+        <property name="contentService" ref="ContentService"/>
+        <property name="repository" ref="repositoryHelper"/>
+    </bean>
+
+    <bean id="businessCalendarProvider" class="uk.gov.homeoffice.cts.helpers.BusinessCalendarProvider"
+          depends-on="cts-spacesBootstrap">
+        <property name="propertyProvider" ref="propertyProvider"/>
+    </bean>
+
+    <bean name="CtsFolderHelper" class="uk.gov.homeoffice.cts.helpers.CtsFolderHelper">
+        <constructor-arg ref="ServiceRegistry"/>
+        <constructor-arg ref="repositoryHelper"/>
+        <constructor-arg ref="NodeService"/>
+    </bean>
+
+    <bean name="CtsGroupHelper" class="uk.gov.homeoffice.cts.helpers.CtsGroupHelper">
+        <property name="authorityService" ref="AuthorityService"/>
+    </bean>
+
+    <bean name="CtsSeqNumberGen" class="uk.gov.homeoffice.cts.helpers.YearlySequentialNumberGenerator">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="transactionService" ref="TransactionService"/>
+        <property name="repository" ref="repositoryHelper"/>
+        <property name="cmisQueryService" ref="CMISQueryService"/>
+    </bean>
+
+    <bean name="CtsDBSeqNumberGen" class="uk.gov.homeoffice.cts.helpers.DatabaseSequentialNumberGenerator">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="transactionService" ref="TransactionService"/>
+        <property name="env">
+            <value>${cts.homeoffice.env}</value>
+        </property>
+    </bean>
+
+    <bean id="qnameProvider" parent="baseJavaScriptExtension" class="uk.gov.homeoffice.cts.helpers.QNameProvider">
+        <property name="extensionName">
+            <value>qn</value>
+        </property>
+    </bean>
+
+    <bean id="autoCreateAddDocumentBehaviour" class="uk.gov.homeoffice.cts.autocreate.AutoCreateFromDocumentBehaviour" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="CtsFolderHelper">
+            <ref bean="CtsFolderHelper"/>
+        </property>
+    </bean>
+
+    <bean id="addMinuteBehaviour" class="uk.gov.homeoffice.cts.behaviour.AddMinuteBehaviour" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="contentService">
+            <ref bean="ContentService"/>
+        </property>
+    </bean>
+
+
+
+    <bean id="urnBehaviour" class="uk.gov.homeoffice.cts.behaviour.CreateCaseBehaviour" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="authorityService">
+            <ref bean="AuthorityService"/>
+        </property>
+        <property name="permissionService">
+            <ref bean="PermissionService"/>
+        </property>
+        <property name="numberGenerator">
+            <!-- the DB seq generator does not work with active-active mysql replication -->
+            <ref bean="CtsDBSeqNumberGen"/>
+            <!--<ref bean="CtsSeqNumberGen"/>-->
+        </property>
+        <property name="workflowService">
+            <ref bean="WorkflowService"/>
+        </property>
+        <property name="CtsFolderHelper">
+            <ref bean="CtsFolderHelper"/>
+        </property>
+        <property name="units">
+            <map>
+                <entry key="FOI" value="GROUP_FOI"/>
+                <entry key="FTC" value="GROUP_FOI"/>
+                <entry key="FTCI" value="GROUP_FOI"/>
+                <entry key="FSC" value="GROUP_FOI"/>
+                <entry key="FSCI" value="GROUP_FOI"/>
+                <entry key="FLT" value="GROUP_FOI"/>
+                <entry key="FUT" value="GROUP_FOI"/>
+                <entry key="MIN" value="GROUP_DCU"/>
+                <entry key="TRO" value="GROUP_DCU"/>
+                <entry key="DTEN" value="GROUP_DCU"/>
+                <entry key="IMCB" value="GROUP_UKVI"/>
+                <entry key="IMCM" value="GROUP_UKVI"/>
+                <entry key="UTEN" value="GROUP_UKVI"/>
+                <entry key="COM" value="GROUP_HMPO"/>
+                <entry key="GEN" value="GROUP_HMPO"/>
+                <entry key="COL" value="GROUP_HMPO"/>
+                <entry key="COM1" value="GROUP_HMPO"/>
+                <entry key="COM2" value="GROUP_HMPO"/>
+                <entry key="DGEN" value="GROUP_HMPO"/>
+                <entry key="GNR" value="GROUP_HMPO"/>
+            </map>
+        </property>
+
+        <property name="teams">
+            <map>
+                <entry key="MIN" value="GROUP_CDT"/>
+                <entry key="TRO" value="GROUP_CDT"/>
+                <entry key="DTEN" value="GROUP_CDT"/>
+                <entry key="UTEN" value="GROUP_CDT"/>
+            </map>
+        </property>
+
+        <property name="workflows">
+            <map>
+                <entry key="FOI" value="activiti$foi_process"/>
+                <entry key="FTC" value="activiti$foi_time_complaint_process"/>
+                <entry key="FTCI" value="activiti$foi_time_complaint_process"/>
+                <entry key="FSC" value="activiti$foi_substantive_complaint_process"/>
+                <entry key="FSCI" value="activiti$foi_tribunal_complaint_process"/>
+                <entry key="FLT" value="activiti$foi_tribunal_complaint_process"/>
+                <entry key="FUT" value="activiti$foi_tribunal_complaint_process"/>
+                <entry key="TRO" value="activiti$dcu_treat_official_process"/>
+                <entry key="MIN" value="activiti$dcu_ministerial_process"/>
+                <entry key="DTEN" value="activiti$no10_process"/>
+                <entry key="GEN" value="activiti$hmpo_general_process"/>
+                <entry key="COL" value="activiti$hmpo_collectives_process"/>
+                <entry key="IMCM" value="activiti$ukvi_m_ref_process"/>
+                <entry key="IMCB" value="activiti$ukvi_b_ref_process"/>
+                <entry key="UTEN" value="activiti$ukvi_number_10_process"/>
+                <entry key="COM1" value="activiti$hmpo_complaint_process"/>
+                <entry key="COM2" value="activiti$hmpo_complaint_process"/>
+                <entry key="DGEN" value="activiti$hmpo_complaint_process"/>
+                <entry key="GNR" value="activiti$hmpo_complaint_process"/>
+            </map>
+        </property>
+
+        <property name="hmpoWorkflows">
+            <map>
+                <entry key="COM_Stage 1" value="activiti$hmpo_stage1_and_stage2_process"/>
+                <entry key="COM_Stage 2" value="activiti$hmpo_stage1_and_stage2_process"/>
+                <entry key="COM_MP complaint" value="activiti$hmpo_mp_complaint_process"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="addDocumentBehaviour" class="uk.gov.homeoffice.cts.behaviour.AddDocumentBehaviour" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="unprotectedNodeService">
+            <ref bean="nodeService"/>
+        </property>
+        <property name="permissionService">
+            <ref bean="PermissionService"/>
+        </property>
+    </bean>
+
+    <bean id="deleteDocumentBehaviour" class="uk.gov.homeoffice.cts.behaviour.DeleteDocumentBehaviour" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="unprotectedNodeService">
+            <ref bean="nodeService"/>
+        </property>
+    </bean>
+
+    <bean id="deadlineBehaviour" class="uk.gov.homeoffice.cts.behaviour.DeadlineBehaviour"  depends-on="businessCalendarProvider">
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="businessCalendarProvider">
+            <ref bean="businessCalendarProvider"/>
+        </property>
+        <property name="hmpoDeadline" value="10 business days"/>
+        <property name="hmpoStage3MPDeadline" value="15 business days"/>
+        <property name="hmpoDraftDeadline" value="8 business days"/>
+
+    </bean>
+
+    <bean id="propertyPermissionsBehaviour" class="uk.gov.homeoffice.cts.behaviour.PropertyPermissionsBehaviour">
+        <property name="authorityService">
+            <ref bean="AuthorityService"/>
+        </property>
+        <property name="permissionChecker" ref="permissionChecker"/>
+    </bean>
+
+    <bean id="markupDecisionBehaviour" class="uk.gov.homeoffice.cts.behaviour.MarkupDecisionBehaviour"  depends-on="businessCalendarProvider">
+        <property name="workflowService">
+            <ref bean="WorkflowService"/>
+        </property>
+        <property name="workflows">
+            <list>
+                <value>activiti$dcu_treat_official_process</value>
+                <value>activiti$dcu_ministerial_process</value>
+                <value>activiti$no10_process</value>
+                <value>activiti$ukvi_m_ref_process</value>
+                <value>activiti$ukvi_b_ref_process</value>
+                <value>activiti$ukvi_number_10_process</value>
+                <value>activiti$foi_process</value>
+                <value>activiti$foi_time_complaint_process</value>
+                <value>activiti$foi_substantive_complaint_process</value>
+                <value>activiti$foi_tribunal_complaint_process</value>
+                <value>activiti$hmpo_general_process</value>
+                <value>activiti$hmpo_stage1_and_stage2_process</value>
+                <value>activiti$hmpo_mp_complaint_process</value>
+                <value>activiti$hmpo_collectives_process</value>
+                <value>activiti$hmpo_complaint_process</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="statusBehaviour" class="uk.gov.homeoffice.cts.behaviour.StatusBehaviour" depends-on="businessCalendarProvider">
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="businessCalendarProvider">
+            <ref bean="businessCalendarProvider"/>
+        </property>
+        <property name="statusToStartPQQA" value="QA"/>
+        <property name="statusToStartDrafting" value="Draft"/>
+        <property name="statusWhenCompleting" value="Completed"/>
+        <property name="statusWhenDeleting" value="Deleted"/>
+    </bean>
+
+    <bean id="assignedUnitBehaviour" class="uk.gov.homeoffice.cts.behaviour.AssignedUnitBehaviour">
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+    </bean>
+
+    <bean id="pitLetterSentDateBehaviour" class="uk.gov.homeoffice.cts.behaviour.PitLetterSentDateBehaviour">
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="businessCalendarProvider">
+            <ref bean="businessCalendarProvider"/>
+        </property>
+    </bean>
+
+    <bean id="complexBehaviour" class="uk.gov.homeoffice.cts.behaviour.ComplexBehaviour">
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="businessCalendarProvider">
+            <ref bean="businessCalendarProvider"/>
+        </property>
+    </bean>
+
+    <bean id="allocateBehaviour" class="uk.gov.homeoffice.cts.behaviour.AllocateBehaviour">
+        <property name="authorityService">
+            <ref bean="AuthorityService"/>
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+        <property name="personService">
+            <ref bean="PersonService"/>
+        </property>
+        <property name="actionService">
+            <ref bean="ActionService"/>
+        </property>
+        <property name="ctsFolderHelper">
+            <ref bean="CtsFolderHelper"/>
+        </property>
+        <property name="emailJobService">
+            <ref bean="EmailJobService"/>
+        </property>
+        <property name="permissionService">
+            <ref bean="PermissionService"/>
+        </property>
+        <property name="ctsMailSubjectUser">
+            <value>${cts.mail.subject.user}</value>
+        </property>
+        <property name="ctsMailSubjectGroup">
+            <value>${cts.mail.subject.group}</value>
+        </property>
+        <property name="ctsMailTemplateUser">
+            <value>${cts.mail.template.user}</value>
+        </property>
+        <property name="ctsMailTemplateGroup">
+            <value>${cts.mail.template.group}</value>
+        </property>
+    </bean>
+
+
+    <bean id="updateContent" class="uk.gov.homeoffice.cts.behaviour.CheckInBehaviour" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="unprotectedNodeService">
+            <ref bean="nodeService"/>
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+    </bean>
+
+    <bean id="originalDrafter" class="uk.gov.homeoffice.cts.behaviour.OriginalDrafterBehaviour" >
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+    </bean>
+
+    <bean id="createUserBehaviour" class="uk.gov.homeoffice.cts.behaviour.CreateUserBehaviour" init-method="init">
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+    </bean>
+
+
+    <!--bean id="auditQueryProxy" class="org.alfresco.repo.web.scripts.audit.AuditQueryGetProxy" parent="webscript.org.alfresco.repository.audit.query.get"/-->
+    <bean id="auditQueryProxy" class="org.alfresco.repo.web.scripts.audit.AuditQueryGetProxy">
+        <property name="auditService" ref="AuditService"/>
+    </bean>
+
+    <bean id="systemMinutes" class="uk.gov.homeoffice.cts.service.SystemMinutesService">
+        <property name="auditQuery" ref="auditQueryProxy"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+        <property name="authorityService" ref="AuthorityService"/>
+    </bean>
+
+    <bean id="manualMinutes" class="uk.gov.homeoffice.cts.service.ManualMinutesService">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="contentService" ref="ContentService"/>
+        <property name="searchService" ref="SearchService"/>
+        <property name="maxSearchResults" value="100"/>
+    </bean>
+
+    <bean id="taskBehaviour" class="uk.gov.homeoffice.cts.behaviour.TaskBehaviour" depends-on="businessCalendarProvider">
+        <property name="nodeService">
+            <ref bean="NodeService"/>
+        </property>
+    </bean>
+
+    <bean id="minutesSyncBehaviour" class="uk.gov.homeoffice.cts.behaviour.MinutesSyncBehaviour">
+        <property name="actionService" ref="ActionService"/>
+    </bean>
+
+    <bean id="JSONUtils" class="org.springframework.extensions.webscripts.json.JSONUtils">
+    </bean>
+
+    <bean name="CtsHelper" class="uk.gov.homeoffice.cts.helpers.CtsHelper">
+        <property name="jsonUtils" ref="JSONUtils"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.documents.minutes.get" class="uk.gov.homeoffice.cts.webscripts.GetMinutesWebScript" parent="webscript">
+        <property name="systemMinutesService" ref="systemMinutes"/>
+        <property name="manualMinutes" ref="manualMinutes"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.documents.latestuserminutes.get" class="uk.gov.homeoffice.cts.webscripts.GetLatestUserMinutesWebScript" parent="webscript">
+        <property name="manualMinutes" ref="manualMinutes"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.lists.peopleInUsersTeams.get" class="uk.gov.homeoffice.cts.webscripts.GetPeopleInUsersTeamsWebScript" parent="webscript">
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="nodeService" ref="NodeService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.util.user.get" class="uk.gov.homeoffice.cts.webscripts.GetUserWebScript" parent="webscript">
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="CtsFolderHelper" ref="CtsFolderHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="personService" ref="PersonService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.util.bulkUserImport.post" class="uk.gov.homeoffice.cts.util.PostBulkUserImportWebScript" parent="webscript">
+        <property name="personService" ref="PersonService"/>
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="actionService" ref="ActionService"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="CtsFolderHelper" ref="CtsFolderHelper"/>
+        <property name="emailService" ref="EmailService"/>
+        <property name="ctsMailSubjectNewUser">
+            <value>${cts.mail.subject.newUser}</value>
+        </property>
+        <property name="ctsMailTemplateNewUser">
+            <value>${cts.mail.template.newUser}</value>
+        </property>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.workflow.allTeams.get" class="uk.gov.homeoffice.cts.webscripts.GetAllTeamsWebScript" parent="webscript">
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="searchService" ref="SearchService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.workflow.teamUsers.get" class="uk.gov.homeoffice.cts.webscripts.GetTeamUsersWebScript" parent="webscript">
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="nodeService" ref="NodeService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.cases.groupCases.post" class="uk.gov.homeoffice.cts.webscripts.PostGroupCasesWebScript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="searchService" ref="SearchService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.cases.ungroupCases.post" class="uk.gov.homeoffice.cts.webscripts.PostUngroupCasesWebScript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="searchService" ref="SearchService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.cases.case.get" class="uk.gov.homeoffice.cts.webscripts.GetCaseWebScript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="CtsFolderHelper" ref="CtsFolderHelper"/>
+        <property name="CtsHelper" ref="CtsHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.cases.dashboard.get" class="uk.gov.homeoffice.ctsv2.webscripts.DashboardInfoWebScript" parent="webscript">
+        <property name="dashboardProcessor" ref="dashboardProcessor"/>
+    </bean>
+
+    <bean id="dashboardProcessor" class="uk.gov.homeoffice.ctsv2.dashboard.DashboardProcessor">
+        <property name="searchService" ref="SearchService"/>
+        <property name="dashboardDataHolder" ref="dashboardDataHolder"/>
+        <property name="dataSource" value="${cts.homeoffice.dashboard.data.source}"/>
+    </bean>
+
+    <bean id="dashboardDataHolder" class="uk.gov.homeoffice.ctsv2.dashboard.DashboardDataHolder"/>
+
+    <bean id="dashboardDataPollerJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>uk.gov.homeoffice.ctsv2.dashboard.DashboardDataJobScheduler</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="dashboardProcessor">
+                    <ref bean="dashboardProcessor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="dashboardDatanJobTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="dashboardDataPollerJob"/>
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory"/>
+        </property>
+        <property name="cronExpression">
+            <value>${cts.homeoffice.dashboard.cronExpression}</value>
+        </property>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.cases.case.get" class="uk.gov.homeoffice.ctsv2.webscripts.GetCaseWebScript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="CtsFolderHelper" ref="CtsFolderHelper"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="permissionChecker" ref="permissionChecker"/>
+        <property name="permissionService" ref="PermissionService"/>
+        <property name="caseMapperHelper" ref="caseMapperHelper"/>
+    </bean>
+
+    <bean name="caseMapperHelper" class="uk.gov.homeoffice.ctsv2.webscripts.CaseMapperHelper">
+        <property name="caseStatusMapper">
+            <map>
+                <entry key="Approvals" value="Approve" />
+                <entry key="Dispatch" value="Dispatch" />
+                <entry key="Draft" value="Draft" />
+                <entry key="Hold" value="On Hold" />
+                <entry key="NFA" value="NFA" />
+                <entry key="New" value="Create" />
+                <entry key="OGD" value="OGD" />
+                <entry key="Obtain sign-off" value="Sign Off" />
+                <entry key="Completed" value="Completed" />
+            </map>
+        </property>
+        <property name="caseProgressMapper">
+            <map>
+                <entry key="New" value="1" />
+                <entry key="Draft" value="2" />
+                <entry key="NFA" value="2" />
+                <entry key="OGD" value="2" />
+                <entry key="Approvals" value="3" />
+                <entry key="Hold" value="4" />
+                <entry key="Obtain sign-off" value="4" />
+                <entry key="Dispatch" value="5" />
+                <entry key="Completed" value="5" />
+            </map>
+        </property>
+        <property name="caseTaskMapper">
+            <map>
+                <entry key="Amend case" value="Amend Case" />
+                <entry key="Amend response" value="Amend Response" />
+                <entry key="Answered" value="Answered" />
+                <entry key="Buff print run" value="Buff Print" />
+                <entry key="Check and buff print" value="Check and Buff Print" />
+                <entry key="Create case" value="Create Case" />
+                <entry key="Dispatch response" value="Dispatch" />
+                <entry key="Draft response" value="Draft" />
+                <entry key="FOI Minister's sign-off" value="FOI Minister" />
+                <entry key="HS Private Office approval" value="HS Private Office" />
+                <entry key="Home Sec's sign-off" value="Home Sec" />
+                <entry key="ICO or tribunal outcome" value="ICO/Tribunal" />
+                <entry key="Lords Minister's sign-off" value="Lords Minister" />
+                <entry key="Parliamentary Under Secretary sign-off" value="Parliamentary Under Sec" />
+                <entry key="Parly approval" value="Parly" />
+                <entry key="Perm Sec approval" value="Perm Sec" />
+                <entry key="Press Office review" value="Press Office" />
+                <entry key="Print run" value="Print" />
+                <entry key="Private Office approval" value="Private Office" />
+                <entry key="QA case" value="QA Case" />
+                <entry key="QA review" value="QA Review" />
+                <entry key="SCS approval" value="SCS" />
+                <entry key="SpAds approval" value="SpAds" />
+                <entry key="Transfer" value="Transfer" />
+                <entry key="Minister's sign-off" value="Minister" />
+                <entry key="Official approval" value="Official" />
+                <entry key="CQT approval" value="CQT" />
+                <entry key="QA" value="QA Review" />
+                <entry key="Head of unit approval" value="Head of Unit" />
+            </map>
+        </property>
+    </bean>
+
+    <bean name="CtsCmisObjectHelper" class="uk.gov.homeoffice.cts.helpers.CtsCmisObjectHelper">
+        <property name="permissionChecker" ref="permissionChecker"/>
+        <property name="permissionService" ref="PermissionService"/>
+    </bean>
+
+    <bean name="toDoListService" class="uk.gov.homeoffice.ctsv2.services.todo.ToDoListService">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="searchService" ref="SearchService"/>
+        <property name="ctsCmisObjectHelper" ref="CtsCmisObjectHelper"/>
+        <property name="caseMapperHelper" ref="caseMapperHelper"/>
+    </bean>
+
+    <bean name="toDoListSpreadsheetGenerator" class="uk.gov.homeoffice.ctsv2.services.todo.ToDoListSpreadsheetGenerator"/>
+
+    <bean id="webscript.homeoffice.ctsv2.cases.todo.get" class="uk.gov.homeoffice.ctsv2.webscripts.GetToDoListWebScript" parent="webscript">
+        <property name="toDoListService" ref="toDoListService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.cases.todoExport.get" class="uk.gov.homeoffice.ctsv2.webscripts.ExportToDoListWebScript" parent="webscript">
+        <property name="toDoListService" ref="toDoListService"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="contentStreamer" ref="webscript.content.streamer"/>
+        <property name="toDoListSpreadsheetGenerator" ref="toDoListSpreadsheetGenerator"/>
+    </bean>
+
+
+    <bean id="webscript.homeoffice.cts.workflow.hmpoProcessJob.post" class="uk.gov.homeoffice.cts.workflow.HMPOProcessJobWebScript" parent="webscript">
+        <property name="hmpoProcessService" ref="hmpoProcessService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.groups.manageGroups.post" class="uk.gov.homeoffice.ctsv2.webscripts.ManageGroupsWebScript" parent="webscript">
+        <property name="ctsGroupHelper" ref="CtsGroupHelper"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.cases.createCase.post" class="uk.gov.homeoffice.ctsv2.webscripts.CreateCaseWebScript" parent="webscript">
+        <property name="createCaseHelper" ref="createCaseHelper"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.documents.minutes.get" class="uk.gov.homeoffice.ctsv2.webscripts.GetMinutesWebScript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="contentService" ref="ContentService"/>
+        <property name="minutesSyncAction" ref="MinutesSyncAction"/>
+        <property name="ctsFolderHelper" ref="CtsFolderHelper"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.cases.countQuery.get" class="uk.gov.homeoffice.ctsv2.webscripts.GetCountQueryWebscript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="searchService" ref="SearchService"/>
+    </bean>
+
+    <!--<bean id="MinutesSyncAction" class="uk.gov.homeoffice.cts.action.MinutesSyncAction" parent="action-executer" init-method="init">-->
+    <bean id="MinutesSyncAction" class="uk.gov.homeoffice.cts.action.MinutesSyncAction">
+    <property name="nodeService" ref="NodeService"/>
+        <property name="contentService" ref="ContentService"/>
+        <property name="systemMinutesService" ref="systemMinutes"/>
+        <property name="manualMinutesService" ref="manualMinutes"/>
+        <property name="auditService" ref="AuditService"/>
+        <property name="behaviourFilter" ref="policyBehaviourFilter" />
+    </bean>
+
+    <bean name="PlaceholderList" class="uk.gov.homeoffice.cts.template.PlaceholderList"></bean>
+
+    <bean name="TemplateManipulator" class="uk.gov.homeoffice.cts.template.TemplateManipulator">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="PlaceholderList" ref="PlaceholderList"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.documents.template.get" class="uk.gov.homeoffice.cts.template.GetPopulatedTemplateWebScript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="TemplateManipulator" ref="TemplateManipulator"/>
+    </bean>
+
+    <bean id="SpreadsheetGenerator" class="uk.gov.homeoffice.cts.export.SpreadsheetGenerator">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="systemMinutesService" ref="systemMinutes"/>
+    </bean>
+
+    <!--  Content Streamer -->
+    <bean id="webscript.content.streamer" class="org.alfresco.repo.web.scripts.content.ContentStreamer">
+        <property name="nodeService" ref="NodeService" />
+        <property name="mimetypeService" ref="MimetypeService" />
+        <property name="contentService" ref="ContentService" />
+        <!--<property name="resourceLoader" ref="ResourceLoader" />-->
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.lists.exportSearchResults.get" class="uk.gov.homeoffice.cts.export.GetExportSearchResultsWebScript" parent="webscript">
+        <property name="searchService" ref="SearchService"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="maxSearchResults" value="10000"/>
+        <property name="spreadsheetGenerator" ref="SpreadsheetGenerator"/>
+        <property name="contentStreamer" ref="webscript.content.streamer"/>
+        <property name="exportQNamesAll">
+            <list>
+                <!-- All types -->
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}correspondenceType</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}urnSuffix</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}caseResponseDeadline</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}caseStatus</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}statusUpdatedDatetime</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}caseTask</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}taskUpdatedDatetime</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}markupDecision</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}markupUnit</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}markupTopic</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}markupMinister</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}assignedUnit</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}assignedTeam</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}assignedUser</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}ownerUpdatedDatetime</value>
+            </list>
+        </property>
+        <property name="exportQNamesMin">
+            <list>
+                <!-- MIN fields -->
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}correspondentPostcode</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}mpRef</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}homeSecretaryReply</value>
+            </list>
+        </property>
+        <property name="exportQNamesTro">
+            <list>
+                <!-- TRO fields -->
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}correspondentPostcode</value>
+            </list>
+        </property>
+        <property name="exportQNamesPq">
+            <list>
+                <!-- PQ fields -->
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}uin</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}opDate</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponseTarget</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}member</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}reviewedBySpads</value>
+                <value>Minister's sign-off</value>
+                <value>Home Sec's sign-off</value>
+                <value>Lords Minister's sign-off</value>
+                <value>Perm Sec approval</value>
+            </list>
+        </property>
+        <property name="exportQNamesFoi">
+            <list>
+                <!-- FOI fields -->
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}correspondentPostcode</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}foiMinisterSignOff</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}foiDisclosure</value>
+            </list>
+        </property>
+        <property name="exportQNamesUkvi">
+            <list>
+                <!-- UKVI fields -->
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}correspondentPostcode</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}caseRef</value>
+            </list>
+        </property>
+        <property name="exportQNamesNo10">
+            <list>
+                <!-- No10 fields -->
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}mpRef</value>
+            </list>
+        </property>
+        <property name="exportQNamesHmpo">
+            <list>
+                <!-- HMPO fields -->
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}correspondentPostcode</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}hmpoPassportNumber</value>
+                <value>{http://cts-beta.homeoffice.gov.uk/model/content/1.0}hmpoApplicationNumber</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.util.runscript.get" class="uk.gov.homeoffice.cts.webscripts.RunScriptWebScript" parent="webscript">
+        <property name="actionService" ref="ActionService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="repository" ref="repositoryHelper"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
+    <bean id="ctsJsApi"  parent="baseJavaScriptExtension" class="uk.gov.homeoffice.cts.helpers.CtsJavascript">
+        <property name="extensionName">
+            <value>ctsJS</value>
+        </property>
+        <property name="emailService" ref="EmailService"/>
+        <property name="NodeService" ref="NodeService"/>
+        <property name="dcuEmail">
+            <value>${mail.dcu.response}</value>
+        </property>
+    </bean>
+
+    <bean id="EmailService" class="uk.gov.homeoffice.cts.email.EmailService">
+        <property name="actionService" ref="ActionService"/>
+        <property name="personService" ref="PersonService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="CtsFolderHelper" ref="CtsFolderHelper"/>
+        <property name="ctsUrl">
+            <value>${cts.url}</value>
+        </property>
+        <property name="mailServer">
+            <value>${mail.host}</value>
+        </property>
+        <property name="replyAddress">
+            <value>${cts.doNotReplyAddress}</value>
+        </property>
+    </bean>
+
+    <bean id="allocationService" class="uk.gov.homeoffice.cts.workflow.AllocationService">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="permissionChecker" ref="permissionChecker"/>
+    </bean>
+    <bean id="webscript.homeoffice.cts.workflow.updateWorkflow.post" class="uk.gov.homeoffice.cts.workflow.PostUpdateWorkflowWebScript" parent="webscript">
+        <property name="workflowService" ref="WorkflowService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+        <property name="workflows">
+            <list>
+                <value>activiti$foi_process</value>
+                <value>activiti$foi_time_complaint_process</value>
+                <value>activiti$foi_substantive_complaint_process</value>
+                <value>activiti$foi_tribunal_complaint_process</value>
+                <value>activiti$dcu_treat_official_process</value>
+                <value>activiti$dcu_ministerial_process</value>
+                <value>activiti$no10_process</value>
+                <value>activiti$ukvi_m_ref_process</value>
+                <value>activiti$ukvi_b_ref_process</value>
+                <value>activiti$ukvi_number_10_process</value>
+                <value>activiti$hmpo_general_process</value>
+                <value>activiti$hmpo_stage1_and_stage2_process</value>
+                <value>activiti$hmpo_mp_complaint_process</value>
+                <value>activiti$hmpo_collectives_process</value>
+                <value>activiti$hmpo_complaint_process</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.cases.linkCases.post" class="uk.gov.homeoffice.cts.webscripts.PostLinkCasesWebScript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="searchService" ref="SearchService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.cases.unlinkCases.post" class="uk.gov.homeoffice.cts.webscripts.PostUnlinkCasesWebScript" parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="searchService" ref="SearchService"/>
+    </bean>
+
+    <bean id="webscript.org.alfresco.repository.person.changepassword.post" class="org.alfresco.repo.web.scripts.person.ChangePasswordPost" parent="webscript">
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="authenticationService" ref="NonCheckingAuthenticationService"/>
+    </bean>
+
+
+    <bean id="webscript.homeoffice.cts.util.changePassword.post" class="uk.gov.homeoffice.cts.util.PostChangePasswordWebScript" parent="webscript.org.alfresco.repository.person.changepassword.post">
+        <!--<bean id="webscript.homeoffice.cts.util.changePassword.post" class="uk.gov.homeoffice.cts.util.PostChangePasswordWebScript" parent="webscript">-->
+        <property name="nodeService" ref="NodeService"/>
+        <property name="personService" ref="PersonService"/>
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="authenticationService" ref="NonCheckingAuthenticationService"/>
+    </bean>
+
+
+    <bean id="ctsPermissionModel" parent="permissionModelBootstrap">
+        <property name="model" value="alfresco/module/homeoffice-cts-repo/model/ctsPermissionDefinitions.xml" />
+    </bean>
+
+    <!-- Expose custom permissions to templates -->
+    <bean id="workflowTemplateExtension" parent="baseTemplateImplementation" class="uk.gov.homeoffice.cts.permissions.CustomPermissionsTemplate">
+        <property name="extensionName">
+            <value>customPerm</value>
+        </property>
+        <property name="permissionChecker" ref="permissionChecker"/>
+    </bean>
+
+    <!-- Custom thumbnail to create PDFs for our preview -->
+    <bean id="thumbnail.register.ctspreview" class="org.alfresco.repo.thumbnail.ThumbnailDefinitionSpringRegisterer">
+        <property name="thumbnailRegistry" ref="thumbnailRegistry" />
+        <property name="thumbnailDefinition">
+            <bean class="org.alfresco.repo.thumbnail.ThumbnailDefinition">
+                <property name="name" value="ctspreview"/>
+                <property name="mimetype" value="application/pdf"/>
+                <property name="transformationOptions">
+                    <bean class="org.alfresco.repo.content.transform.RuntimeExecutableContentTransformerOptions">
+                    </bean>
+                </property>
+                <property name="runAs" value="System"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="transformer.iText.TiffToPdf"
+          class="uk.gov.homeoffice.cts.transformers.TiffToPdfTransformer"
+          parent="baseContentTransformer" >
+        <property name="explicitTransformations">
+            <list>
+                <bean class="org.alfresco.repo.content.transform.ExplictTransformationDetails" >
+                    <constructor-arg><value>image/tiff</value></constructor-arg>
+                    <constructor-arg><value>application/pdf</value></constructor-arg>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="thumbnail.register.ctsimgpreview" class="org.alfresco.repo.thumbnail.ThumbnailDefinitionSpringRegisterer">
+        <property name="thumbnailRegistry" ref="thumbnailRegistry" />
+        <property name="thumbnailDefinition">
+            <bean class="org.alfresco.repo.thumbnail.ThumbnailDefinition">
+                <property name="name" value="ctsimgpreview"/>
+                <property name="mimetype" value="image/jpeg"/>
+                <property name="transformationOptions">
+                    <bean class="org.alfresco.repo.content.transform.magick.ImageTransformationOptions">
+                    </bean>
+                </property>
+                <property name="runAs" value="System"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="AuthenticationInterceptor" class="uk.gov.homeoffice.cts.behaviour.AuthenticationInterceptor">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="personService" ref="PersonService"/>
+    </bean>
+
+    <!--overriding the Alfresco one so I can add my own interceptor-->
+    <bean id="AuthenticationService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.service.cmr.security.MutableAuthenticationService</value>
+        </property>
+        <property name="target">
+            <ref bean="authenticationService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref bean="AuthenticationInterceptor"/>
+                <idref bean="AuthenticationService_transaction"/>
+                <idref bean="AuditMethodInterceptor"/>
+                <idref bean="exceptionTranslator"/>
+                <idref bean="AuthenticationService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--declaring one like the original so webscript can authenticate user and reset their password for them-->
+    <bean id="NonCheckingAuthenticationService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.service.cmr.security.MutableAuthenticationService</value>
+        </property>
+        <property name="target">
+            <ref bean="authenticationService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref bean="AuthenticationService_transaction"/>
+                <idref bean="AuditMethodInterceptor"/>
+                <idref bean="exceptionTranslator"/>
+                <idref bean="AuthenticationService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="hmpoProcessJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>uk.gov.homeoffice.cts.workflow.HMPOProcessJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="hmpoProcessService">
+                    <ref bean="hmpoProcessService"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="hmpoProcessService" class="uk.gov.homeoffice.cts.workflow.HMPOProcessService">
+        <property name="searchService" ref="SearchService" />
+        <property name="nodeService" ref="NodeService" />
+        <property name="workflowService" ref="WorkflowService" />
+    </bean>
+
+
+    <bean id="hmpoProcessJobTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="hmpoProcessJob" />
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory" />
+        </property>
+        <property name="cronExpression">
+            <value>${cts.homeoffice.hmpoProcessJobCronExpression}</value>
+        </property>
+    </bean>
+
+    <bean id="EmailJobAction" class="uk.gov.homeoffice.cts.email.EmailJobActionExecuter" parent="action-executer" init-method="init">
+        <property name="emailService" ref="EmailService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="emailJobService" ref="EmailJobService"/>
+        <property name="globalProperties" ref="global-properties"/>
+        <property name="publicAction" value="false"/>
+    </bean>
+
+    <bean id="EmailJobService" class="uk.gov.homeoffice.cts.email.EmailJobService">
+        <property name="nodeLocatorService" ref="nodeLocatorService"/>
+        <property name="fileFolderService" ref="FileFolderService"/>
+        <property name="emailService" ref="EmailService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="personService" ref="PersonService"/>
+        <property name="globalProperties" ref="global-properties"/>
+        <property name="actionService" ref="ActionService"/>
+    </bean>
+
+    <bean id="EmailJobScheduler" class="uk.gov.homeoffice.cts.email.EmailJobScheduler">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="emailJobService" ref="EmailJobService"/>
+    </bean>
+
+    <bean id="emailNotificationPollerJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>uk.gov.homeoffice.cts.email.EmailJobScheduler</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="globalProperties">
+                    <ref bean="global-properties"/>
+                </entry>
+                <entry key="mailJobSchedulerEnabled">
+                    <value>${cts.homeoffice.mail.mailJobSchedulerEnabled}</value>
+                </entry>
+                <entry key="mailClearFailedDuration">
+                    <value>${cts.homeoffice.mail.mailClearFailedDuration}</value>
+                </entry>
+                <entry key="mailClearSentDuration">
+                    <value>${cts.homeoffice.mail.mailClearSentDuration}</value>
+                </entry>
+                <entry key="mailMaxRetries">
+                    <value>${cts.homeoffice.mail.mailMaxRetries}</value>
+                </entry>
+                <entry key="mailRetryDuration">
+                    <value>${cts.homeoffice.mail.mailRetryDuration}</value>
+                </entry>
+                <entry key="nodeService">
+                    <ref bean="NodeService"/>
+                </entry>
+                <entry key="emailJobService">
+                    <ref bean="EmailJobService"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="emailNotificationJobTrigger" class="org.alfresco.util.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="emailNotificationPollerJob"/>
+        </property>
+        <property name="scheduler">
+            <ref bean="schedulerFactory"/>
+        </property>
+        <property name="cronExpression">
+            <value>${cts.homeoffice.mail.mailJobSchedulerCronExpression}</value>
+        </property>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.users.resetPassword.get" class="uk.gov.homeoffice.ctsv2.webscripts.ResetUserPasswordWebscript" parent="webscript">
+        <property name="personService" ref="PersonService"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="emailService" ref="EmailService"/>
+        <property name="ctsMailSubjectResetUserPassword">
+            <value>${cts.mail.subject.resetUserPassword}</value>
+        </property>
+        <property name="ctsMailTemplateResetUserPassword">
+            <value>${cts.mail.template.resetUserPassword}</value>
+        </property>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.users.groupEmailsOptOut.get" class="uk.gov.homeoffice.ctsv2.webscripts.GetUserOptOutFromGroupEmailsWebScript" parent="webscript">
+        <property name="personService" ref="PersonService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.ctsv2.users.groupEmailsOptOut.post" class="uk.gov.homeoffice.ctsv2.webscripts.PostUserOptOutFromGroupEmailsWebScript" parent="webscript">
+        <property name="personService" ref="PersonService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="authorityService" ref="AuthorityService"/>
+        <property name="authenticationService" ref="AuthenticationService"/>
+        <property name="siteService" ref="SiteService"/>
+    </bean>
+
+    <bean id="webscript.homeoffice.cts.util.healthCheck.get" class="uk.gov.homeoffice.cts.util.HealthCheckWebScript" parent="webscript">
+        <property name="siteService" ref="SiteService"/>
+        <property name="personService" ref="PersonService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="searchService" ref="SearchService"/>
+        <property name="fileFolderService" ref="FileFolderService"/>
+        <property name="dataSource" ref="defaultDataSource" />
+        <property name="taggingService" ref="TaggingService" />
+    </bean>
+
+    <!-- CommentService REST API    -->
+    <!-- abstract comment web script -->
+   <bean id="abstractCommentsWebScript"
+         class="uk.gov.homeoffice.ctsv2.webscripts.AbstractCommentsWebScript"
+         parent="webscript" abstract="true">
+        <property name="serviceRegistry" ref="ServiceRegistry"/>
+        <property name="behaviourFilter" ref="policyBehaviourFilter" />
+        <property name="activityService" ref="activityService"/>
+    </bean>
+
+    <bean id="webscript.org.alfresco.repository.comments.commentsv2.post"
+          class="uk.gov.homeoffice.ctsv2.webscripts.CommentsWebScript"
+          parent="abstractCommentsWebScript">
+    </bean>
+
+    <bean id="createCaseHelper" class="uk.gov.homeoffice.cts.helpers.CreateCaseHelper">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="ctsFolderHelper" ref="CtsFolderHelper"/>
+        <property name="transactionService" ref="TransactionService"/>
+        <property name="contentService" ref="ContentService" />
+        <property name="fileFolderService" ref="FileFolderService" />
+    </bean>
+
+    <bean id="ctsCasePropertyUpdateBehaviour" class="uk.gov.homeoffice.cts.behaviour.CtsCasePropertyUpdateBehaviour" init-method="init">
+        <property name="policyComponent" ref="policyComponent"/>
+        <property name="allocateBehaviour" ref="allocateBehaviour"/>
+        <property name="assignedUnitBehaviour" ref="assignedUnitBehaviour"/>
+        <property name="complexBehaviour" ref="complexBehaviour"/>
+        <property name="deadlineBehaviour" ref="deadlineBehaviour"/>
+        <property name="markupDecisionBehaviour" ref="markupDecisionBehaviour"/>
+        <property name="minutesSyncBehaviour" ref="minutesSyncBehaviour"/>
+        <property name="originalDrafterBehaviour" ref="originalDrafter"/>
+        <property name="pitLetterSentDateBehaviour" ref="pitLetterSentDateBehaviour"/>
+        <property name="propertyPermissionsBehaviour" ref="propertyPermissionsBehaviour"/>
+        <property name="statusBehaviour" ref="statusBehaviour"/>
+        <property name="taskBehaviour" ref="taskBehaviour"/>
+    </bean>
+
+
+</beans>

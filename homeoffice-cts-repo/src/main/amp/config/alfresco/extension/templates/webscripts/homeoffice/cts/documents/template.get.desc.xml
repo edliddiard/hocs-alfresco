@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get auto-populated document template</shortname>
+    <description>Get a document template with fields auto-populated with details from the case</description>
+    <url>/homeoffice/cts/template?documentNodeRef={documentNodeRef}&amp;caseNodeRef={caseNodeRef}</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+</webscript>

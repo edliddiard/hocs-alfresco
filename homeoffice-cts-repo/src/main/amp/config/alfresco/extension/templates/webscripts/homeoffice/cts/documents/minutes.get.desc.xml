@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get Minutes</shortname>
+    <description>Getting minutes from a case</description>
+    <url>/cts/minutes?nodeRef={nodeRef}</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+</webscript>

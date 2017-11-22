@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Import users in bulk</shortname>
+    <description>Upload a CSV file containing users to create. To send emails to users add post field sendEmails = true.</description>
+    <url>/homeoffice/cts/util/bulkUserImport</url>
+    <format default="json">argument</format>
+    <authentication>user</authentication>
+    <transaction>required</transaction>
+</webscript>

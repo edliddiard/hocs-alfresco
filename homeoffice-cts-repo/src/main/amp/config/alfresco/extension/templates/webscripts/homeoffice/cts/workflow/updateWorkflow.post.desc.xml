@@ -1,0 +1,17 @@
+<webscript>
+    <shortname>Update workflow for a case</shortname>
+    <description>Format for body is
+        {
+          "nodeRef": "{nodeRef}",
+          "transition": "{transition value}",
+          "properties": [
+            {
+              "{http://cts-beta.homeoffice.gov.uk/model/content/1.0}assignedUser": "admin"
+            }
+          ]
+        }
+    </description>
+    <url>/homeoffice/cts/updateWorkflow</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+</webscript>

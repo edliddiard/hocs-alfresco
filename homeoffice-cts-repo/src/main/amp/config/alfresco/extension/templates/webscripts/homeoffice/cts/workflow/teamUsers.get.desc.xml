@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get all users under a team including sub teams</shortname>
+    <description>Getting all of the users who belong to a given team or unit (group) or one of its sub groups</description>
+    <url>/homeoffice/cts/teamUsers?group={group}</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+</webscript>

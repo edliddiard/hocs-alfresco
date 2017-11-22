@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Get the authenticated user's details, including team, unit and folder permissions</shortname>
+    <description>Getting the authenticated user's details, including team and unit a user belongs to, plus the permissions for that user folders such as standard lines, templates, auto create etc.</description>
+    <url>/homeoffice/cts/user/{userName}</url>
+    <format default="json">argument</format>
+    <authentication>user</authentication>
+</webscript>

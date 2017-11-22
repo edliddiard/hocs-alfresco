@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Get a case by node ref</shortname>
+    <description>Returns the case</description>
+    <url>/homeoffice/ctsv2/case?nodeRef={nodeRef}</url>
+    <format default="json">argument</format>
+    <authentication>user</authentication>
+    <transaction>none</transaction>
+</webscript>

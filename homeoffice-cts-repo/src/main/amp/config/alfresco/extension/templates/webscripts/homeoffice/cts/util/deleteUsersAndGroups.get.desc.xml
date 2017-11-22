@@ -1,0 +1,23 @@
+<webscript>
+    <shortname>Delete Users and Groups</shortname>
+    <description><![CDATA[<p>Script to delete all Users (except admins and guests) and Groups</p>
+
+  <p>@method GET</p>
+
+  <p>URL: /deleteUsersAndGroups/</p>
+
+  <p>Deletes all users that are not username== admin or a guest</p>
+
+  <p>@returns JSON object: <code>
+  { "report": [
+          "User has been deleted",
+          "Group has been deleted"
+      	]
+    }
+  </code></p>
+  ]]>
+    </description>
+    <url>/deleteUsersAndGroups/</url>
+    <format default="json">any</format>
+    <authentication>user</authentication>
+</webscript>

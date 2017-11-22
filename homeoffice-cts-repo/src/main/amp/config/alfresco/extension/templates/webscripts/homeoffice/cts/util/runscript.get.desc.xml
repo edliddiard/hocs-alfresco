@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>Run Javascript</shortname>
+    <url>/homeoffice/cts/util/runscript?scriptname={scriptname}</url>
+    <format default="html">extension</format>
+    <authentication>none</authentication>
+</webscript>

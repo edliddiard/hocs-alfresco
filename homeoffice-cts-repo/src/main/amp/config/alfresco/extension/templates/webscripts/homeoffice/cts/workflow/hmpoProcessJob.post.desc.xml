@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>hmpo process job</shortname>
+    <description>job which can move cases from defer to bring up date status and close cases based on travel date</description>
+    <url>/homeoffice/cts/hmpoProcessJob</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+</webscript>

@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Parse TSO Feed</shortname>
+    <description>Post a file of TSO feeds, Parse them and return them as Json</description>
+    <url>/cts/parsefeed</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+    <transaction>requiresnew</transaction>
+</webscript>

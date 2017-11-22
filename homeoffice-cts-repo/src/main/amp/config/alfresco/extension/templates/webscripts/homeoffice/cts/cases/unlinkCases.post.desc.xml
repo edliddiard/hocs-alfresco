@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>CTS Unlink Cases</shortname>
+    <description>Unassociate linked cases by UIN.</description>
+    <url>/homeoffice/cts/unlinkCases</url>
+    <format default="json">extension</format>
+    <authentication>user</authentication>
+    <transaction>requiresnew</transaction>
+</webscript>

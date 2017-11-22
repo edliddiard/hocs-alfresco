@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Case creation by email</shortname>
+    <description>Case creation by email</description>
+    <url>/homeoffice/ctsv2/createCaseByEmail</url>
+    <format default="json">argument</format>
+    <authentication>user</authentication>
+    <transaction>none</transaction>
+</webscript>

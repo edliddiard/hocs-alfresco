@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+	Licensed to the Apache Software Foundation (ASF) under one or more
+	contributor license agreements. 
+	The ASF licenses this file to You under the Apache License, Version 2.0
+	(the "License"); you may not use this file except in compliance with
+	the License.  You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+	
+-->
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+	<!-- This is filtered by Maven at build time, so that module name is single sourced. -->
+    <import resource="classpath:alfresco/module/${project.artifactId}/context/service-context.xml" />
+
+    <!--</bean>-->
+    <bean id="cts-spacesBootstrap" parent="spacesStoreImporter" singleton="true" >
+        <property name="useExistingStore">
+            <value>${cts.import.useExistingStore}</value>
+        </property>
+        <property name="bootstrapViews">
+            <list>
+                <props>
+                    <prop key="path">/${spaces.company_home.childname}</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/bootstrap/ctsFolders.acp</prop>
+                    <prop key="uuidBinding">${cts.import.strategy}</prop>
+                </props>
+                <props>
+                    <prop key="path">/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.templates.email.childname}</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/bootstrap/ctsEmails.acp</prop>
+                    <prop key="uuidBinding">${cts.import.strategy}</prop>
+                </props>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="ctsModule_bootstrapGroups" class="org.alfresco.repo.module.ImporterModuleComponent" parent="module.baseComponent">
+        <property name="moduleId" value="${project.artifactId}" />
+        <property name="name" value="importGroups" />
+        <property name="description" value="Import the groups for CTS" />
+        <property name="sinceVersion" value="0.1" />
+        <property name="appliesFromVersion" value="0.1" />
+        <property name="importer" ref="spacesBootstrap"/>
+        <property name="bootstrapViews">
+            <list>
+                <props>
+                    <prop key="path">/${alfresco_user_store.system_container.childname}</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/bootstrap/ctsGroups.xml</prop>
+                </props>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="cts.workflowBootstrap" parent="workflowDeployer">
+        <property name="workflowDefinitions">
+            <list>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/foi.bpmn</prop>
+                    <!--<prop key="location">alfresco/module/homeoffice-cts-repo/workflow/foi.bpmn</prop>-->
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/dcu_treat_official.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/dcu_ministerial.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/no10.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/ukvi_m_ref.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/ukvi_b_ref.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/ukvi_number_10.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/hmpo_stage1_and_stage2.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/hmpo_mp_complaint.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/hmpo_complaint.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/hmpo_general.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/hmpo_collectives.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/foi_time_complaint.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/foi_substantive_complaint.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+                <props>
+                    <prop key="engineId">activiti</prop>
+                    <prop key="location">alfresco/module/homeoffice-cts-repo/workflow/foi_tribunal_complaint.bpmn</prop>
+                    <prop key="mimetype">text/xml</prop>
+                    <prop key="redeploy">true</prop>
+                </props>
+            </list>
+        </property>
+    </bean>
+    <!--This will only work as a first time bootstrap, we can't update later on-->
+    <bean id="patch.siteLoadPatch.cts" class="org.alfresco.repo.admin.patch.impl.SiteLoadPatch" parent="basePatch">
+        <property name="id"><value>patch.siteLoadPatch.cts</value></property>
+        <property name="description"><value>patch.siteLoadPatch.description</value></property>
+        <property name="fixesFromSchema"><value>0</value></property>
+        <property name="fixesToSchema"><value>${version.schema}</value></property>
+        <property name="targetSchema"><value>10000</value></property>
+        <property name="dependsOn" >
+            <list>
+                <ref bean="patch.updateDmPermissions" />
+            </list>
+        </property>
+        <property name="spacesBootstrap" ref="siteLoadBootstrap-Spaces" />
+        <property name="usersBootstrap" ref="siteLoadBootstrap-Users" />
+        <property name="siteService" ref="siteService" />
+        <property name="descriptorService" ref="descriptorComponent" />
+        <property name="authorityService" ref="authorityService" />
+        <property name="behaviourFilter" ref="policyBehaviourFilter" />
+        <property name="siteName">
+            <value>cts</value>
+        </property>
+        <property name="bootstrapViews">
+            <map>
+                <entry key="contents">
+                    <props>
+                        <prop key="location">alfresco/module/homeoffice-cts-repo/bootstrap/ctsSite.acp</prop>
+                        <prop key="uuidBinding">${cts.import.strategy}</prop>
+                    </props>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="ctsModule_permissionBootstrap" parent="permissionModelBootstrap">
+        <property name="model" value="alfresco/module/homeoffice-cts-repo/model/ctsPermissionDefinitions.xml"/>
+    </bean>
+
+    <bean id="permissionChecker" class="uk.gov.homeoffice.cts.permissions.PermissionChecker">
+        <property name="permissionService" ref="PermissionService"/>
+        <property name="dictionaryService" ref="DictionaryService"/>
+        <property name="nodeService" ref="NodeService"/>
+        <property name="authorityService" ref="AuthorityService"/>
+    </bean>
+
+    <!-- this is copied from the opencmis-context.xml, the only change is the class
+    this should make it easy to check when we upgrade as everything else should be the same -->
+    <bean id="CMISConnector" class="uk.gov.homeoffice.cts.permissions.CtsCMISConnector" init-method="setup" >
+        <property name="store"                  value="${opencmis.connector.default.store}" />
+        <property name="rootPath"               value="${opencmis.connector.default.rootPath}" />
+        <property name="typesDefaultMaxItems"   value="${opencmis.connector.default.typesDefaultMaxItems}" />
+        <property name="typesDefaultDepth"      value="${opencmis.connector.default.typesDefaultDepth}" />
+        <property name="objectsDefaultMaxItems" value="${opencmis.connector.default.objectsDefaultMaxItems}" />
+        <property name="objectsDefaultDepth"    value="${opencmis.connector.default.objectsDefaultDepth}" />
+        <property name="renditionKindMapping">
+            <map>
+                <entry key="cmis:thumbnail">
+                    <list>
+                        <value>doclib</value>
+                    </list>
+                </entry>
+                <entry key="alf:webpreview">
+                    <list>
+                        <value>webpreview</value>
+                        <value>imgpreview</value>
+                    </list>
+                </entry>
+            </map>
+        </property>
+
+        <property name="openHttpSession"        value="${opencmis.connector.default.openHttpSession}" />
+
+        <property name="OpenCMISDictionaryService"   ref="OpenCMISDictionaryService" />
+        <property name="OpenCMISQueryService"        ref="OpenCMISQueryService" />
+        <property name="OpenCMISDictionaryService11" ref="OpenCMISDictionaryService1.1" />
+        <property name="OpenCMISQueryService11"      ref="OpenCMISQueryService1.1" />
+
+        <property name="activityPoster"         ref="cmisActivityPoster" />
+        <property name="hiddenAspect"           ref="hiddenAspect" />
+        <property name="siteService"            ref="SiteService" />
+        <property name="actionService"          ref="ActionService" />
+        <property name="objectFilter"           ref="objectFilter" />
+        <property name="descriptorService"      ref="DescriptorService" />
+        <property name="nodeService"            ref="NodeService" />
+        <property name="thumbnailService"       ref="ThumbnailService" />
+        <property name="serviceRegistry"        ref="ServiceRegistry" />
+        <property name="fileFolderService"      ref="FileFolderService" />
+        <property name="versionService"         ref="VersionService" />
+        <property name="checkOutCheckInService" ref="CheckoutCheckinService" />
+        <property name="lockService"            ref="LockService" />
+        <property name="contentService"         ref="ContentService" />
+        <property name="renditionService"       ref="RenditionService" />
+        <property name="tenantAdminService"     ref="tenantAdminService" />
+        <property name="singletonCache"         ref="immutableSingletonCache" />
+        <property name="transactionService"     ref="transactionService"/>
+        <property name="authenticationService"  ref="authenticationService" />
+        <property name="permissionService"      ref="PermissionService" />
+        <property name="permissionModelDao"     ref="permissionsModelDAO" />
+        <property name="mimetypeService"        ref="MimetypeService" />
+        <property name="auditService"           ref="auditService" />
+        <property name="namespaceService"       ref="namespaceService" />
+        <property name="searchService"          ref="SearchService" />
+        <property name="dictionaryService"      ref="DictionaryService" />
+        <property name="behaviourFilter"        ref="policyBehaviourFilter" />
+        <!--Our own bean for permissions checking-->
+        <property name="permissionChecker"      ref="permissionChecker" />
+    </bean>
+
+    <!--A patch details in class-->
+    <bean id="preferenceService" class="uk.gov.homeoffice.cts.email.PatchedPreferenceService">
+        <property name="nodeService" ref="NodeService"/>
+        <property name="contentService" ref="ContentService"/>
+        <property name="personService" ref="PersonService"/>
+        <property name="permissionService" ref="PermissionService"/>
+        <property name="authenticationContext" ref="authenticationContext"/>
+        <property name="authorityService" ref="AuthorityService"/>
+    </bean>
+
+</beans>

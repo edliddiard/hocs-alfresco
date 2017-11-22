@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Dash board info</shortname>
+    <description>Dash board info</description>
+    <url>/homeoffice/ctsv2/dashboard</url>
+    <format default="json">argument</format>
+    <authentication>user</authentication>
+    <transaction>none</transaction>
+</webscript>

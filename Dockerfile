@@ -74,7 +74,7 @@ COPY assets/alfresco/caching-content-store-context.xml tomcat/shared/classes/alf
 
 
 # AMPS installation
-COPY assets/amps amps
+COPY homeoffice-cts-repo/target/homeoffice-cts-repo.amp amps/homeoffice-cts-repo.amp
 RUN bash ./bin/apply_amps.sh -force -nobackup
 
 RUN useradd -ms /bin/bash alfresco
