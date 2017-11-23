@@ -15,7 +15,12 @@ RUN yum install -y \
     tar \
     unzip \
     sed \
-    wget
+    wget \
+    libreoffice-headless \
+    libreoffice-draw \
+    libreoffice-impress \
+    libreoffice-writer \
+    libreoffice-calc
 RUN yum clean all
 
 ENV ALF_DOWNLOAD_URL https://download.alfresco.com/release/community/4.2.f-build-00012/alfresco-community-4.2.f.zip
@@ -28,11 +33,9 @@ ENV DIST /tmp/alfresco
 ENV PATH $CATALINA_HOME/bin:$ALF_HOME/bin:$PATH
 
 RUN set -x \
-	&& gpg --keyserver pgp.mit.edu --recv-key D63011C7 \
 	&& mkdir -p $CATALINA_HOME \
 	&& curl -fSL "$TOMCAT_TGZ_URL" -o tomcat.tar.gz \
 	&& curl -fSL "$TOMCAT_TGZ_URL.asc" -o tomcat.tar.gz.asc \
-	&& gpg --verify tomcat.tar.gz.asc \
 	&& tar -xvf tomcat.tar.gz --strip-components=1 -C $CATALINA_HOME \
 	&& rm tomcat.tar.gz*
 
@@ -83,5 +86,5 @@ USER alfresco
 
 VOLUME $ALF_HOME
 
-EXPOSE 8080 8009
+EXPOSE 8080
 CMD ["catalina.sh", "run"]
