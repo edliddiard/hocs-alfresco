@@ -72,13 +72,20 @@ COPY assets/tomcat/server.xml tomcat/conf/server.xml
 COPY assets/tomcat/context.xml tomcat/conf/context.xml
 COPY assets/tomcat/catalina.policy tomcat/conf/catalina.policy
 COPY assets/tomcat/tomcat-users.xml tomcat/conf/tomcat-users.xml
-COPY assets/alfresco/alfresco-global.properties tomcat/shared/classes/alfresco-global.properties
-COPY assets/alfresco/caching-content-store-context.xml tomcat/shared/classes/alfresco/extension/caching-content-store-context.xml
+COPY assets/tomcat/logging.properties tomcat/conf/logging.properties
 
+COPY assets/alfresco/alfresco-global.properties tomcat/shared/classes/alfresco-global.properties
+COPY assets/alfresco/log4j.properties tomcat/shared/classes/alfresco/extension/log4j.properties
+COPY assets/alfresco/caching-content-store-context.xml tomcat/shared/classes/alfresco/extension/caching-content-store-context.xml
+COPY assets/alfresco/share-config-custom.xml tomcat/shared/classes/alfresco/web-extension/share-config-custom.xml
 
 # AMPS installation
 COPY homeoffice-cts-repo/target/homeoffice-cts-repo.amp amps/homeoffice-cts-repo.amp
 RUN bash ./bin/apply_amps.sh -force -nobackup
+
+COPY assets/alfresco/entrypoint.sh entrypoint.sh
+RUN chmod +x  entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
 
 RUN useradd -ms /bin/bash alfresco
 RUN set -x && chown -RL alfresco:alfresco $ALF_HOME
