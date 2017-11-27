@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 sed -i 's/${alfresco.s3.accesskey}/'"$ALF_S3_ACCESSKEY"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 sed -i  's/${alfresco.s3.secretkey}/'"$ALF_S3_SECRETKEY"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties

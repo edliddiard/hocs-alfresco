@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/hocs-alfresco.iml" filepath="$PROJECT_DIR$/.idea/hocs-alfresco.iml" />
+      <module fileurl="file://$PROJECT_DIR$/homeoffice-cts-repo/homeoffice-cts-repo.iml" filepath="$PROJECT_DIR$/homeoffice-cts-repo/homeoffice-cts-repo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/homeoffice-cts-war/homeoffice-cts-war.iml" filepath="$PROJECT_DIR$/homeoffice-cts-war/homeoffice-cts-war.iml" />
     </modules>
   </component>
 </project>
