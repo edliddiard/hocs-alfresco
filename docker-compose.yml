@@ -26,6 +26,15 @@ services:
     build:
       context: .
 
+    environment:
+      ALF_S3_ACCESSKEY:
+      ALF_S3_SECRETKEY:
+      ALF_S3_BUCKETNAME:
+      ALF_DB_USERNAME:
+      ALF_DB_PASSWORD:
+      ALF_DB_NAME:
+      ALF_DB_HOST:
+
     depends_on:
       - database
 
