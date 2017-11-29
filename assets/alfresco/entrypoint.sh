@@ -7,6 +7,7 @@ sed -i  's/${alfresco.db.username}/'"$ALF_DB_USERNAME"'/' /usr/local/tomcat/shar
 sed -i  's/${alfresco.db.password}/'"$ALF_DB_PASSWORD"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 sed -i  's/${alfresco.db.host}/'"$ALF_DB_HOST"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 sed -i  's/${alfresco.db.name}/'"$ALF_DB_NAME"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
+sed -i  's/${admin.initial.password}/'"$ALF_ADMIN_INITIAL_PASSWORD"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 
 cat /usr/local/tomcat/shared/classes/alfresco-global.properties
 
