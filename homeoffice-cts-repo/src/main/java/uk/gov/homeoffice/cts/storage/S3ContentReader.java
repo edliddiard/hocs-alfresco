@@ -70,6 +70,7 @@ public class S3ContentReader extends AbstractContentReader {
 		this.nodeUrl = nodeUrl;
 		this.s3 = s3;
 		this.bucket = bucket;
+		logger.warn(this.nodeUrl);
 		getDetails();
 	}
 
