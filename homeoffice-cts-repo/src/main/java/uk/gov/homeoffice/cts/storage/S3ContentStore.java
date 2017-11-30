@@ -113,6 +113,13 @@ public class S3ContentStore extends AbstractContentStore {
         this.setUrl(url);
         this.setPort(port);
 
+        logger.error(accessKey);
+        logger.error(secretKey);
+        logger.error(bucketName);
+        logger.error(url);
+        logger.error(port);
+
+
         System.out.println("S3ContentStore Initializing: accessKey="+accessKey+" secretKey="+secretKey+" bucketName="+bucketName);
         // Instantiate S3 Service and create necessary bucket.
         try {
