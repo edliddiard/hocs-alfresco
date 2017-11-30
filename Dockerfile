@@ -16,6 +16,7 @@ RUN yum install -y \
     unzip \
     sed \
     wget \
+    mysql \
     libreoffice-headless \
     libreoffice-draw \
     libreoffice-impress \
