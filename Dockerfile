@@ -91,7 +91,5 @@ RUN useradd -ms /bin/bash alfresco
 RUN set -x && chown -RL alfresco:alfresco $ALF_HOME
 USER alfresco
 
-VOLUME $ALF_HOME
-
 EXPOSE 8080
 CMD ["catalina.sh", "run"]

@@ -140,7 +140,6 @@ public class S3ContentReader extends AbstractContentReader {
 		} catch (S3ServiceException e) {
 			logger.warn("S3ContentReader Failed to get Object Details: " + e.getMessage());
 			logger.warn(e.getS3ErrorMessage());
-			logger.warn(e.toString());
 			//e.printStackTrace();
 		} finally {
 			cleanup();
