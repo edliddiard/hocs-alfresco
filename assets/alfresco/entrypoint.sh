@@ -10,6 +10,9 @@ sed -i  's/${alfresco.db.port}/'"$ALF_DB_PORT"'/' /usr/local/tomcat/shared/class
 sed -i  's/${alfresco.db.name}/'"$ALF_DB_NAME"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 sed -i  's/${admin.initial.password}/'"$ALF_ADMIN_INITIAL_PASSWORD"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 
-cat /usr/local/tomcat/shared/classes/alfresco-global.properties
+echo $SSL_KEYSTORE | base64 -d >> /usr/local/tomcat/shared/classes/ssl.keystore
+echo $SSL_TRUSTSTORE | base64 -d >> /usr/local/tomcat/shared/classes/ssl.truststore
+
+sed -i  's/${ssl.password}/'"$ALF_SSL_PASSWORD"'/' /usr/local/tomcat/conf/server.xml
 
 exec "$@"
