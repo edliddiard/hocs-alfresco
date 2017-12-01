@@ -1,7 +1,8 @@
-FROM quay.io/ukhomeofficedigital/openjdk8
+FROM centos:7
 
 RUN yum update -y
 RUN yum install -y \
+    ava-1.7.0-openjdk-headless \
     apr \
     apr-devel \
     curl \
