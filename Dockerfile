@@ -94,4 +94,6 @@ RUN set -x && chown -RL alfresco:alfresco $ALF_HOME
 USER alfresco
 
 EXPOSE 8080
+EXPOSE 8443
+EXPOSE 8009
 CMD ["catalina.sh", "run"]
