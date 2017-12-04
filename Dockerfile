@@ -75,7 +75,7 @@ COPY assets/tomcat/context.xml tomcat/conf/context.xml
 COPY assets/tomcat/catalina.policy tomcat/conf/catalina.policy
 COPY assets/tomcat/tomcat-users.xml tomcat/conf/tomcat-users.xml
 COPY assets/tomcat/logging.properties tomcat/conf/logging.properties
-COPY assets/tomcat/web.conf tomcat/conf/web.conf
+COPY assets/tomcat/web.xml tomcat/conf/web.xml
 
 COPY assets/alfresco/alfresco-global.properties tomcat/shared/classes/alfresco-global.properties
 COPY assets/alfresco/log4j.properties tomcat/shared/classes/alfresco/extension/log4j.properties
