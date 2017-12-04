@@ -2,7 +2,7 @@ FROM centos:7
 
 RUN yum update -y
 RUN yum install -y \
-    ava-1.7.0-openjdk-headless \
+    java-1.7.0-openjdk-headless \
     apr \
     apr-devel \
     curl \
@@ -94,6 +94,4 @@ RUN set -x && chown -RL alfresco:alfresco $ALF_HOME
 USER alfresco
 
 EXPOSE 8080
-EXPOSE 8443
-EXPOSE 8009
 CMD ["catalina.sh", "run"]
