@@ -17,11 +17,6 @@
 
 package uk.gov.homeoffice.cts.storage;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-
 import org.alfresco.repo.content.AbstractContentReader;
 import org.alfresco.service.cmr.repository.ContentIOException;
 import org.alfresco.service.cmr.repository.ContentReader;
@@ -31,6 +26,10 @@ import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
+
+import java.io.InputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
 /**
  * Provides READ services against an S3 content store.
@@ -139,7 +138,6 @@ public class S3ContentReader extends AbstractContentReader {
 			objectDetails = s3.getObjectDetails(bucket, nodeUrl);
 		} catch (S3ServiceException e) {
 			logger.warn("S3ContentReader Failed to get Object Details: " + e.getMessage());
-			logger.warn(e.getS3ErrorMessage());
 			//e.printStackTrace();
 		} finally {
 			cleanup();

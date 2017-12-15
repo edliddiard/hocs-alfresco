@@ -41,6 +41,8 @@ public class CtsCasePropertyUpdateBehaviour implements NodeServicePolicies.OnUpd
 
     private PolicyComponent policyComponent;
 
+    private PropertyUpdateBehaviour auditBehaviour;
+
     public void init() {
         LOGGER.debug("Registering  CtsCasePropertyUpdateBehaviour Behaviour");
         Behaviour onUpdateProperties = new JavaBehaviour(this, "onUpdateProperties", Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
@@ -60,6 +62,8 @@ public class CtsCasePropertyUpdateBehaviour implements NodeServicePolicies.OnUpd
         propertyPermissionsBehaviour.onUpdateProperties(nodeRef, before, after);
         statusBehaviour.onUpdateProperties(nodeRef, before, after);
         taskBehaviour.onUpdateProperties(nodeRef, before, after);
+
+        auditBehaviour.onUpdateProperties(nodeRef, before, after);
     }
 
     public void setAllocateBehaviour(PropertyUpdateBehaviour allocateBehaviour) {
@@ -108,5 +112,9 @@ public class CtsCasePropertyUpdateBehaviour implements NodeServicePolicies.OnUpd
 
     public void setPropertyPermissionsBehaviour(PropertyUpdateBehaviour propertyPermissionsBehaviour) {
         this.propertyPermissionsBehaviour = propertyPermissionsBehaviour;
+    }
+
+    public void setAuditBehaviour(PropertyUpdateBehaviour auditBehaviour ){
+        this.auditBehaviour = auditBehaviour;
     }
 }

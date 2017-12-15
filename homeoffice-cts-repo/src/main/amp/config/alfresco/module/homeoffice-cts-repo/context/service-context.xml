@@ -384,6 +384,9 @@
         </property>
     </bean>
 
+    <bean id="auditBehaviour" class="uk.gov.homeoffice.cts.behaviour.AuditBehaviour">
+    </bean>
+
     <bean id="minutesSyncBehaviour" class="uk.gov.homeoffice.cts.behaviour.MinutesSyncBehaviour">
         <property name="actionService" ref="ActionService"/>
     </bean>
@@ -1102,6 +1105,7 @@
         <property name="propertyPermissionsBehaviour" ref="propertyPermissionsBehaviour"/>
         <property name="statusBehaviour" ref="statusBehaviour"/>
         <property name="taskBehaviour" ref="taskBehaviour"/>
+        <property name="auditBehaviour" ref="auditBehaviour"/>
     </bean>
 
 

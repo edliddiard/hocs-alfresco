@@ -70,7 +70,7 @@ function listAllUsersAndExtendPassword() {
 				firstName = userNode.properties.firstName;
 				lastName = userNode.properties.lastName;
 				email = userNode.properties.email;
-				reportLog("Password expiry for " + userName +  " to  " + expireDate.toString())
+				reportLog("Password expiry for " + userName +  " to  " + expireDate.toString());
 				userNode.properties["{http://cts-beta.homeoffice.gov.uk/model/user/1.0}passwordExpiryDate"] = expireDate;
 				userNode.save();
 			}

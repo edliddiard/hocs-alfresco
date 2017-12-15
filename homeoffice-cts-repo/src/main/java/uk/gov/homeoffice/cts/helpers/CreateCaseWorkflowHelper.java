@@ -30,21 +30,19 @@ class CreateCaseWorkflowHelper {
 
         switch(caseType) {
             case "IMCM":case "IMCB":
-                return new UnitAndTeamToAssign("GROUP_UKVI MP", "GROUP_CPR");
+                return new UnitAndTeamToAssign("GROUP_UKVI", "GROUP_UKVI_CUSTOMER_CORRESPONDENCE_HUB");
             case "UTEN":case "DTEN":
-                return new UnitAndTeamToAssign("GROUP_DCU", "GROUP_TNT");
+                return new UnitAndTeamToAssign("GROUP_DCU", "GROUP_DCU_TRANSFERS_NO10_TEAM");
             case "TRO":case "COM":case "MIN":
-                return new UnitAndTeamToAssign("GROUP_DCU", "GROUP_PPT");
+                return new UnitAndTeamToAssign("GROUP_DCU", "GROUP_DCU_PERFORMANCE_AND_PROCESS_TEAM");
             case "COL":
-                return new UnitAndTeamToAssign("GROUP_HMPO Collective Passports", "GROUP_Collective Creators");
+                return new UnitAndTeamToAssign("GROUP_HMPO_COLLECTIVES", "GROUP_HMPO_COLLECTIVES_COLLECTIVES_CREATORS");
             case "FOI": case "FTC": case "FTCI": case "FSC": case "FSCI": case "FLT": case "FUT":
-                return new UnitAndTeamToAssign("GROUP_FOI", "GROUP_IAT");
+                return new UnitAndTeamToAssign("GROUP_FOI", "GROUP_FOI_INFORMATION_RIGHTS_TEAM");
             case "COM1": case "COM2": case "DGEN":
-                return new UnitAndTeamToAssign("GROUP_HMPO PCU", "GROUP_PCU Drafters");
+                return new UnitAndTeamToAssign("GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS", "GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS_COMPLAINT_DRAFTERS");
             case "GNR":
-                return new UnitAndTeamToAssign("GROUP_HMPO CCC", "GROUP_CCC Drafters");
-            case "NPQ": case "LPQ": case "OPQ":
-                return new UnitAndTeamToAssign("GROUP_Parliamentary Questions", "GROUP_Parly Team Drafters");
+                return new UnitAndTeamToAssign("GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS", "GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS_CORRESPONDENCE_DRAFTERS");
             default:
                 return new UnitAndTeamToAssign(null, null);
         }

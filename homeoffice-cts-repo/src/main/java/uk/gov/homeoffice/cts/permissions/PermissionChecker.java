@@ -103,9 +103,9 @@ public class PermissionChecker {
     boolean restrictedRoleInPermissions(String user, Set<AccessPermission> nodePermissions) {
         for (AccessPermission accessPermission : nodePermissions) {
             //check for the authenticated user having a restricted role on the case
-            if(accessPermission.getAuthorityType()== AuthorityType.USER &&
+            if(accessPermission.getAuthorityType() == AuthorityType.USER &&
                     accessPermission.getAuthority().equals(user) &&
-                    getRestrictedRoles().contains(accessPermission.getPermission() )&&
+                    getRestrictedRoles().contains(accessPermission.getPermission() ) &&
                     accessPermission.getAccessStatus() == AccessStatus.ALLOWED){
                 return true;
             }

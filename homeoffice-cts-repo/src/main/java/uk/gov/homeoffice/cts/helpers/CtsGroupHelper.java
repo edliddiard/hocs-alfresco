@@ -20,7 +20,7 @@ public class CtsGroupHelper {
     public void createUnits(List<String> logDetails, List<GroupAction> unitNames) {
         for (GroupAction groupAction : unitNames) {
             if (!authorityService.authorityExists(formatAuthorityName(groupAction.getUnitRefName()))) {
-                String authority = authorityService.createAuthority(AuthorityType.GROUP, groupAction.getUnitRefName());
+                String authority = authorityService.createAuthority(AuthorityType.GROUP, removeReferencePrefix(groupAction.getUnitRefName()));
                 addAuthority(formatAuthorityName(GROUPS_UNITS), authority);
                 if(groupAction.getUnitDisplayName() != null) {
                     authorityService.setAuthorityDisplayName(formatAuthorityName(groupAction.getUnitRefName()), groupAction.getUnitDisplayName());
@@ -35,7 +35,7 @@ public class CtsGroupHelper {
     public void createTeams(List<String> logDetails, List<GroupAction> groupNames) {
         for (GroupAction groupAction : groupNames) {
             if (!authorityService.authorityExists(formatAuthorityName(groupAction.getTeamRefName()))) {
-                String authority = authorityService.createAuthority(AuthorityType.GROUP, groupAction.getTeamRefName());
+                String authority = authorityService.createAuthority(AuthorityType.GROUP, removeReferencePrefix(groupAction.getTeamRefName()));
                 addAuthority(formatAuthorityName(groupAction.getUnitRefName()), authority);
                 if(groupAction.getTeamDisplayName() != null) {
                     authorityService.setAuthorityDisplayName(formatAuthorityName(groupAction.getTeamRefName()), groupAction.getTeamDisplayName());
@@ -74,6 +74,13 @@ public class CtsGroupHelper {
     private static String formatAuthorityName(String unitName) {
         if (unitName != null && !unitName.startsWith("GROUP_")) {
             return "GROUP_" + unitName;
+        }
+        return unitName;
+    }
+
+    private static String removeReferencePrefix(String unitName) {
+        if (unitName != null && unitName.startsWith("GROUP_")) {
+            unitName = unitName.replaceFirst("GROUP_", "");
         }
         return unitName;
     }

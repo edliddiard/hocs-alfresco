@@ -20,7 +20,7 @@ if (production_check == null) {
         userName = '',
         createdGroup;
 
-    importUnitsAndGroups();
+    //importUnitsAndGroups();
     importUsers();
     importPermissions();
     //extendPasswordExpiry();
