@@ -386,7 +386,7 @@
 
     <bean id="auditBehaviour" class="uk.gov.homeoffice.cts.behaviour.AuditBehaviour">
         <property name="reportingEndpoint">
-            <value>${cts.mail.template.group}</value>
+            <value>${reporting.url}</value>
         </property>
 
     </bean>
