@@ -386,9 +386,8 @@
 
     <bean id="auditBehaviour" class="uk.gov.homeoffice.cts.behaviour.AuditBehaviour">
         <property name="reportingEndpoint">
-            <value>${reporting.url}</value>
+            <value>${reporting.endpoint}</value>
         </property>
-
     </bean>
 
     <bean id="minutesSyncBehaviour" class="uk.gov.homeoffice.cts.behaviour.MinutesSyncBehaviour">

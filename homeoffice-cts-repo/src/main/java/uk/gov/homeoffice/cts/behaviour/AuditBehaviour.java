@@ -35,6 +35,10 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
         postMessage(auditMessage);
     }
 
+    public void setReportingEndpoint(String reportingEndpoint) {
+        this.reportingEndpoint = reportingEndpoint;
+    }
+
     private void postMessage(AuditMessage auditMessage){
 
         String json = "";
