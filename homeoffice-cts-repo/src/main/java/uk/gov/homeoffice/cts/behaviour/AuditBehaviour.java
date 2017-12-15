@@ -22,6 +22,8 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    private String reportingEndpoint = "";
+
     @Override
     public void onUpdateProperties(final NodeRef nodeRef, final Map<QName, Serializable> before, final Map<QName, Serializable> after) {
 
@@ -34,8 +36,6 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
     }
 
     private void postMessage(AuditMessage auditMessage){
-
-        String url = "http://10.0.2.2:9001/event/add";
 
         String json = "";
         try {
@@ -50,7 +50,7 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntity = new HttpEntity<>(json, httpHeaders);
 
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(reportingEndpoint, HttpMethod.POST, httpEntity, String.class);
 
         if(response.getStatusCode() != HttpStatus.OK)
         {

@@ -385,6 +385,10 @@
     </bean>
 
     <bean id="auditBehaviour" class="uk.gov.homeoffice.cts.behaviour.AuditBehaviour">
+        <property name="reportingEndpoint">
+            <value>${cts.mail.template.group}</value>
+        </property>
+
     </bean>
 
     <bean id="minutesSyncBehaviour" class="uk.gov.homeoffice.cts.behaviour.MinutesSyncBehaviour">
