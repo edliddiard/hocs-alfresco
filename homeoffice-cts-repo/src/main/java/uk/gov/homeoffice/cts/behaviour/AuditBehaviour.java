@@ -18,11 +18,13 @@ import java.util.Map;
  * Creates an event stream so that we don't need to master the data in Alfresco.
  */
 public class AuditBehaviour implements PropertyUpdateBehaviour {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AuditBehaviour.class);
+
+    private String reportingEndpoint;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private String reportingEndpoint = "";
 
     @Override
     public void onUpdateProperties(final NodeRef nodeRef, final Map<QName, Serializable> before, final Map<QName, Serializable> after) {
@@ -34,6 +36,8 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
         AuditMessage auditMessage = new AuditMessage(after);
         postMessage(auditMessage);
     }
+
+    public String getReportingEndpoint(){ return  reportingEndpoint;}
 
     public void setReportingEndpoint(String reportingEndpoint) {
         this.reportingEndpoint = reportingEndpoint;
