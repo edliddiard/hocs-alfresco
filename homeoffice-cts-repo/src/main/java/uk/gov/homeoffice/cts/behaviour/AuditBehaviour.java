@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.homeoffice.cts.model.AuditMessage;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.Map;
 
 /**
@@ -28,10 +27,6 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
 
     @Override
     public void onUpdateProperties(final NodeRef nodeRef, final Map<QName, Serializable> before, final Map<QName, Serializable> after) {
-
-        ClassLoader classLoader = AuditBehaviour.class.getClassLoader();
-        URL resource = classLoader.getResource("org/apache/http/message/BasicLineFormatter.class");
-        LOGGER.error(resource.toString());
 
         AuditMessage auditMessage = new AuditMessage(after);
         postMessage(auditMessage);
@@ -58,7 +53,7 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntity = new HttpEntity<>(json, httpHeaders);
 
-        ResponseEntity<String> response = restTemplate.exchange(reportingEndpoint, HttpMethod.POST, httpEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(reportingEndpoint+ "/event/add", HttpMethod.POST, httpEntity, String.class);
 
         if(response.getStatusCode() != HttpStatus.OK)
         {
