@@ -208,7 +208,7 @@
                                   bpm_package.children[i].properties['cts:caseTask'] = 'Dispatch response';
                                   bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_initial_qa_unit');
                                   bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_initial_qa_team');
-                                  bpm_package.children[i].properties['cts:assignedUser'] = null;
+                                  bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_initial_qa_team');
                                   bpm_package.children[i].save();
                                 }
                             }else{
