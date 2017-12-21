@@ -89,9 +89,9 @@ COPY assets/alfresco/entrypoint.sh entrypoint.sh
 RUN chmod +x  entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
 
-RUN useradd -ms /bin/bash alfresco
-RUN set -x && chown -RL alfresco:alfresco $ALF_HOME
-USER alfresco
+#RUN useradd -ms /bin/bash alfresco
+#RUN set -x && chown -RL alfresco:alfresco $ALF_HOME
+#USER alfresco
 
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
