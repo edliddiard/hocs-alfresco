@@ -165,11 +165,8 @@ public class S3ContentStore extends AbstractContentStore
                     .withCredentials(new AWSStaticCredentialsProvider(credentials))
                     .withClientConfiguration(clientConfiguration);
 
-            if(this.bucketName.equals("UNSET")) {
-                s3Client = s3builder.enablePathStyleAccess().disableChunkedEncoding().build();
-            } else {
-                s3Client = s3builder.build();
-            }
+            s3Client = s3builder.enablePathStyleAccess().disableChunkedEncoding().build();
+
 
         } else {
             if (LOG.isDebugEnabled()) {
@@ -181,7 +178,7 @@ public class S3ContentStore extends AbstractContentStore
                     .withRegion(regionName)
                     .withCredentials(new AWSStaticCredentialsProvider(credentials))
                     .withClientConfiguration(clientConfiguration);
-            s3Client = s3builder.build();
+            s3Client = s3builder.enablePathStyleAccess().disableChunkedEncoding().build();
         }
 
         transferManager = TransferManagerBuilder
