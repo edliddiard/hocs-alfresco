@@ -60,7 +60,6 @@ RUN set -x \
         && mv $DIST/bin . \
         && rm -rf $CATALINA_HOME/webapps/docs \
         && rm -rf $CATALINA_HOME/webapps/examples \
-        && mkdir $CATALINA_HOME/shared/lib $ALF_HOME/amps_share \
         && rm -rf $DIST
 
 RUN zip -d tomcat/webapps/alfresco.war "WEB-INF/lib/httpclient-4.1.1.jar"
