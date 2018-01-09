@@ -5,7 +5,7 @@
     <groupId>com.homeoffice</groupId>
     <artifactId>homeoffice-cts-repo</artifactId>
     <name>homeoffice hocs alfresco AMP project</name>
-    <version>1.2</version>
+    <version>${PROJECT_VERSION}.${BUILD_NUMBER}</version>
     <packaging>amp</packaging>
     <description>Manages the lifecycle of the homeoffice hocs alfresco AMP (Alfresco Module Package)</description>
 
