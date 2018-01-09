@@ -2,50 +2,85 @@ version: '3.1'
 
 services:
 
-  database:
+  mysql:
     image: mysql
-
     ports:
       - 3306:3306
-
     networks:
-      - alf-network
-
+      - hocs-network
     environment:
       MYSQL_ROOT_PASSWORD: alfresco
       MYSQL_DATABASE: alfresco
       MYSQL_USER: alfresco
       MYSQL_PASSWORD: alfresco
-
     restart: always
 
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - hocs-network
+    environment:
+     POSTGRES_USER: root
+     POSTGRES_PASSWORD: dev
     volumes:
-      - dbdata:/var/lib/mysql
+      - pgalfdata:/var/lib/postgresql
+
+  alfresco.localstack:
+    image: localstack/localstack:latest
+    ports:
+      - 4572:80
+      - 9080:8080
+    networks:
+      - hocs-network
+    environment:
+      HOSTNAME_EXTERNAL: localstack
+      SERVICES: s3:80
+      DEFAULT_REGION: eu-west-1
 
   alfresco:
     build:
       context: .
-
     environment:
-      ALF_S3_ACCESSKEY:
-      ALF_S3_SECRETKEY:
-      ALF_S3_BUCKETNAME:
-      ALF_DB_USERNAME:
-      ALF_DB_PASSWORD:
-      ALF_DB_NAME:
-      ALF_DB_HOST:
-
+      ALF_S3_ACCESSKEY: UNSET
+      ALF_S3_SECRETKEY: UNSET
+      ALF_S3_BUCKETNAME: UNSET
+      ALF_S3_HOSTNAME: alfresco.localstack
+      ALF_DB_USERNAME: alfresco
+      ALF_DB_PASSWORD: alfresco
+      ALF_DB_NAME: alfresco
+      ALF_DB_HOST: mysql
+      ALF_DB_PORT: 3306
+      ALF_ADMIN_INITIAL_PASSWORD: 209c6174da490caeb422f3fa5a7ae634
+      ALF_REPORTING_ENDPOINT: reporting:8080
     depends_on:
-      - database
-
+      - mysql
+      - reporting
     ports:
-      - 9001:8080
-
+      - 8083:8080
     networks:
-      - alf-network
+      - hocs-network
+
+  reporting:
+    image: quay.io/ukhomeofficedigital/hocs-reporting-service
+    environment:
+      spring.profiles.active: postgres
+      db.host: postgres
+      db.username: root
+      db.password: dev
+    depends_on:
+      - postgres
+    ports:
+      - 8082:8080
+    networks:
+      - hocs-network
+    command: /app/scripts/run.sh
+    volumes:
+      - ../hocs-data/data/:/app/data/
 
 networks:
-  alf-network:
+  hocs-network:
 
 volumes:
-  dbdata: {}
+  pgalfdata: {}

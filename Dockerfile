@@ -21,7 +21,8 @@ RUN yum install -y \
     libreoffice-draw \
     libreoffice-impress \
     libreoffice-writer \
-    libreoffice-calc
+    libreoffice-calc \
+    zip
 RUN yum clean all
 
 ENV ALF_DOWNLOAD_URL https://download.alfresco.com/release/community/4.2.f-build-00012/alfresco-community-4.2.f.zip
@@ -55,17 +56,15 @@ WORKDIR $ALF_HOME
 RUN set -x \
     	&& ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
         && mkdir -p $CATALINA_HOME/conf/Catalina/localhost \
-        && mv $DIST/web-server/shared tomcat/ \
-        && mv $DIST/web-server/lib/*.jar tomcat/lib/ \
         && mv $DIST/web-server/webapps/alfresco.war tomcat/webapps/ \
-        && mv $DIST/web-server/webapps/share.war tomcat/webapps/ \
         && mv $DIST/bin . \
-        && mv $DIST/licenses . \
-        && mv $DIST/README.txt . \
         && rm -rf $CATALINA_HOME/webapps/docs \
         && rm -rf $CATALINA_HOME/webapps/examples \
-        && mkdir $CATALINA_HOME/shared/lib $ALF_HOME/amps_share \
         && rm -rf $DIST
+
+RUN zip -d tomcat/webapps/alfresco.war "WEB-INF/lib/httpclient-4.1.1.jar"
+RUN zip -d tomcat/webapps/alfresco.war "WEB-INF/lib/httpclient-cache-4.1.1.jar"
+RUN zip -d tomcat/webapps/alfresco.war "WEB-INF/lib/httpcore-4.1.3.jar"
 
 COPY assets/tomcat/catalina.properties tomcat/conf/catalina.properties
 COPY assets/tomcat/setenv.sh tomcat/bin/setenv.sh

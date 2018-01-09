@@ -1,152 +1,176 @@
-/*
- * Copyright (C) 2009 Alfresco Software Limited.
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package uk.gov.homeoffice.cts.storage;
-
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import org.alfresco.repo.content.AbstractContentReader;
 import org.alfresco.service.cmr.repository.ContentIOException;
 import org.alfresco.service.cmr.repository.ContentReader;
+import org.alfresco.service.cmr.repository.ContentStreamListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jets3t.service.S3Service;
-import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.model.S3Bucket;
-import org.jets3t.service.model.S3Object;
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 /**
- * Provides READ services against an S3 content store.
- * 
- * @author Luis Sala
+ * S3 Content Reader
+ *
+ * @author Marcus Svartmark
  */
-@SuppressWarnings("deprecation")
-public class S3ContentReader extends AbstractContentReader {
+public class S3ContentReader extends AbstractContentReader implements AutoCloseable {
+
+	private static final Log LOG = LogFactory.getLog(S3ContentReader.class);
+
+	private final String key;
+	private final AmazonS3 s3Client;
+	private final String bucket;
+	private S3Object s3Object;
+	private ObjectMetadata s3ObjectMetadata;
 
 	/**
-	 * message key for missing content. Parameters are
-	 * <ul>
-	 * <li>{@link org.alfresco.service.cmr.repository.NodeRef NodeRef}</li>
-	 * <li>{@link ContentReader ContentReader}</li>
-	 * </ul>
+	 * @param key the key to use when looking up data
+	 * @param s3Client the s3 client to use for the connection
+	 * @param contentUrl the content URL - this should be relative to the root of
+	 * the store
+	 * @param bucket the s3 bucket name
 	 */
-	public static final String MSG_MISSING_CONTENT = "content.content_missing";
-
-	private static final Log logger = LogFactory.getLog(S3ContentReader.class);
-
-	private S3Object objectDetails;
-	
-	private String nodeUrl;
-
-	private S3Service s3;
-	
-	private S3Bucket bucket;
-	
-	/**
-	 * Constructor that builds a URL based on the absolute path of the file.
-	 * 
-	 * @param nodeUrl
-	 *            url of the content node.
-	 */
-	public S3ContentReader(String nodeUrl, S3Service s3, S3Bucket bucket) {
-		super(nodeUrl);
-		this.nodeUrl = nodeUrl;
-		this.s3 = s3;
+	protected S3ContentReader(String key, String contentUrl, AmazonS3 s3Client, String bucket) {
+		super(contentUrl);
+		this.key = key;
+		this.s3Client = s3Client;
 		this.bucket = bucket;
-		getDetails();
+		//Do not initialize the s3 object on reader init. Use lazy initalization
+	}
+
+	/**
+	 * Close file object
+	 *
+	 * @throws IOException Throws exception on error
+	 */
+	protected void closeFileObject() throws IOException {
+		if (s3Object != null) {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Closing s3 file object for reader " + key);
+			}
+			s3Object.close();
+			s3Object = null;
+		}
+	}
+
+	/**
+	 * Lazy initialize the file object
+	 */
+	protected void lazyInitFileObject() {
+		if (s3Object == null) {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Lazy init for file object for " + bucket + " - " + key);
+			}
+			this.s3Object = getObject();
+		}
+	}
+
+	/**
+	 * Lazy initialize the file metadata
+	 */
+	protected void lazyInitFileMetadata() {
+		if (s3ObjectMetadata == null) {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Lazy init for file metadata for " + bucket + " - " + key);
+			}
+
+			if (s3Object != null) {
+				s3ObjectMetadata = s3Object.getObjectMetadata();
+			} else {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("GETTING OBJECT METADATA - BUCKET: " + bucket + " KEY: " + key);
+				}
+				s3ObjectMetadata = s3Client.getObjectMetadata(bucket, key);
+			}
+		}
 	}
 
 	@Override
 	protected ContentReader createReader() throws ContentIOException {
-		logger.debug("S3ContentReader.createReader() invoked for contentUrl="+nodeUrl);
-		return new S3ContentReader(nodeUrl, s3, bucket);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Called createReader for contentUrl -> " + getContentUrl() + ", Key: " + key);
+		}
+		return new S3ContentReader(key, getContentUrl(), s3Client, bucket);
 	}
 
 	@Override
 	protected ReadableByteChannel getDirectReadableChannel() throws ContentIOException {
+		lazyInitFileObject();
+		if (!exists()) {
+			throw new ContentIOException("Content object does not exist on S3");
+		}
+
 		try {
-			// Confirm the requested object exists
-			if (!exists()) {
-				throw new ContentIOException("Content object does not exist");
-			}
-			logger.debug("S3ContentReader Obtaining Input Stream: nodeUrl="+nodeUrl);
-			// Get the object and retrieve the input stream
-			S3Object object = s3.getObject(bucket, nodeUrl);
-			ReadableByteChannel channel = null;
-			InputStream is = object.getDataInputStream();
-			channel = Channels.newChannel(is);
-			logger.debug("S3ContentReader Success Obtaining Input Stream: nodeUrl="+nodeUrl);
-			return channel;
-		} catch (Throwable e) {
-			throw new ContentIOException("Failed to open channel: " + this, e);
+			//We need to close the s3 object so to ensure that the thread pools are updated
+			ContentStreamListener s3StreamListener = new ContentStreamListener() {
+				@Override
+				public void contentStreamClosed() throws ContentIOException {
+					try {
+						LOG.trace("Closing s3 object stream on content stream closed.");
+						closeFileObject();
+					} catch (IOException e) {
+						throw new ContentIOException("Failed to close underlying s3 object", e);
+					}
+				}
+			};
+			this.addListener(s3StreamListener);
+			return Channels.newChannel(s3Object.getObjectContent());
+		} catch (Exception e) {
+			throw new ContentIOException("Unable to retrieve content object from S3", e);
 		}
-	} // end getDirectReadableByteChannel()
 
+	}
+
+	@Override
 	public boolean exists() {
-		return (objectDetails != null);
-	} // end exists()
+		lazyInitFileMetadata();
+		return s3ObjectMetadata != null;
+	}
 
+	@Override
 	public long getLastModified() {
-		
-		if (objectDetails == null) {
-			return 0L;
-		}
-		
-		return objectDetails.getLastModifiedDate().getTime();
-	} // end getLastModified()
-
-	public long getSize() {
+		lazyInitFileMetadata();
 		if (!exists()) {
 			return 0L;
 		}
-		try {
-			return objectDetails.getContentLength();
-		} catch (Exception e) {
-			return 0L;
-		}
+
+		return s3ObjectMetadata.getLastModified().getTime();
+
 	}
 
-
-	/**
-	 * Gets information on a stream. Returns headers from the response.
-	 * 
-	 * @return Header[] array of http headers from the response
-	 */
-	private void getDetails() {
-		if (objectDetails != null) {
-			// Info already fetched, so don't do this again.
-			return;
+	@Override
+	public long getSize() {
+		lazyInitFileMetadata();
+		if (!exists()) {
+			return 0L;
 		}
-		
+
+		return s3ObjectMetadata.getContentLength();
+	}
+
+	private S3Object getObject() {
+
+		S3Object object = null;
+
 		try {
-			objectDetails = s3.getObjectDetails(bucket, nodeUrl);
-		} catch (S3ServiceException e) {
-			logger.warn("S3ContentReader Failed to get Object Details: " + e.getMessage());
-			//e.printStackTrace();
-		} finally {
-			cleanup();
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("GETTING OBJECT - BUCKET: " + bucket + " KEY: " + key);
+			}
+			object = s3Client.getObject(bucket, key);
+		} catch (Exception e) {
+			LOG.error("Unable to fetch S3 Object", e);
 		}
-	} // end info()
 
-	// Cleanup any necessary resources
-	private void cleanup() {
-		// TODO Perform any cleanup operations
-	} // end cleanup
+		return object;
+	}
 
-} // end class S3ContentReader
+	@Override
+	public void close() throws Exception {
+		closeFileObject();
+	}
+}
