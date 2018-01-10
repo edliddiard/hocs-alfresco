@@ -56,10 +56,10 @@
             init-method="init"
             destroy-method="shutdown">
         <!--  maxUsageMB: the maximum disk usage that should be used for cached content files -->
-        <property name="maxUsageMB" value="61440"/>
+        <property name="maxUsageMB" value="4096"/>
 
         <!-- maxFileSizeMB: files larger than this size will not be kept in the cache -->
-        <property name="maxFileSizeMB" value="100"/>
+        <property name="maxFileSizeMB" value="1024"/>
 
         <property name="cache" ref="contentCache"/>
         <property name="cleaner" ref="cachedContentCleaner"/>
@@ -91,7 +91,7 @@
     <bean id="cachedContentCleaner"
           class="org.alfresco.repo.content.caching.cleanup.CachedContentCleaner"
           init-method="init">
-        <property name="minFileAgeMillis" value="${system.content.caching.minFileAgeMillis}"/>
+        <property name="minFileAgeMillis" value="${system.content.caching.minFileAgeInMillis}"/>
         <property name="maxDeleteWatchCount" value="${system.content.caching.maxDeleteWatchCount}"/>
         <property name="cache" ref="contentCache"/>
         <property name="usageTracker" ref="standardQuotaManager"/>

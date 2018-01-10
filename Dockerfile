@@ -17,11 +17,6 @@ RUN yum install -y \
     sed \
     wget \
     mysql \
-    libreoffice-headless \
-    libreoffice-draw \
-    libreoffice-impress \
-    libreoffice-writer \
-    libreoffice-calc \
     zip
 RUN yum clean all
 

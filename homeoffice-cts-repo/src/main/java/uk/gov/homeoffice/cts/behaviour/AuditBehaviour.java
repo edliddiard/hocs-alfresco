@@ -28,8 +28,11 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
     @Override
     public void onUpdateProperties(final NodeRef nodeRef, final Map<QName, Serializable> before, final Map<QName, Serializable> after) {
 
-        AuditMessage auditMessage = new AuditMessage(after);
-        postMessage(auditMessage);
+        // allow alfresco to run without reporting service
+        if(getReportingEndpoint() != null && getReportingEndpoint() != "") {
+            AuditMessage auditMessage = new AuditMessage(after);
+            postMessage(auditMessage);
+        }
     }
 
     public String getReportingEndpoint(){ return  reportingEndpoint;}

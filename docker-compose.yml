@@ -14,20 +14,22 @@ services:
       MYSQL_USER: alfresco
       MYSQL_PASSWORD: alfresco
     restart: always
+    tmpfs:
+      - /var/lib/mysql
 
-  postgres:
-    image: postgres
-    ports:
-      - 5432:5432
+  s3creator:
+    image: garland/aws-cli-docker
     networks:
       - hocs-network
+    entrypoint: "aws --endpoint-url http://localstack:80 s3 mb s3://UNSET"
     environment:
-     POSTGRES_USER: root
-     POSTGRES_PASSWORD: dev
-    volumes:
-      - pgalfdata:/var/lib/postgresql
+      AWS_ACCESS_KEY_ID: UNSET
+      AWS_SECRET_ACCESS_KEY: UNSET
+      AWS_DEFAULT_REGION: eu-west-1
+    depends_on:
+     - localstack
 
-  alfresco.localstack:
+  localstack:
     image: localstack/localstack:latest
     ports:
       - 4572:80
@@ -46,41 +48,23 @@ services:
       ALF_S3_ACCESSKEY: UNSET
       ALF_S3_SECRETKEY: UNSET
       ALF_S3_BUCKETNAME: UNSET
-      ALF_S3_HOSTNAME: alfresco.localstack
+      ALF_S3_HOSTNAME: localstack
       ALF_DB_USERNAME: alfresco
       ALF_DB_PASSWORD: alfresco
       ALF_DB_NAME: alfresco
       ALF_DB_HOST: mysql
       ALF_DB_PORT: 3306
       ALF_ADMIN_INITIAL_PASSWORD: 209c6174da490caeb422f3fa5a7ae634
-      ALF_REPORTING_ENDPOINT: reporting:8080
+      ALF_REPORTING_ENDPOINT:
     depends_on:
+      - s3creator
       - mysql
-      - reporting
     ports:
       - 8083:8080
     networks:
       - hocs-network
-
-  reporting:
-    image: quay.io/ukhomeofficedigital/hocs-reporting-service
-    environment:
-      spring.profiles.active: postgres
-      db.host: postgres
-      db.username: root
-      db.password: dev
-    depends_on:
-      - postgres
-    ports:
-      - 8082:8080
-    networks:
-      - hocs-network
-    command: /app/scripts/run.sh
-    volumes:
-      - ../hocs-data/data/:/app/data/
+    tmpfs:
+      /usr/local/alfresco/alf_data
 
 networks:
   hocs-network:
-
-volumes:
-  pgalfdata: {}
