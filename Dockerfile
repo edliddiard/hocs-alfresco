@@ -28,8 +28,6 @@ RUN set -x \
         && rm -rf $CATALINA_HOME/webapps/examples \
         && rm -rf $DIST
 
-ADD assets/alfresco/lib/*.jar $CATALINA_HOME/lib/
-
 COPY assets/tomcat/catalina.properties tomcat/conf/catalina.properties
 COPY assets/tomcat/setenv.sh tomcat/bin/setenv.sh
 COPY assets/tomcat/server.xml tomcat/conf/server.xml
