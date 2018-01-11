@@ -2,6 +2,13 @@ version: '3.1'
 
 services:
 
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - hocs-network
+
   mysql:
     image: mysql
     ports:
@@ -27,7 +34,7 @@ services:
       AWS_SECRET_ACCESS_KEY: UNSET
       AWS_DEFAULT_REGION: eu-west-1
     depends_on:
-     - localstack
+      - localstack
 
   localstack:
     image: localstack/localstack:latest
@@ -59,6 +66,7 @@ services:
     depends_on:
       - s3creator
       - mysql
+      - redis
     ports:
       - 8083:8080
     networks:

@@ -18,7 +18,10 @@
 <!-- The contents of this file will be loaded for each web application -->
 <Context>
 
-<!--
+    <Valve className="com.radiadesign.catalina.session.RedisSessionHandlerValve" />
+    <Manager className="com.radiadesign.catalina.session.RedisSessionManager" host="redis" port="6379" />
+
+<!--c
     <Manager className="de.javakaffee.web.msm.MemcachedBackupSessionManager"
 	memcachedNodes="n1:php01:11211,n2:php02.11211"
 	sticky="true"
