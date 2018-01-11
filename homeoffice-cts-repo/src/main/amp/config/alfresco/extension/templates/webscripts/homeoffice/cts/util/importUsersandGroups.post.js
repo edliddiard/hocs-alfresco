@@ -72,34 +72,55 @@ function importUsers(){
 
 /* ------------- Permissions ------------- */
 function importPermissions() {
-    for (var k = 0; k < permissions.length; k++) {
-        var folder = permissions[k].folderName,
-            groupPermissionsArray = permissions[k].permissions,
-            ctsFolder = companyhome.childByNamePath("CTS"),
-            casesFolders = ctsFolder.childByNamePath("Cases"),
-            correspondenceType = casesFolders.childByNamePath(folder);
 
-        /* If the folder doesn't exist, create it */
-        if ((correspondenceType == '' | correspondenceType == null) && folder != 'Cases') {
-            correspondenceType = casesFolders.createFolder(folder, "cm:folder");
-            reportLog(folder + ' created');
+    reportLog('Applying permission sets');
+
+    var ctsFolder = companyhome.childByNamePath('CTS'),
+        casesFolder = ctsFolder.childByNamePath('Cases'),
+        autoCreateFolder = ctsFolder.childByNamePath('Auto Create'),
+        standardLinesFolder = ctsFolder.childByNamePath('Standard Lines'),
+        documentTemplatesFolder = ctsFolder.childByNamePath('Document Templates');
+
+    for (var i = 0; i < permissions.length; i ++) {
+        var folderName = permissions[i].folderName,
+            folder = null,
+            permissionsArray = permissions[i].permissions;
+
+        switch(folderName) {
+            case 'Cases':
+                if(casesFolder == null)
+                    casesFolder = ctsFolder.createFolder(folderName, "cm:folder");
+                folder = casesFolder;
+                break;
+            case 'Standard Lines':
+                if(standardLinesFolder == null)
+                    standardLinesFolder = ctsFolder.createFolder(folderName, "cm:folder");
+                folder = standardLinesFolder;
+                break;
+            case 'Document Templates':
+                if(documentTemplatesFolder == null)
+                    documentTemplatesFolder = ctsFolder.createFolder(folderName, "cm:folder");
+                folder = documentTemplatesFolder;
+                break;
+            case 'Auto Create':
+                if(autoCreateFolder == null)
+                    autoCreateFolder = ctsFolder.createFolder(folderName, "cm:folder");
+                folder = autoCreateFolder;
+                break;
+            default:
+                reportLog(folderName + ' not created, unsupported folder')
         }
 
-        /* Permissions for correspondence types folders */
-        for (var p = 0; p < groupPermissionsArray.length; p++) {
-
-            var nameOfGroup = groupPermissionsArray[p].groupName,
-                groupPermissions = groupPermissionsArray[p].groupPermission;
-
-            if (folder == 'Cases') {
-                addPermissions(casesFolders, nameOfGroup, groupPermissions, folder);
-            } else {
-                addPermissions(correspondenceType, nameOfGroup, groupPermissions, folder);
+        if (folder !== null) {
+            for (var j = 0; j < permissionsArray.length; j++) {
+                var nameOfGroup = permissionsArray[j].groupName,
+                    permission = permissionsArray[j].groupPermission;
+                addPermissions(folder, nameOfGroup, permission, folderName);
             }
-
-
-
+        } else {
+            reportLog('Permissions will not be set for ' + folderName + ' unsupported folder')
         }
+
     }
 }
 
@@ -187,8 +208,8 @@ function extendPasswordExpiry() {
     var users = search.luceneSearch('TYPE:"cm:person"');
 
     for(var i = 0 ; i < users.length ; i++) {
-        reportLog("Password expiry" + expireDate.toString())
-        var user = users[i]
+        reportLog("Password expiry" + expireDate.toString());
+        var user = users[i];
         user.properties["{http://cts-beta.homeoffice.gov.uk/model/user/1.0}passwordExpiryDate"] = expireDate;
         user.save();
     }
