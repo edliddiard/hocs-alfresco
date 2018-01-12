@@ -5,6 +5,7 @@ RUN yum update -y \
     unzip \
     sed \
     zip \
+    tar \
     && yum clean all
 
 ENV ALF_HOME /usr/local/alfresco
@@ -13,21 +14,29 @@ ENV CATALINA_HOME /usr/local/tomcat
 ENV DIST /tmp/alfresco
 ENV PATH $CATALINA_HOME/bin:$ALF_HOME/bin:$PATH
 
-ADD assets/tomcat/apache-tomcat-7.0.82.tar.gz $CATALINA_HOME
-ADD assets/alfresco/alfresco42.tar $DIST
+RUN mkdir -p $CATALINA_HOME && mkdir -p ALF_HOME && mkdir -p $DIST
+
+COPY assets/tomcat/apache-tomcat-7.0.82.tar.gz $DIST/apache-tomcat-7.0.82.tar.gz
+RUN tar xvC $CATALINA_HOME -f $DIST/apache-tomcat-7.0.82.tar.gz
+
+COPY assets/alfresco/alfresco42.tar $DIST/alfresco42.tar
+RUN tar xvC $DIST -f $DIST/alfresco42.tar
 
 WORKDIR $ALF_HOME
 
-RUN ls $DIST
-
 RUN set -x \
-        && ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
-        && cp $DIST/web-server/webapps/alfresco.war tomcat/webapps/alfresco.war \
-        && cp $DIST/bin . \
+    	&& ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
+        && mkdir -p $CATALINA_HOME/conf/Catalina/localhost \
+        && mv $DIST/web-server/shared tomcat/ \
+        && mv $DIST/web-server/lib/*.jar tomcat/lib/ \
+        && mv $DIST/web-server/webapps/alfresco.war tomcat/webapps/ \
+        && mv $DIST/bin . \
+        && mv $DIST/licenses . \
+        && mv $DIST/README.txt . \
         && rm -rf $CATALINA_HOME/webapps/docs \
         && rm -rf $CATALINA_HOME/webapps/examples \
+        && mkdir $CATALINA_HOME/shared/lib $ALF_HOME/amps_share \
         && rm -rf $DIST
-
 
 RUN zip -d tomcat/webapps/alfresco.war "WEB-INF/lib/httpclient-4.1.1.jar"
 RUN zip -d tomcat/webapps/alfresco.war "WEB-INF/lib/httpclient-cache-4.1.1.jar"
@@ -51,8 +60,8 @@ COPY assets/alfresco/share-config-custom.xml tomcat/shared/classes/alfresco/web-
 # AMPS installation
 COPY homeoffice-cts-repo/target/homeoffice-cts-repo.amp amps/homeoffice-cts-repo.amp
 COPY assets/alfresco/entrypoint.sh entrypoint.sh
-
 RUN bash ./bin/apply_amps.sh -force -nobackup && chmod +x  entrypoint.sh
+
 ENTRYPOINT ["./entrypoint.sh"]
 
 EXPOSE 8080
