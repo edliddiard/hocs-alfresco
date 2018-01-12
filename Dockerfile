@@ -25,7 +25,7 @@ RUN set -x \
 RUN set -x \
 	&& mkdir -p $ALF_HOME \
 	&& mkdir -p $DIST \
-	&& wget $ALF_DOWNLOAD_URL \
+	&& curl -fSL "$ALF_DOWNLOAD_URL" -o alfresco-community-4.2.f.zip \
 	&& unzip alfresco-community-4.2.f.zip -d /tmp/alfresco \
 	&& rm -f alfresco-community-4.2.f.zip
 
