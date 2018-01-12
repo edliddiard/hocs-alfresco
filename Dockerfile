@@ -20,7 +20,7 @@ WORKDIR $ALF_HOME
 
 RUN set -x \
         && ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
-        && mv $DIST/web-server/webapps/alfresco.war tomcat/webapps/ \
+        && mv $DIST/web-server/webapps/alfresco.war tomcat/webapps/alfresco.war \
         && mv $DIST/bin . \
         && rm -rf $CATALINA_HOME/webapps/docs \
         && rm -rf $CATALINA_HOME/webapps/examples \
