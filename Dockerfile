@@ -19,8 +19,8 @@ RUN mkdir -p $CATALINA_HOME && mkdir -p ALF_HOME && mkdir -p $DIST
 COPY assets/tomcat/apache-tomcat-7.0.82.tar.gz $DIST/apache-tomcat-7.0.82.tar.gz
 RUN tar xvC $CATALINA_HOME -f $DIST/apache-tomcat-7.0.82.tar.gz
 
-COPY assets/alfresco/alfresco42.tar $DIST/alfresco42.tar
-RUN tar xvC $DIST -f $DIST/alfresco42.tar
+COPY assets/alfresco/alfresco42.tar.gz $DIST/alfresco42.tar.gz
+RUN tar xvC $DIST -f $DIST/alfresco42.tar.gz
 
 WORKDIR $ALF_HOME
 
