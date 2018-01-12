@@ -19,7 +19,7 @@ RUN set -x \
 	&& curl -fSL "$TOMCAT_TGZ_URL" -o tomcat.tar.gz \
 	&& curl -fSL "$TOMCAT_TGZ_URL.asc" -o tomcat.tar.gz.asc \
 	&& tar -xvf tomcat.tar.gz --strip-components=1 -C $CATALINA_HOME \
-	&& rm tomcat.tar.gz*
+	&& rm -f tomcat.tar.gz*
 
 
 RUN set -x \
