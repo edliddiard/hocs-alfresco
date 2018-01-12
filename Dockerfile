@@ -18,10 +18,12 @@ ADD assets/alfresco/alfresco42.tar $DIST
 
 WORKDIR $ALF_HOME
 
+RUN ls $DIST
+
 RUN set -x \
         && ln -s /usr/local/tomcat /usr/local/alfresco/tomcat \
-        && mv $DIST/web-server/webapps/alfresco.war tomcat/webapps/alfresco.war \
-        && mv $DIST/bin . \
+        && cp $DIST/web-server/webapps/alfresco.war tomcat/webapps/alfresco.war \
+        && cp $DIST/bin . \
         && rm -rf $CATALINA_HOME/webapps/docs \
         && rm -rf $CATALINA_HOME/webapps/examples \
         && rm -rf $DIST
