@@ -4,29 +4,21 @@ function reportLog(log) {
     scriptLog.push(log);
 }
 
-var production_check = people.getGroup("GROUP_THIS_IS_NOT_PRODUCTION");
-// if group exists, delete them
-if (production_check == null) {
-    status.code = 403;
-    status.message = "This cannot be executed on production. A group must be created called THIS_IS_NOT_PRODUCTION";
-    status.redirect = true;
-} else {
+var requestJson = requestbody.content,
+    exportJson = eval('(' + requestJson + ')'),
+    users = exportJson.users,
+    units = exportJson.units,
+    permissions = exportJson.permissions,
+    userName = '',
+    createdGroup;
 
-    var requestJson = requestbody.content,
-        exportJson = eval('(' + requestJson + ')'),
-        users = exportJson.users,
-        units = exportJson.units,
-        permissions = exportJson.permissions,
-        userName = '',
-        createdGroup;
+//importUnitsAndGroups();
+importUsers();
+importPermissions();
+//extendPasswordExpiry();
 
-    //importUnitsAndGroups();
-    importUsers();
-    importPermissions();
-    //extendPasswordExpiry();
+model.report = scriptLog;
 
-    model.report = scriptLog;
-}
 
 /* ------------- Units and Groups ------------- */
 function importUnitsAndGroups() {

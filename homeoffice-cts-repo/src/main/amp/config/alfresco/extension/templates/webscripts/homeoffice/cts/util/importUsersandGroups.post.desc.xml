@@ -4,12 +4,12 @@
 
   <p>@method POST</p>
 
-  <p>URL: /importUsersandGroups/</p>
+  <p>URL: /importUsersandGroups</p>
 
   <p></p>
   ]]>
     </description>
-    <url>/importUsersAndGroups/</url>
+    <url>/importUsersAndGroups</url>
     <format default="json">any</format>
     <authentication>user</authentication>
 </webscript>
