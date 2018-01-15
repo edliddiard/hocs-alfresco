@@ -5,20 +5,8 @@ function reportLog(log) {
 	scriptLog.push(log);
 }
 
-var production_check = people.getGroup("GROUP_THIS_IS_NOT_PRODUCTION");
-// if group exists, delete them
-if (production_check == null) {
-	status.code = 403;
-	status.message = "This cannot be executed on production. A group must be created called THIS_IS_NOT_PRODUCTION";
-	status.redirect = true;
-} else {
-
 	listAllUsersAndExtendPassword();
 	model.report = scriptLog;
-}
-
-
-
 
 function listAllGroupNodes() {
 
