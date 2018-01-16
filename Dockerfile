@@ -2,7 +2,7 @@ FROM quay.io/ukhomeofficedigital/openjdk8
 
 
 RUN yum update -y \
-    && yum install -y unzip sed zip tar \
+    && yum install -y unzip sed zip tar mysql \
     && yum clean all
 
 ENV ALF_DOWNLOAD_URL https://download.alfresco.com/release/community/4.2.f-build-00012/alfresco-community-4.2.f.zip
