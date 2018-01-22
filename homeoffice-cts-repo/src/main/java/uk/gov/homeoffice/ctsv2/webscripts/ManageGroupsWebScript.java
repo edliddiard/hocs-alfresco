@@ -32,7 +32,7 @@ public class ManageGroupsWebScript extends AbstractWebScript {
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
-        LOGGER.debug("Running ImportTopicListWebScript");
+        LOGGER.debug("Running ManageGroupsWebScript");
 
         res.setContentType("application/json; charset=UTF-8");
         res.setContentEncoding("UTF-8");
@@ -83,7 +83,7 @@ public class ManageGroupsWebScript extends AbstractWebScript {
         } catch (IOException | JSONException e) {
             handleError(res, jsonRecord, e);
         }
-        LOGGER.debug("Completed ImportTopicListWebScript");
+        LOGGER.debug("Completed ManageGroupsWebscript");
     }
 
     private void handleError(WebScriptResponse res, JSONObject jsonObject1, Exception e) throws IOException {
