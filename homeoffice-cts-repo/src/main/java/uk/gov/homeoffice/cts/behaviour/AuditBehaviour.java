@@ -41,7 +41,7 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
 
         // allow alfresco to run without reporting service
         if(getReportingEndpoint() != null && getReportingEndpoint() != "") {
-            if(!before.equals(after)) {
+            if(!before.entrySet().equals(after.entrySet())) {
                 AuditMessage auditMessage = new AuditMessage(after);
                 try {
                     postMessage(auditMessage);

@@ -38,18 +38,25 @@ public class GetMinutesWebScript extends DeclarativeWebScript {
 
         LOGGER.debug("CASEMIN Retrieving system minute times: " + tDelta);
 
+        List<CtsMinute> completeList = new ArrayList<>();
+        completeList.addAll(minutes);
+
         //get comments into a List<CtsMinute> as well, combine and sort
         tStart = System.currentTimeMillis();
         List<CtsMinute> manualMinutes = getManualMinutes().getManualMinutes(new NodeRef(n));
+        for(CtsMinute min : manualMinutes)
+        {
+            if(min.getText().equals("Viewed Case"))
+            {
+                min.setMinuteType("system");
+            }
+            completeList.add(min);
+        }
         tEnd = System.currentTimeMillis();
 
         long tDelta_two = tEnd - tStart;
 
         LOGGER.debug("CASEMIN Retrieving manual minute times: " + tDelta_two);
-        
-        List<CtsMinute> completeList = new ArrayList<>();
-        completeList.addAll(minutes);
-        completeList.addAll(manualMinutes);
 
         Collections.sort(completeList,Collections.reverseOrder());
 
