@@ -46,7 +46,7 @@ public class GetMinutesWebScript extends DeclarativeWebScript {
         List<CtsMinute> manualMinutes = getManualMinutes().getManualMinutes(new NodeRef(n));
         for(CtsMinute min : manualMinutes)
         {
-            if(min.getText().equals("Viewed Case"))
+            if(min.getText().startsWith("Viewed Case"))
             {
                 min.setMinuteType("system");
             }
