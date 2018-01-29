@@ -59,12 +59,15 @@
                             task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
                             execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
                                 for (var i = 0; i < bpm_package.children.length; i++) {
-                                     execution.setVariable('bpm_case_id', bpm_package.children[i].nodeRef);
-                                     logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Initial Case");
-                                     bpm_package.children[i].properties['cts:caseStatus'] = 'New';
-                                     bpm_package.children[i].properties['cts:caseTask'] = 'Create case';
-                                     bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"QA","value": "Next","manualAllocate": true,"allocateHeader": "Allocate for QA case","colour": "green"}],"mandatoryFields":[{"name":"member","message":"Member in the Reply to section must be populated", "expression":"notBlank(case.member) or form.correspondentIsMemberOfParliament !== 1"},{"name":"correspondentSurname","message":"Correspondent in the Reply to section must be populated", "expression":"notBlank(case.correspondentSurname) or form.correspondentIsMemberOfParliament !== 0"},{"name":"dateOfLetter", "message":"Date of letter must be populated"}]}';
-                                     bpm_package.children[i].save();
+                                    execution.setVariable('bpm_case_id', bpm_package.children[i].nodeRef);
+                                    logger.log("ID: "+execution.getVariable('bpm_case_id')+" Sending to stage: Initial Case");
+                                    bpm_package.children[i].properties['cts:caseStatus'] = 'New';
+                                    bpm_package.children[i].properties['cts:caseTask'] = 'Create case';
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"QA","value": "Next","manualAllocate": true,"allocateHeader": "Allocate for QA case","colour": "green"}],"mandatoryFields":[{"name":"member","message":"Member in the Reply to section must be populated", "expression":"notBlank(case.member) or form.correspondentIsMemberOfParliament !== 1"},{"name":"correspondentSurname","message":"Correspondent in the Reply to section must be populated", "expression":"notBlank(case.correspondentSurname) or form.correspondentIsMemberOfParliament !== 0"},{"name":"dateOfLetter", "message":"Date of letter must be populated"}]}';
+                                    bpm_package.children[i].save();
+                                    execution.setVariable('bpm_initial_unit', bpm_package.children[i].properties['cts:assignedUnit']);
+                                    execution.setVariable('bpm_initial_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                    execution.setVariable('bpm_initial_team', bpm_package.children[i].properties['cts:assignedTeam']);
                                 }
                             ]]></activiti:string>
                     </activiti:field>
@@ -119,6 +122,9 @@
                                         bpm_package.children[i].properties['cts:caseStatus'] = 'New';
                                         bpm_package.children[i].properties['cts:caseTask'] = 'Create case';
                                         bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"QA","value": "Next","manualAllocate": true,"allocateHeader": "Allocate for QA case","colour": "green"}],"mandatoryFields":[{"name":"replyTo:member","message":"Member in the Reply to section must be populated", "expression":"notBlank(case.member) or form.correspondentIsMemberOfParliament !== 1"},{"name":"correspondentSurname","message":"Correspondent in the Reply to section must be populated", "expression":"notBlank(case.correspondentSurname) or form.correspondentIsMemberOfParliament !== 0"},{"name":"dateOfLetter", "message":"Date of letter must be populated"}]}';
+                                        bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_initial_unit');
+                                        bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_initial_team');
+                                        bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_initial_user');
                                         bpm_package.children[i].save();
                                     }
                                 }

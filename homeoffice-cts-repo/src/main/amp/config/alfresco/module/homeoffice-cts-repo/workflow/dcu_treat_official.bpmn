@@ -54,6 +54,9 @@
                                 bpm_package.children[i].properties['cts:caseTask'] = 'Create case';
                                 bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Allocate for QA case","value": "Next","manualAllocate": true,"allocateHeader": "Allocate for QA case","colour": "green"}],"mandatoryFields":[{"name":"correspondent","message":"Correspondent name must be populated"},{"name":"dateOfLetter", "message":"Date of letter must be populated"},{"name":"correspondentTitle","message":"Title in the Reply to section must be populated"},{"name":"correspondentSurname","message":"Surname in the Reply to section must be populated"},{"name":"correspondentPostcode","message":"Postcode in the Reply to section must be populated","expression":"notBlank(case.correspondentPostcode) or case.channel != \'No. 10\'and case.channel != \'Post\'"},{"name":"correspondentAddressLine1","message":"Address line 1 must be populated in the Reply to section","expression":"notBlank(case.correspondentAddressLine1) or case.channel != \'No. 10\' and case.channel != \'Post\'"},{"name":"correspondentEmail","message":"Email must be populated in the Reply to section if the Original channel is Email","expression":"notBlank(case.correspondentEmail) or case.channel != \'Email\'"}]}';
                                 bpm_package.children[i].save();
+                                execution.setVariable('bpm_initial_unit', bpm_package.children[i].properties['cts:assignedUnit']);
+                                execution.setVariable('bpm_initial_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                execution.setVariable('bpm_initial_team', bpm_package.children[i].properties['cts:assignedTeam']);
                             }]]>
                         </activiti:string>
                     </activiti:field>
@@ -87,6 +90,7 @@
                                 bpm_package.children[i].setOwner('admin');
                                 bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "SendQACaseToMarkup","manualAllocate": true,"allocateHeader": "Allocate for mark up","colour": "green"}, {"label":"Return","value": "Reject","manualAllocate": true,"allocateHeader": "Reallocate for amendments","colour": "red"}]}';
                                 bpm_package.children[i].save();
+
                             }]]>
                         </activiti:string>
                     </activiti:field>
@@ -106,6 +110,9 @@
                                     bpm_package.children[i].properties['cts:caseStatus'] = 'New';
                                     bpm_package.children[i].properties['cts:caseTask'] = 'Create case';
                                     bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"QA","value": "Next","manualAllocate": true,"allocateHeader": "Allocate for QA case","colour": "green"}],"mandatoryFields":[{"name":"replyTo:member","message":"Member in the Reply to section must be populated", "expression":"notBlank(case.member) or form.correspondentIsMemberOfParliament !== 1"},{"name":"correspondentSurname","message":"Correspondent in the Reply to section must be populated", "expression":"notBlank(case.correspondentSurname) or form.correspondentIsMemberOfParliament !== 0"},{"name":"dateOfLetter", "message":"Date of letter must be populated"}]}';
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_initial_unit');
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_initial_team');
+                                    bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_initial_user');
                                     bpm_package.children[i].save();
                                 }
                             }]]>
