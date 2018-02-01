@@ -139,22 +139,22 @@
                 <entry key="IMCB" value="GROUP_UKVI"/>
                 <entry key="IMCM" value="GROUP_UKVI"/>
                 <entry key="UTEN" value="GROUP_UKVI"/>
-                <entry key="COM" value="GROUP_HMPO"/>
-                <entry key="GEN" value="GROUP_HMPO"/>
-                <entry key="COL" value="GROUP_HMPO"/>
-                <entry key="COM1" value="GROUP_HMPO"/>
-                <entry key="COM2" value="GROUP_HMPO"/>
-                <entry key="DGEN" value="GROUP_HMPO"/>
-                <entry key="GNR" value="GROUP_HMPO"/>
+                <entry key="COM" value="GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS"/>
+                <entry key="GEN" value="GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS"/>
+                <entry key="COL" value="GROUP_HMPO_COLLECTIVES"/>
+                <entry key="COM1" value="GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS"/>
+                <entry key="COM2" value="GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS"/>
+                <entry key="DGEN" value="GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS"/>
+                <entry key="GNR" value="GROUP_HMPO_CORRESPONDENCE_AND_COMPLAINTS"/>
             </map>
         </property>
 
         <property name="teams">
             <map>
-                <entry key="MIN" value="GROUP_CDT"/>
-                <entry key="TRO" value="GROUP_CDT"/>
-                <entry key="DTEN" value="GROUP_CDT"/>
-                <entry key="UTEN" value="GROUP_CDT"/>
+                <entry key="MIN" value="GROUP_DCU_CENTRAL_DRAFTING_TEAM"/>
+                <entry key="TRO" value="GROUP_DCU_CENTRAL_DRAFTING_TEAM"/>
+                <entry key="DTEN" value="GROUP_DCU_CENTRAL_DRAFTING_TEAM"/>
+                <entry key="UTEN" value="GROUP_DCU_CENTRAL_DRAFTING_TEAM"/>
             </map>
         </property>
 
