@@ -329,9 +329,9 @@
                                     logger.log("Returning node to Draft response:" + bpm_package.children[i].nodeRef);
                                     bpm_package.children[i].properties['cts:caseStatus'] = 'Draft';
                                     bpm_package.children[i].properties['cts:caseTask'] = 'Amend response';
-                                    bpm_package.children[i].properties['cts:assignedUnit'] = execution.getVariable('bpm_reject_initial_draft_unit');
-                                    bpm_package.children[i].properties['cts:assignedTeam'] = execution.getVariable('bpm_reject_initial_draft_team');
-                                    bpm_package.children[i].properties['cts:assignedUser'] = execution.getVariable('bpm_reject_initial_draft_user');
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = 'GROUP_UKVI';
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = 'GROUP_UKVI_CORRESPONDENCE_QUALITY_TEAM';
+                                    bpm_package.children[i].properties['cts:assignedUser'] = null;
                                     bpm_package.children[i].save();
                                 }
                             }]]>
