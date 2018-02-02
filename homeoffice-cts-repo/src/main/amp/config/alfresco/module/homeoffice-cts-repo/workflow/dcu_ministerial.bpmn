@@ -496,7 +496,7 @@
                                     bpm_package.children[i].properties['cts:caseStatus'] = 'Obtain sign-off';
                                     bpm_package.children[i].properties['cts:caseTask'] = 'Home Sec\'s sign-off';
                                     //set owner to admin so that users don't keep edit permissions
-                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "SendHSSignOffForDispatch","manualAllocate": true,"allocateHeader": "Allocate","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Approve","value": "SendHSSignOffForDispatch","manualAllocate": false,"allocateHeader": "Allocate","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
                                     bpm_package.children[i].setOwner('admin');
                                     bpm_package.children[i].save();
                                 }
@@ -747,6 +747,9 @@
                                 task.setVariableLocal('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
                                 execution.setVariable('bpm_outcomePropertyName',qn.getQname('{http://cts-beta.homeoffice.gov.uk/model/content/1.0}draftResponse'));
                                 for (var i = 0; i < bpm_package.children.length; i++) {
+                                    bpm_package.children[i].properties['cts:assignedUnit'] = 'GROUP_DCU';
+                                    bpm_package.children[i].properties['cts:assignedTeam'] = 'GROUP_DCU_PERFORMANCE_AND_PROCESS_TEAM';
+                                    bpm_package.children[i].properties['cts:assignedUser'] = null;
                                     bpm_package.children[i].properties['cts:caseStatus'] = 'Dispatch';
                                     bpm_package.children[i].properties['cts:caseTask'] = 'Dispatch response';
                                     //set owner to admin so that users don't keep edit permissions
