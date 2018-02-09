@@ -12,7 +12,7 @@ public enum TaskStatus {
     CREATE_CASE("Create case"), MISALLOCATED("Misallocated"), QA_CASE("QA case"),MARKUP_CASE("Mark up"),
     //Draft
     DRAFT_RESPONSE("Draft response"), AMEND_RESPONSE("Amend response"), QA_REVIEW("QA review"),
-    DRAFT_AND_CLEAR("Draft and Clear"), DRAFT_DEFER("Defer"), BRING_UP("Bring Up"),
+    DRAFT_AND_CLEAR("Draft and Clear"), DRAFT_DEFER("Defer Draft"), BRING_UP("Bring Up"),
     //Approvals
     SCS_APPROVAL("SCS approval"), PERM_SEC_APPROVAL("Perm Sec approval"), SPADS_APPROVAL("SpAds approval"),
     CHECK_AND_PRINT("Check and print"), CHECK_AND_BUFF_PRINT("Check and buff print"), PARLY_APPROVAL("Parly approval"), PRIVATE_OFFICE_APPROVAL("Private Office approval"),
@@ -26,7 +26,7 @@ public enum TaskStatus {
     //OGD
     TRANSFER("Transfer"),
     //Dispatch
-    DISPATCH_RESPONSE("Dispatch response"), DISPATCH_PARLY("Parly"),  ANSWERED("Answered"), DISPATCH_DEFER("Defer"),  DISPATCHED("Dispatched");
+    DISPATCH_RESPONSE("Dispatch response"), DISPATCH_PARLY("Parly"),  ANSWERED("Answered"), DISPATCH_DEFER("Defer Dispatch"),  DISPATCHED("Dispatched");
 
     private String status;
 
