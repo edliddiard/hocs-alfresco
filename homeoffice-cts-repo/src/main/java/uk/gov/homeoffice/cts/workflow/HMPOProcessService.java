@@ -22,6 +22,7 @@ import uk.gov.homeoffice.cts.model.TaskStatus;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class HMPOProcessService {
 
@@ -60,20 +61,26 @@ public class HMPOProcessService {
 
         String now = DATE_FORMATTER.format(new DateTime().toDate());
 
-        String query = "SELECT c.cmis:objectId FROM cts:case as c WHERE c.cts:caseTask = 'Defer' AND c.cts:bringUpDate < TIMESTAMP '" + now + "'";
+        String query = "SELECT c.cmis:objectId FROM cts:case as c WHERE c.cts:caseTask LIKE 'Defer%' AND c.cts:bringUpDate < TIMESTAMP '" + now + "'";
 
-        ResultSet rs = null;
+        ResultSet resultSet = null;
         try {
-            rs = getResultSet(query);
-            for (ResultSetRow r : rs) {
-                NodeRef caseNode = r.getNodeRef();
-                nodeService.setProperty(caseNode, CtsModel.PROP_CASE_TASK, TaskStatus.BRING_UP.getStatus());
-                LOGGER.info("Status changes from Defer to Bring up for node " + caseNode);
+            resultSet = getResultSet(query);
+            LOGGER.info("Found {} deferred cases", resultSet.getNumberFound());
+            for (ResultSetRow row : resultSet) {
+                NodeRef caseNode = row.getNodeRef();
+                String caseStatus = (String)nodeService.getProperty(caseNode, CtsModel.PROP_CASE_TASK);
+                if (Objects.equals(caseStatus, TaskStatus.DRAFT_DEFER.getStatus())) {
+                    nodeService.setProperty(caseNode, CtsModel.PROP_CASE_TASK, TaskStatus.DRAFT_RESPONSE.getStatus());
+                    LOGGER.info("Setting status from Defer Draft to Draft Response for case " + caseNode);
+                } else if (Objects.equals(caseStatus, TaskStatus.DISPATCH_DEFER.getStatus())) {
+                    nodeService.setProperty(caseNode, CtsModel.PROP_CASE_TASK, TaskStatus.DISPATCH_RESPONSE.getStatus());
+                    LOGGER.info("Setting status from Defer Dispatch to Dispatch for case " + caseNode);
+                }
             }
-
         } finally {
-            if (rs != null) {
-                rs.close();
+            if (resultSet != null) {
+                resultSet.close();
             }
         }
     }
