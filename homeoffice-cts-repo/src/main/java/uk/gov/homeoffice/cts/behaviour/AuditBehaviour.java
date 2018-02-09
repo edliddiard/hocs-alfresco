@@ -40,7 +40,7 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
     public void onUpdateProperties(final NodeRef nodeRef, final Map<QName, Serializable> before, final Map<QName, Serializable> after) {
 
         // allow alfresco to run without reporting service
-        if(getReportingEndpoint() != null && getReportingEndpoint() != "") {
+        if(getReportingEndpoint() != null && !getReportingEndpoint().equals("")) {
             if(!before.entrySet().equals(after.entrySet())) {
                 AuditMessage auditMessage = new AuditMessage(after);
                 try {
@@ -88,13 +88,15 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
 
         LOGGER.info("Sending Reporting Event");
 
-        try {
-            sendViaRabbitMq(json);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("Failed to connect to RabbitMq, falling back to REST");
-            sendViaRest(json);
-        }
+        sendViaRest(json);
+
+        //try {
+            //sendViaRabbitMq(json);
+        //} catch (Exception e) {
+           // e.printStackTrace();
+            //LOGGER.error("Failed to connect to RabbitMq, falling back to REST");
+            //sendViaRest(json);
+        //}
     }
 
     private void sendViaRabbitMq(String msg) throws IOException {
