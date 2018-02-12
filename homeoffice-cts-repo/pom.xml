@@ -121,6 +121,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>uk.gov.service.notify</groupId>
+            <artifactId>notifications-java-client</artifactId>
+            <version>3.8.0-RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient-cache</artifactId>
             <version>4.5.4</version>
@@ -296,7 +301,23 @@
                 <updatePolicy>daily</updatePolicy>
             </snapshots>
         </repository>
-    </repositories>
-    <build>
-    </build>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintray-gov-uk-notify-maven</id>
+                    <name>bintray</name>
+                    <url>http://dl.bintray.com/gov-uk-notify/maven</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintray-gov-uk-notify-maven</id>
+                    <name>bintray-plugins</name>
+                    <url>http://dl.bintray.com/gov-uk-notify/maven</url>
+                </pluginRepository>
+            </pluginRepositories>
 </project>

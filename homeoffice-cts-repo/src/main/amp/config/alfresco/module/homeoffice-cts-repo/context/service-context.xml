@@ -790,6 +790,15 @@
         <property name="replyAddress">
             <value>${cts.doNotReplyAddress}</value>
         </property>
+        <property name="apiKey">
+            <value>${notify.apiKey}</value>
+        </property>
+        <property name="workFlowEmailTemplateId">
+            <value>${notify.workFlowEmailTemplateId}</value>
+        </property>
+        <property name="resetPWTemplateId">
+            <value>${notify.resetPWTemplateId}</value>
+        </property>
     </bean>
 
     <bean id="allocationService" class="uk.gov.homeoffice.cts.workflow.AllocationService">

@@ -11,5 +11,8 @@ sed -i 's/${alfresco.db.port}/'"$ALF_DB_PORT"'/' /usr/local/tomcat/shared/classe
 sed -i 's/${alfresco.db.name}/'"$ALF_DB_NAME"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 sed -i 's/${admin.initial.password}/'"$ALF_ADMIN_INITIAL_PASSWORD"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 sed -i 's/${reporting.url}/'"$ALF_REPORTING_ENDPOINT"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
+sed -i 's/${notify.apiKey}/'"$ALF_NOTIFY_APIKEY"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
+sed -i 's/${notify.workFlowEmailTemplateId}/'"$ALF_NOTIFY_WF_TEMPLATE_ID"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
+sed -i 's/${notify.resetPWTemplateId}/'"$ALF_NOTIFY_RESET_PW_TEMPLATE_ID"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 
 exec "$@"
