@@ -14,5 +14,6 @@ sed -i 's/${reporting.url}/'"$ALF_REPORTING_ENDPOINT"'/' /usr/local/tomcat/share
 sed -i 's/${notify.apiKey}/'"$ALF_NOTIFY_APIKEY"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 sed -i 's/${notify.workFlowEmailTemplateId}/'"$ALF_NOTIFY_WF_TEMPLATE_ID"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 sed -i 's/${notify.resetPWTemplateId}/'"$ALF_NOTIFY_RESET_PW_TEMPLATE_ID"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
+sed -i 's/${notify.bulkUserImportTemplateId}/'"$ALF_NOTIFY_BULK_USER_IMPORT_TEMPLATE_ID"'/' /usr/local/tomcat/shared/classes/alfresco-global.properties
 
 exec "$@"

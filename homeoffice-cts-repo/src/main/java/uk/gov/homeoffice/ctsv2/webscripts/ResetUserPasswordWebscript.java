@@ -25,8 +25,8 @@ public class ResetUserPasswordWebscript extends AbstractWebScript {
     private PersonService personService;
     private MutableAuthenticationService authenticationService;
     private EmailService emailService;
-    private String ctsMailSubjectResetUserPassword;
-    private String ctsMailTemplateResetUserPassword;
+    private String ctsUrl;
+    private String resetPWTemplateId;
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
@@ -45,9 +45,11 @@ public class ResetUserPasswordWebscript extends AbstractWebScript {
                     final String newPassword = RandomStringUtils.randomAlphanumeric(12);
                     authenticationService.setAuthentication(realUserName, newPassword.toCharArray());
 
-                    final Map<String, String> templateData = new HashMap<>();
-                    templateData.put("password", newPassword);
-                    emailService.sendEmail(realUserName, ctsMailSubjectResetUserPassword, ctsMailTemplateResetUserPassword, "/login", null, templateData);
+                    final Map<String, String> personalisation = new HashMap<>();
+                    personalisation.put("user", realUserName);
+                    personalisation.put("password", newPassword);
+                    personalisation.put("link", getCtsUrl() + "/login");
+                    emailService.sendEmail(getResetPWTemplateId(), username, personalisation);
                     LOGGER.info("Password reset for user " + realUserName);
                     success =true;
                 } else {
@@ -90,11 +92,19 @@ public class ResetUserPasswordWebscript extends AbstractWebScript {
         this.emailService = emailService;
     }
 
-    public void setCtsMailSubjectResetUserPassword(String ctsMailSubjectResetUserPassword) {
-        this.ctsMailSubjectResetUserPassword = ctsMailSubjectResetUserPassword;
+    public String getCtsUrl() {
+        return ctsUrl;
     }
 
-    public void setCtsMailTemplateResetUserPassword(String ctsMailTemplateResetUserPassword) {
-        this.ctsMailTemplateResetUserPassword = ctsMailTemplateResetUserPassword;
+    public void setCtsUrl(String ctsUrl) {
+        this.ctsUrl = ctsUrl;
+    }
+
+    public String getResetPWTemplateId() {
+        return resetPWTemplateId;
+    }
+
+    public void setResetPWTemplateId(String resetPWTemplateId) {
+        this.resetPWTemplateId = resetPWTemplateId;
     }
 }

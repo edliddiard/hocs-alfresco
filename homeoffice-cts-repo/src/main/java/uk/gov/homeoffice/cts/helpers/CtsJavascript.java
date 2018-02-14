@@ -17,24 +17,8 @@ public class CtsJavascript extends BaseProcessorExtension {
 	NodeService nodeService;
 	String dcuEmail;
 
-	public void sendEmail(String userName, String subject, String templateName, String urlExtension, NodeRef caseNodeRef, Map<String, String> additionalTemplateData) {
-		getEmailService().sendEmail(userName, subject, templateName, urlExtension, caseNodeRef, additionalTemplateData);
-	}
-	/**
-	 * Method to send response email to the person requesting information
-	 * @param caseNodeRef
-	 * @param subject
-	 * @param templateName
-	 * @param replyAddress
-	 */
-	public void sendResponseEmail(NodeRef caseNodeRef, String subject, String templateName, String replyAddress ){
-		Map<QName,Serializable> props = getNodeService().getProperties(caseNodeRef);
-		
-		if(props.get(CtsModel.PROP_HMPO_RESPONSE) != null && ((String)props.get(CtsModel.PROP_HMPO_RESPONSE)).equals(EMAIL)){
-			getEmailService().sendExternalResponseEmail(subject, templateName, caseNodeRef, replyAddress, props);
-		}else {
-			//throw an exception?
-		}
+	public void sendEmail(String templateId, String emailAddress, Map<String, String> personalisation) {
+		getEmailService().sendEmail(templateId, emailAddress, personalisation);
 	}
 	
 	public EmailService getEmailService() {

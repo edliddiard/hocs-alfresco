@@ -51,10 +51,8 @@ public class PostBulkUserImportWebScript extends DeclarativeWebScript {
     private EmailService emailService;
 
     private String ctsUrl;
-    private String mailServer;
-    private String replyAddress;
-    private String ctsMailSubjectNewUser;
-    private String ctsMailTemplateNewUser;
+
+    private String bulkUserImportTemplateId;
 
     private Boolean sendEmails = false;
 
@@ -162,11 +160,17 @@ public class PostBulkUserImportWebScript extends DeclarativeWebScript {
     protected void sendEmails() {
         if (sendEmails) {
             for (Map.Entry<String, String> user : createdUsers.entrySet()) {
-                String email = user.getKey();
+                String emailAddress = user.getKey();
                 String password = user.getValue();
                 Map<String, String> templateData = new HashMap<>();
+
+                templateData.put("user", user.getKey());
                 templateData.put("password", password);
-                emailService.sendEmail(email, ctsMailSubjectNewUser, ctsMailTemplateNewUser, "/login", null, templateData);
+                templateData.put("url", getCtsUrl() + "/login");
+
+//                Removed so that email can be sent manually
+//                emailService.sendEmail(getBulkUserImportTemplateId(), emailAddress, templateData);
+                LOGGER.info("Bulk User Import send emails - Function disabled - No emails sent");
             }
         }
     }
@@ -284,43 +288,19 @@ public class PostBulkUserImportWebScript extends DeclarativeWebScript {
         this.ctsUrl = ctsUrl;
     }
 
-    public String getMailServer() {
-        return mailServer;
-    }
-
-    public void setMailServer(String mailServer) {
-        this.mailServer = mailServer;
-    }
-
-    public String getReplyAddress() {
-        return replyAddress;
-    }
-
-    public void setReplyAddress(String replyAddress) {
-        this.replyAddress = replyAddress;
-    }
-
-    public String getCtsMailSubjectNewUser() {
-        return ctsMailSubjectNewUser;
-    }
-
-    public void setCtsMailSubjectNewUser(String ctsMailSubjectNewUser) {
-        this.ctsMailSubjectNewUser = ctsMailSubjectNewUser;
-    }
-
-    public String getCtsMailTemplateNewUser() {
-        return ctsMailTemplateNewUser;
-    }
-
-    public void setCtsMailTemplateNewUser(String ctsMailTemplateNewUser) {
-        this.ctsMailTemplateNewUser = ctsMailTemplateNewUser;
-    }
-
     public Boolean getSendEmails() {
         return sendEmails;
     }
 
     public void setSendEmails(Boolean sendEmails) {
         this.sendEmails = sendEmails;
+    }
+
+    public String getBulkUserImportTemplateId() {
+        return bulkUserImportTemplateId;
+    }
+
+    public void setBulkUserImportTemplateId(String bulkUserImportTemplateId) {
+        this.bulkUserImportTemplateId = bulkUserImportTemplateId;
     }
 }

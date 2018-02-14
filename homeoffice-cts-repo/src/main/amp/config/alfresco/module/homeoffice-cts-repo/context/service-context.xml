@@ -307,26 +307,20 @@
         <property name="actionService">
             <ref bean="ActionService"/>
         </property>
+        <property name="emailService">
+            <ref bean="EmailService"/>
+        </property>
         <property name="ctsFolderHelper">
             <ref bean="CtsFolderHelper"/>
-        </property>
-        <property name="emailJobService">
-            <ref bean="EmailJobService"/>
         </property>
         <property name="permissionService">
             <ref bean="PermissionService"/>
         </property>
-        <property name="ctsMailSubjectUser">
-            <value>${cts.mail.subject.user}</value>
+        <property name="ctsUrl">
+            <value>${cts.url}</value>
         </property>
-        <property name="ctsMailSubjectGroup">
-            <value>${cts.mail.subject.group}</value>
-        </property>
-        <property name="ctsMailTemplateUser">
-            <value>${cts.mail.template.user}</value>
-        </property>
-        <property name="ctsMailTemplateGroup">
-            <value>${cts.mail.template.group}</value>
+        <property name="workFlowEmailTemplateId">
+            <value>${notify.workFlowEmailTemplateId}</value>
         </property>
     </bean>
 
@@ -440,12 +434,10 @@
         <property name="authenticationService" ref="AuthenticationService"/>
         <property name="CtsFolderHelper" ref="CtsFolderHelper"/>
         <property name="emailService" ref="EmailService"/>
-        <property name="ctsMailSubjectNewUser">
-            <value>${cts.mail.subject.newUser}</value>
+        <property name="bulkUserImportTemplateId">
+            <value>${notify.bulkUserImportTemplateId}</value>
         </property>
-        <property name="ctsMailTemplateNewUser">
-            <value>${cts.mail.template.newUser}</value>
-        </property>
+
     </bean>
 
     <bean id="webscript.homeoffice.cts.workflow.allTeams.get" class="uk.gov.homeoffice.cts.webscripts.GetAllTeamsWebScript" parent="webscript">
@@ -781,23 +773,11 @@
         <property name="personService" ref="PersonService"/>
         <property name="nodeService" ref="NodeService"/>
         <property name="CtsFolderHelper" ref="CtsFolderHelper"/>
-        <property name="ctsUrl">
-            <value>${cts.url}</value>
-        </property>
-        <property name="mailServer">
-            <value>${mail.host}</value>
-        </property>
         <property name="replyAddress">
             <value>${cts.doNotReplyAddress}</value>
         </property>
         <property name="apiKey">
             <value>${notify.apiKey}</value>
-        </property>
-        <property name="workFlowEmailTemplateId">
-            <value>${notify.workFlowEmailTemplateId}</value>
-        </property>
-        <property name="resetPWTemplateId">
-            <value>${notify.resetPWTemplateId}</value>
         </property>
     </bean>
 
@@ -985,84 +965,17 @@
         </property>
     </bean>
 
-    <bean id="EmailJobAction" class="uk.gov.homeoffice.cts.email.EmailJobActionExecuter" parent="action-executer" init-method="init">
-        <property name="emailService" ref="EmailService"/>
-        <property name="nodeService" ref="NodeService"/>
-        <property name="emailJobService" ref="EmailJobService"/>
-        <property name="globalProperties" ref="global-properties"/>
-        <property name="publicAction" value="false"/>
-    </bean>
 
-    <bean id="EmailJobService" class="uk.gov.homeoffice.cts.email.EmailJobService">
-        <property name="nodeLocatorService" ref="nodeLocatorService"/>
-        <property name="fileFolderService" ref="FileFolderService"/>
-        <property name="emailService" ref="EmailService"/>
-        <property name="nodeService" ref="NodeService"/>
-        <property name="personService" ref="PersonService"/>
-        <property name="globalProperties" ref="global-properties"/>
-        <property name="actionService" ref="ActionService"/>
-    </bean>
-
-    <bean id="EmailJobScheduler" class="uk.gov.homeoffice.cts.email.EmailJobScheduler">
-        <property name="nodeService" ref="NodeService"/>
-        <property name="emailJobService" ref="EmailJobService"/>
-    </bean>
-
-    <bean id="emailNotificationPollerJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass">
-            <value>uk.gov.homeoffice.cts.email.EmailJobScheduler</value>
-        </property>
-        <property name="jobDataAsMap">
-            <map>
-                <entry key="globalProperties">
-                    <ref bean="global-properties"/>
-                </entry>
-                <entry key="mailJobSchedulerEnabled">
-                    <value>${cts.homeoffice.mail.mailJobSchedulerEnabled}</value>
-                </entry>
-                <entry key="mailClearFailedDuration">
-                    <value>${cts.homeoffice.mail.mailClearFailedDuration}</value>
-                </entry>
-                <entry key="mailClearSentDuration">
-                    <value>${cts.homeoffice.mail.mailClearSentDuration}</value>
-                </entry>
-                <entry key="mailMaxRetries">
-                    <value>${cts.homeoffice.mail.mailMaxRetries}</value>
-                </entry>
-                <entry key="mailRetryDuration">
-                    <value>${cts.homeoffice.mail.mailRetryDuration}</value>
-                </entry>
-                <entry key="nodeService">
-                    <ref bean="NodeService"/>
-                </entry>
-                <entry key="emailJobService">
-                    <ref bean="EmailJobService"/>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
-    <bean id="emailNotificationJobTrigger" class="org.alfresco.util.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="emailNotificationPollerJob"/>
-        </property>
-        <property name="scheduler">
-            <ref bean="schedulerFactory"/>
-        </property>
-        <property name="cronExpression">
-            <value>${cts.homeoffice.mail.mailJobSchedulerCronExpression}</value>
-        </property>
-    </bean>
 
     <bean id="webscript.homeoffice.ctsv2.users.resetPassword.get" class="uk.gov.homeoffice.ctsv2.webscripts.ResetUserPasswordWebscript" parent="webscript">
         <property name="personService" ref="PersonService"/>
         <property name="authenticationService" ref="AuthenticationService"/>
         <property name="emailService" ref="EmailService"/>
-        <property name="ctsMailSubjectResetUserPassword">
-            <value>${cts.mail.subject.resetUserPassword}</value>
+        <property name="resetPWTemplateId">
+            <value>${notify.resetPWTemplateId}</value>
         </property>
-        <property name="ctsMailTemplateResetUserPassword">
-            <value>${cts.mail.template.resetUserPassword}</value>
+        <property name="ctsUrl">
+            <value>${cts.url}</value>
         </property>
     </bean>
 
