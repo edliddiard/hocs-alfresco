@@ -488,7 +488,7 @@
                                 bpm_package.children[i].properties['cts:caseStatus'] = 'OGD';
                                 bpm_package.children[i].properties['cts:caseTask'] = 'Transfer';
                                 bpm_package.children[i].properties['cts:assignedUnit'] = 'GROUP_DCU';
-                                bpm_package.children[i].properties['cts:assignedTeam'] = 'GROUP_DCU_TRANSFERS_NO10_TEAM';
+                                bpm_package.children[i].properties['cts:assignedTeam'] = 'GROUP_DCU_PERFORMANCE_AND_PROCESS_TEAM';
                                 bpm_package.children[i].properties['cts:assignedUser'] = null;
                                 //set owner to admin so that users don't keep edit permissions
                                 bpm_package.children[i].setOwner('admin');
