@@ -58,7 +58,7 @@ if (filename == undefined || content == undefined) {
     if (file == null) {
         // check if a standard line for the topic already exists
         var def = {
-            query: "select cmis:objectId from cts:standardLine where cts:associatedTopic='" + associatedTopic.replace("'", "\\'") + "'",
+            query: "select cmis:objectId from cts:standardLine where cts:associatedTopic='" + associatedTopic.replace("'", "\\'") + "' and cts:associatedUnit='" + associatedUnit + "'",
             language: "cmis-alfresco"
         };
         var results = search.query(def);
