@@ -41,13 +41,11 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
 
         // allow alfresco to run without reporting service
         if(getReportingEndpoint() != null && !getReportingEndpoint().equals("")) {
-            if(!before.entrySet().equals(after.entrySet())) {
+            try {
                 AuditMessage auditMessage = new AuditMessage(after);
-                try {
-                    postMessage(auditMessage);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                postMessage(auditMessage);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -80,15 +78,17 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
 
         String json = "{}";
         try {
+
             json = objectMapper.writeValueAsString(auditMessage);
+
+            LOGGER.info("Sending Reporting Event");
+
+            sendViaRest(json);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            json = auditMessage.toString();
         }
 
-        LOGGER.info("Sending Reporting Event");
 
-        sendViaRest(json);
 
         //try {
             //sendViaRabbitMq(json);
@@ -122,7 +122,7 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
         ResponseEntity<String> response = restTemplate.exchange(reportingEndpoint+ "/event/add", HttpMethod.POST, httpEntity, String.class);
         if(response.getStatusCode() != HttpStatus.OK)
         {
-            LOGGER.error(msg.toString());
+            LOGGER.info(msg.toString());
         } else {
             System.out.println("Sent via Rest");
         }
