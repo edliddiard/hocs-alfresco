@@ -53,7 +53,7 @@ function importUsers(){
             email = users[j].email,
             groupNameArray = users[j].groupNameArray;
         if (!users[j].password) {
-            var password = 'Password1';
+            var password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         } else {
             var password = users[j].password;
         }
@@ -160,13 +160,13 @@ function doesGroupExist(groupName) {
     return false;
 }
 
-function createPerson(username, firstName, secondname, email, Password1, groupNameArray) {
+function createPerson(username, firstName, secondname, email, password, groupNameArray) {
     // delete person first
     var deletedExisting = deletePerson(username);
     if (email === '' | email === null){
         email = 'test@test.com';
     }
-    var person = people.createPerson(username, firstName, secondname, email, Password1, true);
+    var person = people.createPerson(username, firstName, secondname, email, password, true);
     if (person == null) {
         person = people.getPerson(username);
     }
