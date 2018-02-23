@@ -41,16 +41,13 @@ public class EmailService {
             return;
         }
         LOGGER.debug("sending Email: ");
-//        LOGGER.debug("Notify details = templateId = " + templateId + " emailAddress = " + emailAddress + " personalisation = " + personalisation.toString());
         SendEmailResponse response = null;
         try {
             response = client.sendEmail(templateId, emailAddress, personalisation, null, null);
+            LOGGER.debug("Notify response: " + response.getNotificationId());
         } catch (NotificationClientException e) {
             e.printStackTrace();
         }
-
-        LOGGER.debug("Notify response: " + response);
-
     }
 
     public ActionService getActionService() {
