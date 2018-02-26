@@ -754,12 +754,7 @@
                                     bpm_package.children[i].properties['cts:caseTask'] = 'Dispatch response';
                                     //set owner to admin so that users don't keep edit permissions
                                     bpm_package.children[i].setOwner('admin');
-                                    if(bpm_package.children[i].properties['cts:hmpoResponse'] == "Email"){
-                                        bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Reply by email","value": "Next","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
-                                    } else {
-                                        bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Next","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
-                                    }
-
+                                    bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Next","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
                                     bpm_package.children[i].save();
                                 }
                             ]]></activiti:string>
@@ -794,9 +789,6 @@
                                      bpm_package.children[i].properties['cts:assignedUnit'] = null;
                                      bpm_package.children[i].properties['cts:caseWorkflowStatus'] = null;
                                      bpm_package.children[i].save();
-                                     if(bpm_package.children[i].properties['cts:hmpoResponse'] == "Email"){
-                                        ctsJS.sendResponseEmail(bpm_package.children[i].nodeRef, "From the Home Office", "wf-dcu-response.html.ftl", ctsJS.getDcuEmail());
-                                     }
                                 }
                             }]]></activiti:string>
                     </activiti:field>
