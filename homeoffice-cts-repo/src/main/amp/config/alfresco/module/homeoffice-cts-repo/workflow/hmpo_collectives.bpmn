@@ -271,7 +271,7 @@
                                 bpm_package.children[i].properties['cts:assignedUser'] = null;
                                 //set owner to admin so that users don't keep edit permissions
                                 bpm_package.children[i].setOwner('admin');
-                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Dispatched","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"},{"label":"Defer","value": "Defer","manualAllocate": false,"allocateHeader": "Defer","colour": "green"}]}';
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Dispatched","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Make amendment","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"},{"label":"Defer","value": "Defer","manualAllocate": false,"allocateHeader": "Defer","colour": "green"}]}';
                                 bpm_package.children[i].save();
                             }]]></activiti:string>
           </activiti:field>
@@ -336,7 +336,7 @@
                                 bpm_package.children[i].properties['cts:caseTask'] = 'Defer Dispatch';
                                 //set owner to admin so that users don't keep edit permissions
                                 bpm_package.children[i].setOwner('admin');
-                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Dispatched","manualAllocate": false, "allocateHeader": "Complete Case","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Dispatched","manualAllocate": false, "allocateHeader": "Complete Case","colour": "green"},{"label":"Make amendment","value": "Reject","manualAllocate": false,"allocateHeader": "Rellocate for drafting","colour": "red"}]}';
                                 bpm_package.children[i].save();
                             }]]>
             </activiti:string>
@@ -387,7 +387,7 @@
                                 bpm_package.children[i].properties['cts:caseTask'] = 'Dispatched';
                                 //set owner to admin so that users don't keep edit permissions
                                 bpm_package.children[i].setOwner('admin');
-                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Dispatched","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Close case","value": "CompleteCase","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Return","value": "Reject","manualAllocate": false,"allocateHeader": "Reallocate for drafting","colour": "red"},{"label":"Defer","value": "Defer","manualAllocate": false,"allocateHeader": "Defer","colour": "green"}]}';
+                                bpm_package.children[i].properties['cts:caseWorkflowStatus'] = '{"transitions":[{"label":"Reallocate","value": "Reallocate","manualAllocate": true,"allocateHeader": "Reallocate","colour": "green"},{"label":"Dispatched","value": "Dispatched","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Close case","value": "CompleteCase","manualAllocate": false, "allocateHeader": "","colour": "green"},{"label":"Make amendment","value": "Reject","manualAllocate": false,"allocateHeader": "Reallocate for drafting","colour": "red"},{"label":"Defer","value": "Defer","manualAllocate": false,"allocateHeader": "Defer","colour": "green"}]}';
                                 bpm_package.children[i].save();
                             }]]>
             </activiti:string>
