@@ -53,7 +53,7 @@ function importUsers(){
             email = users[j].email,
             groupNameArray = users[j].groupNameArray;
         if (!users[j].password) {
-            var password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            var password = 'Password1';
         } else {
             var password = users[j].password;
         }
