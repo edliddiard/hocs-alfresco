@@ -2,6 +2,7 @@ package uk.gov.homeoffice.cts.template;
 
 import org.alfresco.service.namespace.QName;
 import uk.gov.homeoffice.cts.model.CtsModel;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -103,11 +104,11 @@ public class PlaceholderList {
     static final Placeholder ARRIVING_DATE_IN_UK = new DatePropertyPlaceholder(CtsModel.ARRIVING_DATE_IN_UK, new SimpleDateFormat("dd.MM.yyyy"));
     static final Placeholder LEADERS_ADDRESS_ABOARD = new PropertyPlaceholder(CtsModel.LEADERS_ADDRESS_ABOARD);
     static final Placeholder PARTY_LEADER = new MultiPropertyPlaceholder(
-        new QName[]{
-            CtsModel.PARTY_LEADER_OTHER_NAMES,
-            CtsModel.PARTY_LEADER_LAST_NAME
-        },
-        " "
+            new QName[]{
+                    CtsModel.PARTY_LEADER_OTHER_NAMES,
+                    CtsModel.PARTY_LEADER_LAST_NAME
+            },
+            " "
     );
     static final Placeholder PARTY_LEADER_OTHER_NAMES = new PropertyPlaceholder(CtsModel.PARTY_LEADER_OTHER_NAMES);
     static final Placeholder PARTY_LEADER_LAST_NAME = new PropertyPlaceholder(CtsModel.PARTY_LEADER_LAST_NAME);
@@ -115,11 +116,11 @@ public class PlaceholderList {
     static final Placeholder PARTY_LEADER_PASSPORT_ISSUED_AT = new PropertyPlaceholder(CtsModel.PARTY_LEADER_PASSPORT_ISSUED_AT);
     static final Placeholder PARTY_LEADER_PASSPORT_ISSUED_ON = new DatePropertyPlaceholder(CtsModel.PARTY_LEADER_PASSPORT_ISSUED_ON, new SimpleDateFormat("dd.MM.yyyy"));
     static final Placeholder PARTY_LEADER_DEPUTY = new MultiPropertyPlaceholder(
-        new QName[]{
-            CtsModel.PARTY_LEADER_DEPUTY_OTHER_NAMES,
-            CtsModel.PARTY_LEADER_DEPUTY_LAST_NAME
-        },
-        " "
+            new QName[]{
+                    CtsModel.PARTY_LEADER_DEPUTY_OTHER_NAMES,
+                    CtsModel.PARTY_LEADER_DEPUTY_LAST_NAME
+            },
+            " "
     );
     static final Placeholder PARTY_LEADER_DEPUTY_OTHER_NAMES = new PropertyPlaceholder(CtsModel.PARTY_LEADER_DEPUTY_OTHER_NAMES);
     static final Placeholder PARTY_LEADER_DEPUTY_LAST_NAME = new PropertyPlaceholder(CtsModel.PARTY_LEADER_DEPUTY_LAST_NAME);
@@ -132,8 +133,23 @@ public class PlaceholderList {
     static final Placeholder DISPATCHED_DATE = new DatePropertyPlaceholder(CtsModel.DISPATCHED_DATE, new SimpleDateFormat("dd.MM.yyyy"));
     static final Placeholder DELIVERY_NUMBER = new PropertyPlaceholder(CtsModel.DELIVERY_NUMBER);
 
+    static final Placeholder MEMBER = new PropertyPlaceholder(CtsModel.PROP_MEMBER);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_FORENAME = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_FORENAME);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_SURNAME = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_SURNAME);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_ORGANISATION = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_ORGANISATION);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_TELEPHONE = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_TELEPHONE);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_EMAIL = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_EMAIL);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_POSTCODE = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_POSTCODE);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE1 = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE1);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE2 = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE2);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE3 = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE3);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_COUNTRY = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_COUNTRY);
+    static final Placeholder THIRD_PARTY_CORRESPONDENT_TITLE = new PropertyPlaceholder(CtsModel.PROP_THIRD_PARTY_CORRESPONDENT_TITLE);
+    static final Placeholder CASE_REF = new PropertyPlaceholder(CtsModel.PROP_CASE_REF);
+
     /**
      * Return a Map of all available placeholders.
+     *
      * @return Map
      */
     public static Map<String, Placeholder> getAllPlaceholders() {
@@ -196,10 +212,24 @@ public class PlaceholderList {
         placeholders.put("DISPATCHED_DATE", DISPATCHED_DATE);
         placeholders.put("DELIVERY_NUMBER", DELIVERY_NUMBER);
 
+        placeholders.put("MEMBER", MEMBER);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_FORENAME", THIRD_PARTY_CORRESPONDENT_FORENAME);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_FORNAME", THIRD_PARTY_CORRESPONDENT_FORENAME);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_SURNAME", THIRD_PARTY_CORRESPONDENT_SURNAME);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_ORGANISATION", THIRD_PARTY_CORRESPONDENT_ORGANISATION);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_TELEPHONE", THIRD_PARTY_CORRESPONDENT_TELEPHONE);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_EMAIL", THIRD_PARTY_CORRESPONDENT_EMAIL);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_POSTCODE", THIRD_PARTY_CORRESPONDENT_POSTCODE);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE1", THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE1);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE2", THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE2);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE3", THIRD_PARTY_CORRESPONDENT_ADDRESS_LINE3);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_COUNTRY", THIRD_PARTY_CORRESPONDENT_COUNTRY);
+        placeholders.put("THIRD_PARTY_CORRESPONDENT_TITLE", THIRD_PARTY_CORRESPONDENT_TITLE);
+        placeholders.put("CASE_REF",CASE_REF);
         return placeholders;
     }
 
-    public static Placeholder DateToday(){
+    public static Placeholder DateToday() {
         return new StaticValuePlaceholder(new SimpleDateFormat("EEEE, d MMMM yyyy").format(new Date()));
     }
 
