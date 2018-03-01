@@ -123,6 +123,7 @@ function addPermissions(correspondenceType, nameOfGroup, groupPermissions, folde
     if ((nameOfGroup != null || nameOfGroup != '' || nameOfGroup.length > 0) &&
         (groupPermissions != null || groupPermissions != '' || groupPermissions.length > 0)){
 
+        reportLog(groupPermissions + ' adding permissions to ' + nameOfGroup + ' in ' + folder + ' folder.');
         correspondenceType.setPermission(groupPermissions, nameOfGroup);
         reportLog(groupPermissions + ' permissions added to ' + nameOfGroup + ' in ' + folder + ' folder.');
 
