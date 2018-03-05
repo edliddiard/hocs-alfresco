@@ -97,28 +97,9 @@ public class PostChangePasswordWebScript extends ChangePasswordPost {
         if (password.length() < 8) {
             return false;
         }
-        Pattern lowerCasePattern = Pattern.compile("[a-z]{2,}");
-        Pattern upperCasePattern = Pattern.compile("[A-Z]{2,}");
-        Pattern numberPattern = Pattern.compile("[0-9]{2,}");
-        Pattern specialPattern = Pattern.compile("[^a-zA-Z0-9]{2,}");
-        Matcher lowerCaseMatcher = lowerCasePattern.matcher(password);
-        Matcher upperCaseMatcher = upperCasePattern.matcher(password);
-        Matcher numberMatcher = numberPattern.matcher(password);
-        Matcher specialMatcher = specialPattern.matcher(password);
-        if (!lowerCaseMatcher.find()) {
-            return false;
-        }
-        if (!upperCaseMatcher.find()) {
-            return false;
-        }
-        if (!numberMatcher.find()) {
-            return false;
-        }
-        if (!specialMatcher.find()) {
-            return false;
-        }
-
-        return true;
+        Pattern passwordPattern = Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.{8,})");
+        Matcher passwordMatcher = passwordPattern.matcher(password);
+        return passwordMatcher.find();
     }
 
     private String[] checkUserIsLoggedIn(final WebScriptRequest req) {
