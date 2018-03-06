@@ -164,7 +164,6 @@ function doesGroupExist(groupName) {
 function createPerson(username, firstName, secondname, email, password, groupNameArray) {
     var person = people.getPerson(username);
     if(person == null) {
-        //var deletedExisting = deletePerson(username);
         if (email === '' | email === null) {
             email = 'test@test.com';
         }
@@ -176,22 +175,25 @@ function createPerson(username, firstName, secondname, email, password, groupNam
         var expireDate = new Date();
         expireDate.setMonth(expireDate.getMonth() + 30);
 
-        for (var g = 0; g < groupNameArray.length; g++) {
-            //var groupFullName = 'GROUP_' + groupNameArray[g];
-            var groupFullName = groupNameArray[g];
-            if (people.getGroup(groupFullName) != null) {
-                people.addAuthority(people.getGroup(groupFullName), person);
-                person.properties["{http://cts-beta.homeoffice.gov.uk/model/user/1.0}passwordExpiryDate"] = expireDate;
-                person.save();
-            } else {
-                reportLog("Group missing: Cannot add " + username + " to " + groupNameArray[g]);
-            }
-        }
         reportLog("New Person Created: " + username);
     }
     else {
         reportLog("Person already exists: " + username);
     }
+
+    for (var g = 0; g < groupNameArray.length; g++) {
+        //var groupFullName = 'GROUP_' + groupNameArray[g];
+        var groupFullName = groupNameArray[g];
+        if (people.getGroup(groupFullName) != null && !isInGroup(groupFullName, username) {
+            people.addAuthority(people.getGroup(groupFullName), person);
+            person.properties["{http://cts-beta.homeoffice.gov.uk/model/user/1.0}passwordExpiryDate"] = expireDate;
+            person.save();
+            reportLog("Adding " + username + " to " + groupNameArray[g]);
+        } else {
+            reportLog("Group missing: Cannot add " + username + " to " + groupNameArray[g]);
+        }
+    }
+
 }
 
 function extendPasswordExpiry() {
