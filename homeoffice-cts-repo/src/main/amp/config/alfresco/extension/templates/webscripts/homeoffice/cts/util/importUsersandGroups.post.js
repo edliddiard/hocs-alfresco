@@ -53,7 +53,7 @@ function importUsers(){
             email = users[j].email,
             groupNameArray = users[j].groupNameArray;
         if (!users[j].password) {
-            var password = 'Password1';
+            var password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         } else {
             var password = users[j].password;
         }
@@ -162,35 +162,35 @@ function doesGroupExist(groupName) {
 }
 
 function createPerson(username, firstName, secondname, email, password, groupNameArray) {
-    // delete person first
-    var deletedExisting = deletePerson(username);
-    if (email === '' | email === null){
-        email = 'test@test.com';
-    }
-    var person = people.createPerson(username, firstName, secondname, email, password, true);
-    if (person == null) {
-        person = people.getPerson(username);
-    }
-
-    var expireDate = new Date();
-    expireDate.setMonth(expireDate.getMonth() + 30);
-
-    for (var g = 0; g < groupNameArray.length; g++) {
-        //var groupFullName = 'GROUP_' + groupNameArray[g];
-        var groupFullName = groupNameArray[g];
-        if (people.getGroup(groupFullName) != null) {
-            people.addAuthority(people.getGroup(groupFullName), person);
-            person.properties["{http://cts-beta.homeoffice.gov.uk/model/user/1.0}passwordExpiryDate"] = expireDate;
-            person.save();
-        } else {
-            reportLog("Group missing: Cannot add " + username + " to " + groupNameArray[g]);
+    var person = people.getPerson(username);
+    if(person == null) {
+        //var deletedExisting = deletePerson(username);
+        if (email === '' | email === null) {
+            email = 'test@test.com';
         }
-    }
+        var person = people.createPerson(username, firstName, secondname, email, password, true);
+        if (person == null) {
+            person = people.getPerson(username);
+        }
 
-    if (deletedExisting) {
-        reportLog("person replaced: " + username);
-    } else {
+        var expireDate = new Date();
+        expireDate.setMonth(expireDate.getMonth() + 30);
+
+        for (var g = 0; g < groupNameArray.length; g++) {
+            //var groupFullName = 'GROUP_' + groupNameArray[g];
+            var groupFullName = groupNameArray[g];
+            if (people.getGroup(groupFullName) != null) {
+                people.addAuthority(people.getGroup(groupFullName), person);
+                person.properties["{http://cts-beta.homeoffice.gov.uk/model/user/1.0}passwordExpiryDate"] = expireDate;
+                person.save();
+            } else {
+                reportLog("Group missing: Cannot add " + username + " to " + groupNameArray[g]);
+            }
+        }
         reportLog("New Person Created: " + username);
+    }
+    else {
+        reportLog("Person already exists: " + username);
     }
 }
 
