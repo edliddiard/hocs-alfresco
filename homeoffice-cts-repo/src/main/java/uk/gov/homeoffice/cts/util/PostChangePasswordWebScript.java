@@ -97,7 +97,7 @@ public class PostChangePasswordWebScript extends ChangePasswordPost {
         if (password.length() < 8) {
             return false;
         }
-        Pattern passwordPattern = Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.{8,})");
+        Pattern passwordPattern = Pattern.compile("(?=.*[a-z].*[a-z])(?=.*[A-Z].*[A-Z])(?=.*\\d.*\\d)(?=.*[^A-Za-z0-9].*[^A-Za-z0-9])(.*){8,}");
         Matcher passwordMatcher = passwordPattern.matcher(password);
         return passwordMatcher.find();
     }
