@@ -172,14 +172,14 @@ function createPerson(username, firstName, secondname, email, password, groupNam
             person = people.getPerson(username);
         }
 
-        var expireDate = new Date();
-        expireDate.setMonth(expireDate.getMonth() + 30);
-
         reportLog("New Person Created: " + username);
     }
     else {
         reportLog("Person already exists: " + username);
     }
+
+    var expireDate = new Date();
+    expireDate.setMonth(expireDate.getMonth() + 30);
 
     for (var g = 0; g < groupNameArray.length; g++) {
         //var groupFullName = 'GROUP_' + groupNameArray[g];
