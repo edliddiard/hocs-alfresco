@@ -172,21 +172,23 @@ function createPerson(username, firstName, secondname, email, password, groupNam
             person = people.getPerson(username);
         }
 
+        var expireDate = new Date();
+        expireDate.setMonth(expireDate.getMonth() + 30);
+
+        person.properties["{http://cts-beta.homeoffice.gov.uk/model/user/1.0}passwordExpiryDate"] = expireDate;
+
         reportLog("New Person Created: " + username);
     }
     else {
         reportLog("Person already exists: " + username);
     }
 
-    var expireDate = new Date();
-    expireDate.setMonth(expireDate.getMonth() + 30);
 
     for (var g = 0; g < groupNameArray.length; g++) {
         //var groupFullName = 'GROUP_' + groupNameArray[g];
         var groupFullName = groupNameArray[g];
         if (people.getGroup(groupFullName) != null && !isInGroup(groupFullName, username)) {
             people.addAuthority(people.getGroup(groupFullName), person);
-            person.properties["{http://cts-beta.homeoffice.gov.uk/model/user/1.0}passwordExpiryDate"] = expireDate;
             person.save();
             reportLog("Adding " + username + " to " + groupNameArray[g]);
         } else {
