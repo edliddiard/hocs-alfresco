@@ -183,17 +183,36 @@ function createPerson(username, firstName, secondname, email, password, groupNam
         reportLog("Person already exists: " + username);
     }
 
+    var associatedGroups = people.getContainerGroups(person);
+    var associatedGroupNames = [];
 
-    for (var g = 0; g < groupNameArray.length; g++) {
-        //var groupFullName = 'GROUP_' + groupNameArray[g];
-        var groupFullName = groupNameArray[g];
-        if (people.getGroup(groupFullName) != null && !isInGroup(groupFullName, username)) {
-            people.addAuthority(people.getGroup(groupFullName), person);
+    for (var k = 0; k < associatedGroups.length; k++) {
+        var group = associatedGroups[k].getQnamePath();
+        var p = group.split(":");
+        associatedGroupNames.push(p[p.length-1]);
+    }
+
+    for (var i = 0; i < groupNameArray.length; i++) {
+        var fullGroupName = 'GROUP_' + groupNameArray[i];
+        if(associatedGroupNames.indexOf(fullGroupName) === -1) {
+            // Create group
+            reportLog("Associated user with group");
+            people.addAuthority(people.getGroup(fullGroupName), person);
             person.save();
-            reportLog("Adding " + username + " to " + groupNameArray[g]);
         } else {
-            reportLog("Group missing: Cannot add " + username + " to " + groupNameArray[g]);
+            // Group already exists
+            reportLog("User already associated with group");
         }
+    }
+
+    for (var j = 0; j < associatedGroupNames.length; j++) {
+        var groupName = associatedGroupNames[j].substring(6, associatedGroupNames[j].length);
+        if(groupNameArray.indexOf(groupName) === -1) {
+            // User has been removed from group
+            reportLog("Removing user from group");
+            people.removeAuthority(associatedGroups[j], person);
+            person.save();
+        }2
     }
 
 }
