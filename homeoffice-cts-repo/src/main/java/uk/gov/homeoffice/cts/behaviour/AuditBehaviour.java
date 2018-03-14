@@ -17,6 +17,7 @@ import uk.gov.homeoffice.cts.model.AuditMessage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -76,14 +77,12 @@ public class AuditBehaviour implements PropertyUpdateBehaviour {
 
     private void postMessage(AuditMessage auditMessage) throws NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
 
-        String json = "{}";
         try {
-
-            json = objectMapper.writeValueAsString(auditMessage);
 
             LOGGER.info("Sending Reporting Event");
 
-            sendViaRest(json);
+            String str = new String(objectMapper.writeValueAsBytes(auditMessage), StandardCharsets.UTF_8);
+            sendViaRest(str);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
