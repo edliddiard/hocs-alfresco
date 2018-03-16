@@ -33,46 +33,6 @@ public class AuditMessage {
         caseReference = afterMap.get("urnSuffix");
     }
 
-    @Override
-    public String toString(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("{ ");
-
-        sb.append("\"uuid\": \"");
-        sb.append(uuid);
-        sb.append("\", ");
-
-        sb.append("\"timestamp\": \"");
-        sb.append(timestamp);
-        sb.append("\", ");
-
-        sb.append("\"caseReference\":\"");
-        sb.append(caseReference);
-        sb.append("\", ");
-
-        sb.append("\"data\": ");
-        sb.append(printMap(afterMap));
-
-        sb.append(" }");
-
-        return sb.toString();
-    }
-
-    private static String printMap(Map<String,String> map){
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("{ ");
-        for(Map.Entry<String, String> entry : map.entrySet()) {
-           sb.append("\"" + entry.getKey() + "\": \"");
-           sb.append(entry.getValue());
-           sb.append("\",");
-        }
-        sb.deleteCharAt(sb.length()-1);
-        sb.append(" }");
-
-        return sb.toString();
-    }
-
     private static Map<String, String> transformMap(Map<QName, Serializable> map) throws UnsupportedEncodingException {
         Map<String, String> retMap = new HashMap<>();
 
@@ -80,8 +40,7 @@ public class AuditMessage {
             System.out.print(entry);
             String value = "null";
             if(entry.getValue() != null) {
-                byte[] utf8data = entry.getValue().toString().getBytes("UTF-8");
-                value = new String(utf8data, "UTF-8");
+                value = entry.getValue().toString();
             }
 
             retMap.put(entry.getKey().getLocalName(), value );
