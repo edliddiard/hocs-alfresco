@@ -100,17 +100,18 @@ public class CommentsWebScript extends AbstractCommentsWebScript {
         // fetch the title required to create a comment
         String title = getOrNull(json, JSON_KEY_TITLE);
         HashMap<QName, Serializable> props = new HashMap<QName, Serializable>(1, 1.0f);
-        props.put(ContentModel.PROP_TITLE, title != null ? title : "");
+        props.put(ContentModel.PROP_TITLE, title == null ? "" : title);
         nodeService.addProperties(commentNodeRef, props);
 
-        ContentWriter writer = contentService.getWriter(commentNodeRef, ContentModel.PROP_CONTENT, true);
+
         // fetch the content of a comment
         String contentString = getOrNull(jsonChild, JSON_KEY_CONTENT);
         contentString = sanitize(contentString);
         LOGGER.debug("Sanitizing comment input - Content: [{}]", contentString);
 
+        ContentWriter writer = contentService.getWriter(commentNodeRef, ContentModel.PROP_CONTENT, true);
         writer.setMimetype(MimetypeMap.MIMETYPE_HTML);
-        writer.putContent(contentString);
+        writer.putContent(contentString == null ? "" : contentString);
 
         return commentNodeRef;
     }
