@@ -1,10 +1,6 @@
 package uk.gov.homeoffice.ctsv2.webscripts;
 
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.service.ServiceRegistry;
@@ -24,11 +20,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.extensions.webscripts.Cache;
-import org.springframework.extensions.webscripts.DeclarativeWebScript;
-import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptException;
-import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.*;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This code has been adapted from Alfresco v5.0.d which replaces comment functionality as Java backed Webscript.
@@ -111,7 +107,12 @@ public abstract class AbstractCommentsWebScript extends DeclarativeWebScript {
      */
     protected String getOrNull(JSONObject json, String key) {
         if (json != null && json.containsKey(key)) {
-            return (String) json.get(key);
+            try{
+                return json.get(key).toString();
+            } catch (Exception e)
+            {
+                return "";
+            }
         }
         return null;
     }
