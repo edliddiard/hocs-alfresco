@@ -1,7 +1,5 @@
 package uk.gov.homeoffice.cts.behaviour;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.action.ActionService;
@@ -139,25 +137,22 @@ public class AllocateBehaviour implements PropertyUpdateBehaviour {
             //don't go on
             return;
         }
-//
-//        LOGGER.debug("building Notify properties for Team Email");
-//        LOGGER.debug("Team = " + after.get(CtsModel.PROP_ASSIGNED_TEAM));
-//        LOGGER.debug("link = " + getCtsUrl() + "/cts/cases/view/" + nodeRef.getId());
-
         RestTemplate restTemplate = new RestTemplate();
-        try {
-            ResponseEntity<String> emailAddress = restTemplate.getForEntity(getDataServiceEndpoint() +"/team/"+ after.get(CtsModel.PROP_ASSIGNED_TEAM), String.class);
 
-//        LOGGER.debug("emailAddress = " + emailAddress.getBody());
-        HashMap<String, String> personalisation = new HashMap<>();
-        personalisation.put("user", after.get(CtsModel.PROP_ASSIGNED_TEAM).toString());
-        personalisation.put("link", getCtsUrl() + "/cts/cases/view/" + nodeRef.getId());
-        LOGGER.debug("templateid = " + getWorkFlowTeamEmailTemplateId() + " | emailAddress = " + emailAddress.getBody() + " | Personalisation = " + personalisation);
-        emailService.sendEmail(getWorkFlowTeamEmailTemplateId(), emailAddress.getBody(), personalisation);
+        try {
+            ResponseEntity<AllocateBehaviourTeamEmail> teamEmailResponseEntity =  restTemplate.getForEntity(getDataServiceEndpoint() + "/team/" + after.get(CtsModel.PROP_ASSIGNED_TEAM), AllocateBehaviourTeamEmail.class);
+
+            HashMap<String, String> personalisation = new HashMap<>();
+            personalisation.put("user", teamEmailResponseEntity.getBody().displayName);
+            personalisation.put("link", getCtsUrl() + "/cts/cases/view/" + nodeRef.getId());
+
+            LOGGER.debug("templateid = " + getWorkFlowTeamEmailTemplateId() + " | emailAddress = " + teamEmailResponseEntity.getBody().email + " | Personalisation = " + personalisation);
+            emailService.sendEmail(getWorkFlowTeamEmailTemplateId(), teamEmailResponseEntity.getBody().email, personalisation);
         } catch (RestClientException e) {
-            LOGGER.debug("Email not sent");
-            e.printStackTrace();
+            LOGGER.debug("Error when trying to get team email address from data service, email not sent to team");
+//            e.printStackTrace();
         }
+
     }
 
 
