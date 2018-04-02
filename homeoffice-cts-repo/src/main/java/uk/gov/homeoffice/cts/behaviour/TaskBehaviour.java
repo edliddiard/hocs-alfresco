@@ -34,6 +34,7 @@ public class TaskBehaviour implements PropertyUpdateBehaviour {
                 public Map<String, Object> doWork() throws Exception {
                     LOGGER.debug("Task before " + taskBefore);
                     LOGGER.debug("Task after " + taskAfter);
+                    LOGGER.debug("The task changed on " + nodeRef);
                     updateTaskUpdatedDatetime(nodeRef);
                     return null;
                 }
