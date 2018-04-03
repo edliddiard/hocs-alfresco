@@ -37,9 +37,7 @@ public class CreateCaseHelper {
 
     public String createCase(List<FileDetails> caseFiles, String caseQueueName) throws Exception {
 
-        UserTransaction txn = transactionService.getNonPropagatingUserTransaction();
-        txn.begin();
-        String name = "CaseCreatedByEmail-" + new Date();
+        String name = "CaseCreatedByEmail-" + UUID.randomUUID().toString();
         Map<QName, Serializable> contentProps = new HashMap<>();
 
         UnitAndTeamToAssign forWorkflow = workflowHelper.getTeamAndUnitForCaseType(caseQueueName);
@@ -59,21 +57,30 @@ public class CreateCaseHelper {
         LOGGER.debug("Creating case ::  Unit = " + forWorkflow.getUnit());
         LOGGER.debug("Creating case ::  Team = " + forWorkflow.getTeam());
 
-        // create case node
-        ChildAssociationRef childRef = nodeService.createNode(ctsFolderHelper.getOrCreateCtsCasesFolder(),
-                ContentModel.ASSOC_CONTAINS,
-                QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name),
-                CtsModel.TYPE_CTS_CASE,
-                contentProps);
+        UserTransaction txn = transactionService.getUserTransaction();
+        try {
+            txn.begin();
 
-        //we have atleast one file i.e. body of email
-        for (FileDetails caseFile : caseFiles) {
-            addFile(childRef.getChildRef(), caseFile);
+            // create case node
+            ChildAssociationRef childRef = nodeService.createNode(ctsFolderHelper.getOrCreateCtsCasesFolder(),
+                    ContentModel.ASSOC_CONTAINS,
+                    QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, name),
+                    CtsModel.TYPE_CTS_CASE,
+                    contentProps);
+
+            //we have atleast one file i.e. body of email
+            for (FileDetails caseFile : caseFiles) {
+                addFile(childRef.getChildRef(), caseFile);
+            }
+
+            txn.commit();
+            LOGGER.debug("Case created:: " + childRef.getChildRef());
+            return childRef.getChildRef().toString();
+        } catch (Exception e) {
+            txn.rollback();
+            throw e;
+
         }
-
-        txn.commit();
-        LOGGER.debug("Case created:: " + childRef.getChildRef());
-        return childRef.getChildRef().toString();
     }
 
 

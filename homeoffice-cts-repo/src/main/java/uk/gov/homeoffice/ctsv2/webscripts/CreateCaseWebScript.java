@@ -68,14 +68,14 @@ public class CreateCaseWebScript extends AbstractWebScript {
                 res.setContentType("application/json; charset=UTF-8");
                 res.setContentEncoding("UTF-8");
                 res.getWriter().write(generateJsonResponse(caseRef));
+                LOGGER.debug("Completed CreateCaseWebScript");
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage(), ex);
                 res.setStatus(500);
                 res.getWriter().write(ex.getMessage());
+                LOGGER.debug("Unsuccessfully Completed CreateCaseWebScript");
             }
         }
-
-        LOGGER.debug("Completed CreateCaseWebScript");
     }
 
     private String generateJsonResponse(String caseRef) throws IOException {
