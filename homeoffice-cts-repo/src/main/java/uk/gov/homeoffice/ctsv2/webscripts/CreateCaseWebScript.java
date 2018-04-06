@@ -129,7 +129,7 @@ public class CreateCaseWebScript extends AbstractWebScript {
         return caseCreatedEmailTemplateId;
     }
 
-    public void setWorkFlowEmailTemplateId(String caseCreatedEmailTemplateId) {
+    public void setCaseCreatedEmailTemplateId(String caseCreatedEmailTemplateId) {
         this.caseCreatedEmailTemplateId = caseCreatedEmailTemplateId;
     }
 
