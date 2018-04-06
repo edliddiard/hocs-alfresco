@@ -30,7 +30,7 @@ public class ResetUserPasswordWebscript extends AbstractWebScript {
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
-        LOGGER.debug("Running ResetUserPasswordWebscript");
+        LOGGER.debug("Running ResetUserPasswordWebscript" + req.getParameter("username"));
         final String username = req.getParameter("username");
 
         Map<String, Object> resultMap = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Map<String, Object>>() {
