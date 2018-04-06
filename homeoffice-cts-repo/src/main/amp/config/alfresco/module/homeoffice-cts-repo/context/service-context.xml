@@ -778,10 +778,6 @@
     </bean>
 
     <bean id="EmailService" class="uk.gov.homeoffice.cts.email.EmailService">
-        <property name="actionService" ref="ActionService"/>
-        <property name="personService" ref="PersonService"/>
-        <property name="nodeService" ref="NodeService"/>
-        <property name="CtsFolderHelper" ref="CtsFolderHelper"/>
         <property name="replyAddress">
             <value>${cts.doNotReplyAddress}</value>
         </property>

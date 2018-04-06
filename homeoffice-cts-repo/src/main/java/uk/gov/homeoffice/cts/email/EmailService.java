@@ -1,11 +1,7 @@
 package uk.gov.homeoffice.cts.email;
 
-import org.alfresco.service.cmr.action.ActionService;
-import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.security.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.gov.homeoffice.cts.helpers.CtsFolderHelper;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.SendEmailResponse;
 
@@ -15,10 +11,6 @@ public class EmailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
-    private ActionService actionService;
-    private PersonService personService;
-    private NodeService nodeService;
-    private CtsFolderHelper ctsFolderHelper;
     private String replyAddress;
     private String apiKey;
     NotificationClient client;
@@ -47,38 +39,6 @@ public class EmailService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public ActionService getActionService() {
-        return actionService;
-    }
-
-    public void setActionService(ActionService actionService) {
-        this.actionService = actionService;
-    }
-
-    public PersonService getPersonService() {
-        return personService;
-    }
-
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
-
-    public NodeService getNodeService() {
-        return nodeService;
-    }
-
-    public void setNodeService(NodeService nodeService) {
-        this.nodeService = nodeService;
-    }
-
-    public CtsFolderHelper getCtsFolderHelper() {
-        return ctsFolderHelper;
-    }
-
-    public void setCtsFolderHelper(CtsFolderHelper ctsFolderHelper) {
-        this.ctsFolderHelper = ctsFolderHelper;
     }
 
     public String getReplyAddress() {
