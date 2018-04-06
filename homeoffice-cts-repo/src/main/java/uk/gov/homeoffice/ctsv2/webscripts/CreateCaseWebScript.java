@@ -91,8 +91,8 @@ public class CreateCaseWebScript extends AbstractWebScript {
                 personalisation.put("noOfAttachments", numberOfAtachements);
                 personalisation.put("link", getCtsUrl() + "/cts/cases/view/" + caseRef);
 
-                LOGGER.debug("templateid = " + getWorkFlowEmailTemplateId() + " | emailAddress = " + emailAddress + " | Personalisation = " + personalisation);
-                emailService.sendEmail(getWorkFlowEmailTemplateId(), emailAddress, personalisation);
+                LOGGER.debug("templateid = " + getCaseCreatedEmailTemplateId() + " | emailAddress = " + emailAddress + " | Personalisation = " + personalisation);
+                emailService.sendEmail(getCaseCreatedEmailTemplateId(), emailAddress, personalisation);
 
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage(), ex);
@@ -125,12 +125,12 @@ public class CreateCaseWebScript extends AbstractWebScript {
         this.createCaseHelper = createCaseHelper;
     }
 
-    public String getWorkFlowEmailTemplateId() {
+    public String getCaseCreatedEmailTemplateId() {
         return caseCreatedEmailTemplateId;
     }
 
-    public void setWorkFlowEmailTemplateId(String workFlowEmailTemplateId) {
-        this.caseCreatedEmailTemplateId = workFlowEmailTemplateId;
+    public void setWorkFlowEmailTemplateId(String caseCreatedEmailTemplateId) {
+        this.caseCreatedEmailTemplateId = caseCreatedEmailTemplateId;
     }
 
     private String getCtsUrl() {
