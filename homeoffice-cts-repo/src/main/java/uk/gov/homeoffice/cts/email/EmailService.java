@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.homeoffice.cts.helpers.CtsFolderHelper;
 import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.SendEmailResponse;
 
 import java.util.Map;
@@ -45,7 +44,7 @@ public class EmailService {
         try {
             response = client.sendEmail(templateId, emailAddress, personalisation, null, null);
             LOGGER.debug("Notify response: " + response.getNotificationId());
-        } catch (NotificationClientException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
