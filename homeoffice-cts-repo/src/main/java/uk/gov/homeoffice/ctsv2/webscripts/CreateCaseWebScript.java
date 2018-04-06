@@ -9,6 +9,7 @@ import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.extensions.webscripts.servlet.FormData;
+import uk.gov.homeoffice.cts.email.EmailService;
 import uk.gov.homeoffice.cts.helpers.CreateCaseHelper;
 import uk.gov.homeoffice.cts.model.FileDetails;
 import uk.gov.homeoffice.cts.util.FileIOUtils;
@@ -18,12 +19,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CreateCaseWebScript extends AbstractWebScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateCaseWebScript.class);
     private CreateCaseHelper createCaseHelper;
+    private EmailService emailService;
+    private String caseCreatedEmailTemplateId;
+    private String ctsUrl;
+
+
 
     @Override
     public void execute(WebScriptRequest webScriptRequest, WebScriptResponse res) throws IOException {
@@ -31,12 +38,20 @@ public class CreateCaseWebScript extends AbstractWebScript {
 
         String caseType = null;
         FileDetails fileDetails = null;
+        String emailAddress = null;
+        String numberOfAtachements = null;
 
         FormData formData = (FormData) webScriptRequest.parseContent();
         for (FormData.FormField formField : formData.getFields()) {
             switch (formField.getName()) {
                 case "caseType":
                     caseType = formField.getValue();
+                    break;
+                case "fromEmail":
+                    emailAddress = formField.getValue();
+                    break;
+                case "numberFiles":
+                    numberOfAtachements = formField.getValue();
                     break;
                 case "file":
                     if (formField.getIsFile()) {
@@ -69,6 +84,16 @@ public class CreateCaseWebScript extends AbstractWebScript {
                 res.setContentEncoding("UTF-8");
                 res.getWriter().write(generateJsonResponse(caseRef));
                 LOGGER.debug("Completed CreateCaseWebScript");
+
+                HashMap<String, String> personalisation = new HashMap<>();
+                personalisation.put("caseType", caseType);
+                personalisation.put("caseRef", caseRef);
+                personalisation.put("noOfAttachments", numberOfAtachements);
+                personalisation.put("link", getCtsUrl() + "/cts/cases/view/" + caseRef);
+
+                LOGGER.debug("templateid = " + getCaseCreatedEmailTemplateId() + " | emailAddress = " + emailAddress + " | Personalisation = " + personalisation);
+                emailService.sendEmail(getCaseCreatedEmailTemplateId(), emailAddress, personalisation);
+
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage(), ex);
                 res.setStatus(500);
@@ -99,4 +124,22 @@ public class CreateCaseWebScript extends AbstractWebScript {
     public void setCreateCaseHelper(CreateCaseHelper createCaseHelper) {
         this.createCaseHelper = createCaseHelper;
     }
+
+    public String getCaseCreatedEmailTemplateId() {
+        return caseCreatedEmailTemplateId;
+    }
+
+    public void setWorkFlowEmailTemplateId(String caseCreatedEmailTemplateId) {
+        this.caseCreatedEmailTemplateId = caseCreatedEmailTemplateId;
+    }
+
+    private String getCtsUrl() {
+        return ctsUrl;
+    }
+
+    public void setCtsUrl(String ctsUrl) {
+        this.ctsUrl = ctsUrl;
+    }
+
+
 }
