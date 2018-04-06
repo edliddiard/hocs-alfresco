@@ -612,12 +612,14 @@
 
     <bean id="webscript.homeoffice.ctsv2.cases.createCase.post" class="uk.gov.homeoffice.ctsv2.webscripts.CreateCaseWebScript" parent="webscript">
         <property name="createCaseHelper" ref="createCaseHelper"/>
-        <property name="emailService" ref="EmailService"/>
         <property name="caseCreatedEmailTemplateId">
             <value>${notify.caseCreatedEmailTemplateId}</value>
         </property>
         <property name="ctsUrl">
             <value>${cts.url}</value>
+        </property>
+        <property name="emailService">
+            <ref bean="EmailService"/>
         </property>
     </bean>
 
