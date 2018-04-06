@@ -85,11 +85,12 @@ public class CreateCaseWebScript extends AbstractWebScript {
                 res.getWriter().write(generateJsonResponse(caseRef));
                 LOGGER.debug("Completed CreateCaseWebScript");
 
+                String urlRef = caseRef.substring(24);
                 HashMap<String, String> personalisation = new HashMap<>();
                 personalisation.put("caseType", caseType);
-                personalisation.put("caseRef", caseRef);
+                personalisation.put("caseRef", urlRef);
                 personalisation.put("noOfAttachments", numberOfAtachements);
-                personalisation.put("link", getCtsUrl() + "/cts/cases/view/" + caseRef);
+                personalisation.put("link", getCtsUrl() + "/cts/cases/view/" + urlRef);
 
                 LOGGER.debug("templateid = " + getCaseCreatedEmailTemplateId() + " | emailAddress = " + emailAddress + " | Personalisation = " + personalisation);
                 emailService.sendEmail(getCaseCreatedEmailTemplateId(), emailAddress, personalisation);
@@ -139,6 +140,14 @@ public class CreateCaseWebScript extends AbstractWebScript {
 
     public void setCtsUrl(String ctsUrl) {
         this.ctsUrl = ctsUrl;
+    }
+
+    public EmailService getEmailService() {
+        return emailService;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
     }
 
 
