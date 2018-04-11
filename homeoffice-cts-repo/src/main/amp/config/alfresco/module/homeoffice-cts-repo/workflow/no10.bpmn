@@ -354,7 +354,9 @@
                             if(approved){
                                 logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Dispatch");
                                 execution.setVariable('bpm_outcome', 'SendForDispatch');
-                                execution.setVariable('bpm_reject_private_office_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                for (var i = 0; i < bpm_package.children.length; i++) {
+                                    execution.setVariable('bpm_reject_private_office_user', bpm_package.children[i].properties['cts:assignedUser']);
+                                }
                             }else{
                                 logger.log("ID: "+execution.getVariable('bpm_case_id')+" Marked for: Return to Initial Draft");
                                 execution.setVariable('bpm_outcome', 'ReturnDraft');
